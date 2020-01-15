@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+
+    <title>MAIT 2019</title>
+  </head>
+  <body>
+
+<header class="navbar fixed-top navbar-dark bg-dark"> 
+    <a class="navbar-brand" href="#">
+        <img src="img/logo.svg"  width="90" height="60" alt="" >
+    </a>
+    <span class="navbar-brand mx-auto d-block text-center order-0 order-md-1 w-25">
+       <h1 class="h1">Data Analytics Platform</h1> 
+    </span>
+</header>
+
+<div class="container-fluid">
+    
+    <div class="row">
+
+        <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
+            <div class="bd-toc-item sidebar-sticky">
+                <h5 class="border-bottom">Recognition:</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#Hadrlimitvalues" > Hadr limit values </button>
+                    </li >
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#MeanStandartdeviation"> Mean & Standart deviation </button>
+                    </li >
+                </ul>
+                <h5 class="border-bottom"> Interpolation:</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-pressed="true"> Linear Interpolation </button>
+
+                        <div class="collapse ml-3 border-left" id="collapseExample">
+                            <div class="input-group input-group-sm mb-3 ml-1">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Min</span>
+                                </div>
+                                <input type="text" class="form-control" id='Intrp_Min' aria-label="Min Value">
+                              </div>
+
+                              <div class="input-group input-group-sm mb-3 ml-1">
+                                <div class="input-group-prepend">
+                                  <span class="input-group-text">Max</span>
+                                </div>
+                                <input type="text" class="form-control" id='Intrp_Max' aria-label="Max Value">
+                              </div>
+                              
+                              <div class="input-group input-group-sm mb-3 ml-1">
+                                <div class="input-group-prepend">
+                                    <button type="button" class="btn btn-secondary" onclick="buttonInterpolationClick()">Submit</button>
+                                </div>
+                              </div>
+                              
+                              
+
+                        </div>
+                   
+                   
+                    </li >
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light"> Quadratic interpolation </button>
+                    </li >
+                </ul>
+                <h5 class="border-bottom"> Smoothing:</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light"> Moving average </button>
+                    </li >
+                </ul>
+
+                <h5 class="border-bottom"> I/O Relationship models:</h5>
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light"> Neural Network </button>
+                    </li >
+                    <li class="nav-item">
+                        <button  type="button" class="btn btn-light"> Random Forest </button>
+                    </li >
+                </ul>
+
+            </div>
+        </nav>
+        <!-- Modals Всплывающие окошки -->
+        <!-- Modal Hadr limit values -->
+        <div class="modal fade" id="Hadrlimitvalues" tabindex="-1" role="dialog" aria-labelledby="HadrlimitvaluesTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="HadrlimitvaluesLongTitle">Hadr limit values</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body" id="HadrlimitvaluesText"> 
+                ...
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="button1Click()">Send</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!--  -->
+
+                <!--  Mean & Standart deviation-->
+                <div class="modal fade" id="MeanStandartdeviation" tabindex="-1" role="dialog" aria-labelledby="MeanStandartdeviationTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="MeanStandartdeviationLongTitle"> Mean & Standart deviation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            Mean & Standart deviation
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!--  -->
+
+
+
+        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="padding-top: 90px;">
+
+
+
+            <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
+                <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                    <div style="position:absolute;width:1000000px;height:1000000px;left:0;top:0"></div>
+                </div>
+                <div class="chartjs-size-monitor-shrink" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
+                <div style="position:absolute;width:200%;height:200%;left:0; top:0"></div>
+                </div>
+            </div>
+
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h4 class="h4">Dashboard</h4>
+            </div>
+            <canvas id="myChart"  class="border-bottom"></canvas>
+            <!-- <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea> -->
+
+
+
+        </main>
+    
+    </div>
+</div>
+    
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+   
+   <script>
+
+
+        // Get data from python
+        async function getData() {
+        const url = 'http://127.0.0.1:5000/data';
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        console.log('_________');
+        var myobj = JSON.parse(data.data_0);
+        console.log(myobj);
+        return myobj;
+        };
+
+        async function getAllData() {
+        const url = 'http://127.0.0.1:5000/data';
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+        console.log('___getAllData___');
+        var MyAllDataInJS=[];
+        for (var j in data){
+            MyAllDataInJS.push(JSON.parse(data[j]))
+
+        };
+        console.log(MyAllDataInJS);
+        return MyAllDataInJS;
+        };
+
+
+
+        // Convert data from python to js array - old function
+        function getMydata() {
+            var mydata3 =[];
+            getData().then((res)=>{
+                for (var i in res){
+                mydata3.push({
+                    x: res[i].x.toFixed(2),
+                    y: res[i].y.toFixed(2), 
+                })
+                };
+                
+            });
+            return mydata3;
+            };
+
+
+        // Convert data from python to js array - new function
+        function getMydata() {
+            var linedata= {
+                label: [],
+                value: []
+            }  
+            getData().then((res)=>{
+                for (var i in res){
+                    linedata.label.push(res[i].index);
+                    linedata.value.push(res[i].value);
+                };
+                
+            });
+            return linedata;
+            };
+            
+        
+
+            // random dots for line graf
+            function getLineDots() {           
+            var linedata= {
+                label: [],
+                value: []
+            }         
+            var mydata4 =[];
+
+                for (var index=0; index <10; ++index) {
+                    mydata4.push(Math.floor(Math.random() * 10));
+
+                    linedata.label.push(index);
+                    linedata.value.push(Math.floor(Math.random() * 10));
+
+                    }
+                    console.log(mydata4);
+                    //return mydata4;
+                    return linedata;
+            };
+
+
+        // Post data to python
+        async function postData()
+        {
+            const posturl = 'http://127.0.0.1:5000/data';
+            const postdata = { username: 'Sbb' };
+            try {
+                    const response = await fetch(posturl, {
+                    method: 'POST', // или 'PUT'
+                    body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                    });
+                    const json = await response.json();
+                    console.log('Успех:', JSON.stringify(json));
+                } 
+            catch (error) {
+                    console.error('Ошибка:', error);
+                } 
+
+        }   
+
+        async function buttonInterpolationClick ()
+        {
+            const posturl = 'http://127.0.0.1:5000/interpolation';
+            const postdata = { 
+                MIN:  document.getElementById('Intrp_Min').value,
+                MAX:  document.getElementById('Intrp_Max').value,
+                };
+                console.log(postdata);
+                try {
+                    const response = await fetch(posturl, {
+                    method: 'POST', // или 'PUT'
+                    body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                    });
+                    const json = await response.json();
+                    console.log('Успех:', JSON.stringify(json));
+                    
+                } 
+            catch (error) {
+                    console.error('Ошибка:', error);
+                } 
+
+        }
+
+        // Temp function Button Click
+        function button1Click()
+        {
+            postData();
+            document.getElementById("HadrlimitvaluesText").innerHTML = "You did it!!!";
+        }    
+
+   
+
+
+
+
+   </script>
+   
+   <script>
+        var ctx = document.getElementById('myChart').getContext('2d');
+        //var PlotData= getLineDots();    
+        var PlotData= getMydata(); 
+
+
+
+        getAllData().then((res)=>{
+            for(var i in res){
+                
+                var linedata= {
+                label: [],
+                value: []
+                }  
+                for (var j in res[i]){
+                    linedata.label.push(res[i][j].index);
+                    linedata.value.push(res[i][j].value);
+                };
+                console.log('lidata:');
+                console.log(linedata);
+                AddData(linedata);
+
+            }
+
+        });
+
+
+
+
+        var config = {
+            // type: 'scatter',
+            type: 'line',
+            data: {
+                labels: PlotData.label,
+                datasets: [{
+                    label: 'Data Set - 1',
+                    //data: getMydata(),
+                    data: PlotData.value,
+                    borderColor: "#ff0000",
+
+                }]
+            },
+            options: {
+                responsive: true,
+                scaleShowGridLines : true,
+                scaleShowVerticalLines: true,
+                scaleShowHorizontalLines: true,
+                maintainAspectRatio: true,
+                scales: {
+                    xAxes: [{
+                    ticks: {
+                        // suggestedMin: -20,
+                        // suggestedMax: 15,
+
+                    },
+                }],
+                    yAxes: [{
+                        ticks: {
+                            // suggestedMin: -15,
+                            // suggestedMax: 20,
+
+                        },
+                    }],
+
+                }
+            }
+        };
+
+        var myChart = new Chart(ctx, config);
+
+        var chartColors = {
+	red: 'rgb(255, 99, 132)',
+	orange: 'rgb(255, 159, 64)',
+	yellow: 'rgb(255, 205, 86)',
+	green: 'rgb(75, 192, 192)',
+	blue: 'rgb(54, 162, 235)',
+	purple: 'rgb(153, 102, 255)',
+	grey: 'rgb(201, 203, 207)'
+};
+
+        var colorNames = Object.keys(window.chartColors);
+       
+       
+        function AddData(newData) {
+        var colorName = colorNames[config.data.datasets.length % colorNames.length];
+        var newColor = window.chartColors[colorName];
+        var newDataset = {
+            label: 'Dataset ' + config.data.datasets.length,
+            backgroundColor: newColor,
+            borderColor: newColor,
+            data: newData.value,
+            fill: false
+    };
+        config.data.datasets.push(newDataset);
+        console.log('Data in config')
+        window.myChart.update();
+};
+
+
+        </script>
+
+
+
+
+
+
+  </body>
+</html>
