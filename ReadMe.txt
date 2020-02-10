@@ -1,4 +1,6 @@
 app.py 		- Main python script
+
+templates	- Folder for HTML pages
 index.html	- Main HTML page
 
 pycode		- Folder for python's scripts
