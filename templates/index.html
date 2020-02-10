@@ -14,7 +14,7 @@
 
 <header class="navbar fixed-top navbar-dark bg-dark"> 
     <a class="navbar-brand" href="#">
-        <img src="img/logo.svg"  width="90" height="60" alt="" >
+        <img src="../img/logo.svg"  width="90" height="60" alt="" >
     </a>
     <span class="navbar-brand mx-auto d-block text-center order-0 order-md-1 w-25">
        <h1 class="h1">Data Analytics Platform</h1> 
@@ -27,6 +27,22 @@
 
         <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
             <div class="bd-toc-item sidebar-sticky">
+                <h5 class="border-bottom">Import data</h5>
+                <div class="input-group">
+                    <form>
+                        <div class="form-group">
+                          <label for="ImportInputFile">File with input data:</label>
+                          <input type="file" class="form-control-file form-control-sm" id="ImportInputFile" onchange='onFilePicked(event)'>
+                          <label for="ImportOutputFile">File with output data:</label>
+                          <input type="file"  class="form-control-file form-control-sm" id="ImportOutputFile" onchange='onFilePicked(event)'>
+                          <button type="button" class="btn btn-light" onclick="buttonProcessDataClick()" >Process data</button>
+                          <!--type="submit"  -->
+                          <!-- style="display: none;" -->
+                        </div>
+                      </form>
+
+                </div>
+
                 <h5 class="border-bottom">Recognition:</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -171,9 +187,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
    
    <script>
-
 
         // Get data from python
         async function getData() {
@@ -205,19 +221,19 @@
 
 
         // Convert data from python to js array - old function
-        function getMydata() {
-            var mydata3 =[];
-            getData().then((res)=>{
-                for (var i in res){
-                mydata3.push({
-                    x: res[i].x.toFixed(2),
-                    y: res[i].y.toFixed(2), 
-                })
-                };
+        // function getMydata() {
+        //     var mydata3 =[];
+        //     getData().then((res)=>{
+        //         for (var i in res){
+        //         mydata3.push({
+        //             x: res[i].x.toFixed(2),
+        //             y: res[i].y.toFixed(2), 
+        //         })
+        //         };
                 
-            });
-            return mydata3;
-            };
+        //     });
+        //     return mydata3;
+        //     };
 
 
         // Convert data from python to js array - new function
@@ -306,6 +322,58 @@
                 } 
 
         }
+
+        
+        var onFilePicked = function(event) {
+            var input = event.target;
+            var file = input.files[0];
+            console.log(file.name);
+            ProcessFile(file);
+        };
+
+
+        function ProcessFile(file){
+            Papa.parse(file, {
+                config: {
+                    delimiter: ";",
+                    dynamicTyping: true,
+                    skipEmptyLines: true
+	            },
+                complete: function(results) {
+                console.log("Finished:", results.data);
+
+                console.log("Arr:", results.data[0].length);
+                // 
+  
+                config.data.datasets=[];  //!!!!!!!!!
+                for (var index=0; index < results.data[0].length; ++index){
+                    var linedata= {
+                                label: [],
+                                value: []
+                    }
+                    for (var j in results.data){
+                    linedata.label.push(j);
+                    linedata.value.push(results.data[j][index]);
+                    };
+                    // console.log("linedata", linedata);
+                    
+                    AddData(linedata);
+
+                }
+
+
+
+                // 
+
+	            }           
+            });
+        }
+
+        function buttonProcessDataClick() {
+
+
+
+        };
 
         // Temp function Button Click
         function button1Click()
@@ -414,6 +482,7 @@
             data: newData.value,
             fill: false
     };
+        config.data.labels = newData.label;
         config.data.datasets.push(newDataset);
         console.log('Data in config')
         window.myChart.update();
