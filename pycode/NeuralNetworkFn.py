@@ -12,28 +12,29 @@ hid_lyrs1 = (8,4,4)
 
 # Input structure for Neural Network
 class NN_inputs(NamedTuple):
-    X: float
-    y: float
-    tst_siz: float
-    actv: tuple
-    hid_lyrs: tuple
-    slvr: tuple
-    itr: int
-    sclng: bool
+    X:          float
+    y:          float
+    tst_siz:    float
+    actv:       tuple
+    hid_lyrs:   tuple
+    slvr:       tuple
+    itr:        int
+    sclng:      bool
 
 # Output structure for Neural Network
 class NN_outputs(NamedTuple):
-    y_test: float
-    X_test: float 
-    y_actual: float
-    length: int
-    tst_mse: float
+    y_test:     float
+    X_test:     float 
+    y_actual:   float
+    length:     int
+    tst_mse:    float
+    tst_accrc:  float
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],
-        [8.9,3.8],
-        [9,6.8],
-        [12.3,8.8] ]
+         [8.9,3.8],
+         [9,6.8],
+         [12.3,8.8] ]
 
 # output dataset (raw or processed selection)           
 y1 = [8.55055,5.53195,9.1547,11.91745]
@@ -65,17 +66,17 @@ def NeuralNet(NN_inputs):
     #pred = reg.predict([[1.30789956, 1.27638396]])
     NN_outputs.length = len(NN_outputs.X_test)
     NN_outputs.tst_mse = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
+    NN_outputs.tst_accrc = 100 - NN_outputs.tst_mse
     return NN_outputs
 
-# Output initialization
-NN_outputs1 = NN_outputs(0,0,0,0,0)
 
 # Function call
 NN_outputs1 = NeuralNet(NN_inputs1)
 
 #Printing outputs
-print(NN_outputs1.y_test)
-print(NN_outputs1.X_test)
-print(NN_outputs1.y_actual)
-print(NN_outputs1.length)
-print('Mean Square error is ', NN_outputs1.tst_mse)
+print('Predicted Output:       ', NN_outputs1.y_test)
+print('test input:             ', NN_outputs1.X_test)
+print('expected output:        ', NN_outputs1.y_actual)
+print('length of output array: ', NN_outputs1.length)
+print('Mean Square error:      ', NN_outputs1.tst_mse)
+print('Accuracy:               ', NN_outputs1.tst_accrc)
