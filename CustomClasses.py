@@ -23,8 +23,9 @@ global dataObject
 
 class DataSeries:
     def __init__(self, name, dataSeries):
-        self.data = dataSeries
 
+        self.currentData = dataSeries
+        self.originalData = dataSeries
         self.name = name
         self.realMin = min(data)
         self.realMax = max(data)
@@ -64,17 +65,4 @@ class DataObject:
              print(dataSeriesArray[i])
              print(self.dataSeriesArray)
              self.dataSeriesArray.append(DataSeries(fileName + str(i), dataSeries[i]))
-
-    def printAllInfo(self):
-         for i in range(len(self.inputDataSeriesArray)):
-            for keys, values in self.inputDataSeriesArray[i].dataSeries.items():
-              print(keys, ': ', values)
-         for i in range(len(self.outputDataSeriesArray)):
-            for keys, values in self.outputDataSeriesArray[i].dataSeries.items():
-              print(keys, ': ', values)
-
-    def getInputSeries(self):
-        return self.inputDataSeriesArray;
-
-    def getOutputSeries(self):
-        return self.outputDataSeriesArray;
+             
