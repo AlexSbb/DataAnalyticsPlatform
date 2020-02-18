@@ -21,21 +21,12 @@ for x in range(2):
 
 
 
-
-
-
 @app.route('/')
 def hello_world():  
-    return '''
-<html>
-    <head>
-        <title>Home Page - Microblog</title>
-    </head>
-    <body>
-        <h1>This is Data Analytics Platform!</h1>
-        <h1>Developed by MAIT 2019</h1>
-    </body>
-</html>'''
+    return render_template('index.html')
+
+
+
 
 @app.route('/data', methods=['POST', 'GET'] )
 def data():
@@ -74,16 +65,6 @@ def interpolation():
         varmin = float(request.get_json()['MIN'])
         varmax = float(request.get_json()['MAX'])
         print(varmin,varmax)
-
-
-        # lastkey= list(RandomDataArr.keys())[-1]
-        # Matrix2 = RandomDataArr[lastkey]
-        # print(Matrix2)
-        # ResMaxMin = T2F.MaxMin(Matrix2, varmax,  varmin)
-        # print(ResMaxMin)
-
-
-
         return jsonify(message = "OK") 
 
 
