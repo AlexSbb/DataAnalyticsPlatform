@@ -86,7 +86,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Std factor</span>
                             </div>
-                            <input type="text" class="form-control" id='Std_factor' aria-label="Std factor" value="1">
+                            <input type="text" class="form-control" id='Std_factor' aria-label="Std factor" value="1" min="1" max="6" onKeyUp="this.reportValidity()">
                           </div>
 
                           <div class="form-check">
@@ -176,7 +176,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Window</span>
                             </div>
-                            <input type="text" class="form-control" id='Smooth_Window' aria-label="window" value="2">
+                            <input type="text" class="form-control" id='Smooth_Window' aria-label="window" value="2" onKeyUp="this.reportValidity()">
                           </div>
                           <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary">Calculate</button>
@@ -343,6 +343,8 @@
 
     // Global var!!!!!!!!!!!!!!
     var dataSeriesDict ={}
+
+    //Get global data object from Python
     getGlobalDataObject() 
 
 
@@ -365,39 +367,43 @@
                 skipEmptyLines: true
             },
             complete: function(results) {
-            console.log("Finished:", results.data);
-            console.log("Arr:", results.data[0].length);
+                console.log("Finished:", results.data);
+                console.log("Arr:", results.data[0].length);
+                
+                //TO DO: ERROR CHECKING FOR FILE 
 
-            // Rows to colums :( I  hate .csv
-            correctResult =[]    //Array of vectors
-            for (var index=0; index < results.data[0].length; ++index){
-                var column= []
-                for (var j in results.data){
-                column.push(parseFloat(results.data[j][index]));
-                };
-                correctResult.push(column)
-            }
-            console.log("correctResult:", correctResult);
-            postData = { 
-                fileName: file.name,
-                dataArray: correctResult
-                };
-            postDataToPython(postData)   // Go to send data to python
+                // Rows to colums :( I  hate .csv
+                correctResult =[]    //Array of vectors
+                for (var index=0; index < results.data[0].length; ++index){
+                    var column= []
+                    for (var j in results.data){
+                    column.push(parseFloat(results.data[j][index]));
+                    };
+                    correctResult.push(column)
+                }
+                console.log("correctResult:", correctResult);
+                //formating the data to be sent to Python
+                postData = { 
+                    fileName: file.name.replace(".csv", ""),
+                    dataArray: correctResult
+                    };
+                postDataToPython(postData)   // Go to send data to python
             }  
       
         });
     }
-
+    //sending data to Python
     async function postDataToPython(postdata){
         const posturl = 'http://127.0.0.1:5000/importDataFromFile';
         try {
                 const response = await fetch(posturl, {
-                method: 'POST', // или 'PUT'
-                body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
-                headers: {
-                    'Content-Type': 'application/json'
-                }
+                    method: 'POST', 
+                    body: JSON.stringify(postdata), 
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 });
+                //waiting for the response from Python
                 const json = await response.json();
                 // console.log(json)
                 dataSeriesDict = JSON.parse(json).dataSeriesDict;
@@ -405,9 +411,10 @@
                 
                 const keys = Object.keys(dataSeriesDict);
                 console.log(keys);
+                //prepares the information for the dropdown menu of the data series
                 addOptionsToSelectDataset(keys)
                 
-                // console.log('Успех:', JSON.stringify(json));
+                // console.log('Success:', JSON.stringify(json));
             } 
         catch (error) {
                 console.error('Ошибка:', error);
@@ -415,23 +422,22 @@
 
     }   
 
-
+    //method to receive the data from Python
     async function getGlobalDataObject() {
-                    const url = 'http://127.0.0.1:5000/getGlobalDataObject';
-                    const response = await fetch(url);
-                    const json = await response.json();
-                    dataSeriesDict = JSON.parse(json).dataSeriesDict;
-                    const keys = Object.keys(dataSeriesDict);
-                    console.log(keys);
-                    addOptionsToSelectDataset(keys)
-                    };
+            const url = 'http://127.0.0.1:5000/getGlobalDataObject';
+            const response = await fetch(url);
+            const json = await response.json();
+            dataSeriesDict = JSON.parse(json).dataSeriesDict;
+            const keys = Object.keys(dataSeriesDict);
+            console.log(keys);
+            addOptionsToSelectDataset(keys)
+        };
 
 
 
 
-
-    function removeOptions(selectbox)
-    {
+    //removes all options from any dropdown menu
+    function removeOptions(selectbox) {
         var i;
         for(i = selectbox.options.length - 2 ; i >= 0 ; i--)
         {
@@ -440,41 +446,30 @@
     }
 
 
-
+    //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
         var selectDataSet = document.getElementById("selectDataSet");        
         removeOptions(selectDataSet)
         dataSetsNames.forEach((element, index) => {
-        var option= document.createElement("option"); 
-        console.log(index); // 0, 1, 2
-        option.textContent = element
-        selectDataSet.appendChild(option)
-
-    });
-
-
-
-     };
+            var option= document.createElement("option"); 
+            console.log(index); // 0, 1, 2
+            option.textContent = element
+            selectDataSet.appendChild(option)
+        });
+    };
     
+    //action triggered when any selection is made in a dropdown menu
+    function onChangeselectDataSet(){    
+        var selectDataSet = document.getElementById("selectDataSet");
+        currKey=selectDataSet.value
+        console.log(currKey);
+        console.log(dataSeriesDict[currKey].name);
+        // dataSeriesDict[selectDataSet.value].name
 
-    function onChangeselectDataSet(){
-    var selectDataSet = document.getElementById("selectDataSet");
-    currKey=selectDataSet.value
-    console.log(currKey);
-    console.log(dataSeriesDict[currKey].name);
-    // dataSeriesDict[selectDataSet.value].name
-
-    var HardLimitValuesMin = document.getElementById("Intrp_Min");
-    var HardLimitValuesMax = document.getElementById("Intrp_Max");
-    HardLimitValuesMin.value = dataSeriesDict[currKey].realMin
-    HardLimitValuesMax.value = dataSeriesDict[currKey].realMax
-
-
-
-
-
-
-
+        var HardLimitValuesMin = document.getElementById("Intrp_Min");
+        var HardLimitValuesMax = document.getElementById("Intrp_Max");
+        HardLimitValuesMin.value = dataSeriesDict[currKey].realMin
+        HardLimitValuesMax.value = dataSeriesDict[currKey].realMax
     };
 
 </script>
