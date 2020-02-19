@@ -26,6 +26,23 @@ def hello_world():
     return render_template('index.html')
 
 
+@app.route('/importDataFromFile', methods=['POST', 'GET'] )
+def importDataFromFile():
+    if request.method == 'GET':
+        print ('GET')
+        return jsonify(message = "GET") 
+    else:
+        # print(request.get_json())
+        fileName = request.get_json()['fileName']
+        dataArray = list(request.get_json()['dataArray'])
+        print(fileName)
+        print(dataArray)
+        return jsonify(message = "OK") 
+
+
+
+
+
 
 
 @app.route('/data', methods=['POST', 'GET'] )
