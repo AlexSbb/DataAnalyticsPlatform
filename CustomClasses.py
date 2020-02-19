@@ -3,6 +3,7 @@ import json
 import pycode.Team2Functions as T2F
 import pycode.Filter as Smoothing
 import pycode.NeuralNetworkFn as NN
+import pycode.RandomForestFn as RF
 
 global inputData
 global outputData
@@ -113,19 +114,20 @@ class DataObject:
     #     self.neuralNetworkResults = NN.NeuralNet(NN.NN_inputs(inputDataSeries,outputDataSeries,testSize,activationFunction,hiddenLayersInput,solverInput,iterationNumber,scalingOnOff))
 
 
-    def changeDataSeriesForm(self, dataSeriesArray):
-        convertedArray = []
-        if len(dataSeriesArray) == 0:
-            return 'ERROR: no arrays attached'
-        for i in range(len(dataSeriesArray)):
-            if len(dataSeriesArray[0]) != len(dataSeriesArray[i]):
-                return 'ERROR: arrays of different sizes'
-        for i in range(len(dataSeriesArray[0])): #the length of the arrays
-            tempArray = []
-            for ii in range(len(dataSeriesArray)): #the number of arrays
-                tempArray.append(dataSeriesArray[ii][i])
-                convertedArray.append(tempArray)
-        return convertedArray
+def changeDataSeriesForm(dataSeriesArray):
+    convertedArray = []
+    if len(dataSeriesArray) == 0:
+        return 'ERROR: no arrays attached'
+    for i in range(len(dataSeriesArray)):
+        if len(dataSeriesArray[0]) != len(dataSeriesArray[i]):
+            return 'ERROR: arrays of different sizes'
+    for i in range(len(dataSeriesArray[0])): #the length of the arrays
+        tempArray = []
+        for ii in range(len(dataSeriesArray)): #the number of arrays
+            tempArray.append(dataSeriesArray[ii][i])
+        convertedArray.append(tempArray)
+    return convertedArray
+
 
 testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
 inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
@@ -199,14 +201,8 @@ y1 = [8.55055,5.53195,9.1547,11.91745]
 # print('Mean Square error:      ', NN_outputs1.tst_mse)
 # print('Accuracy:               ', NN_outputs1.tst_accrc)
 
-mergedSeries = testDataObject.changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData])
-print(mergedSeries)
-
-print(inputSeries1.originalData)
-print(inputSeries2.originalData)
-
-# NN_outputs1 = NeuralNet(NN_inputs1)
-
+#TESTING THE NEURAL NETWORKS
+# NN_outputs1 = NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]), outputSeries.originalData, 0.5, actv1[3], hid_lyrs1, slvr1[1], 200, False))
 
 # #Printing outputs
 # print('Predicted Output:       ', NN_outputs1.y_test)
@@ -216,3 +212,33 @@ print(inputSeries2.originalData)
 # print('Mean Square error:      ', NN_outputs1.tst_mse)
 # print('Accuracy:               ', NN_outputs1.tst_accrc)
 
+# # Input structure for Neural Network
+# class RF_inputs(NamedTuple):
+#     X: float
+#     y: float
+#     trees: int
+#     tst_siz: float
+
+# # Output structure for Neural Network
+# class RF_outputs(NamedTuple):
+#     flag:       str
+#     y_test:     float
+#     X_test:     float 
+#     y_actual:   float
+#     length:     int
+#     tst_mse:    float
+#     tst_accrc:  float
+#     msg:        str
+# # Function call
+
+#TESTING THE RANDOM FOREST
+
+RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
+
+#Printing outputs
+print('Predicted Output:       ', RF_outputs1.y_test)
+print('test input:             ', RF_outputs1.X_test)
+print('expected output:        ', RF_outputs1.y_actual)
+print('length of output array: ', RF_outputs1.length)
+print('Mean Square error:      ', RF_outputs1.tst_mse)
+print('Accuracy:               ', RF_outputs1.tst_accrc)
