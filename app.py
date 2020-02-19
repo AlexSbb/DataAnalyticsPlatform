@@ -15,9 +15,6 @@ CORS(app, resources=r'/*')
 
 globalDataObject = None
 
-
-
-
 @app.route('/')
 def hello_world():  
     return render_template('index.html')

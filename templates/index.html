@@ -14,7 +14,7 @@
 
 <header class="navbar fixed-top navbar-dark bg-dark"> 
     <a class="navbar-brand" href="#">
-        <img src="logo.svg"  width="90" height="60" alt="">
+        <img src="../img/logo.svg"  width="90" height="60" alt="">
     </a>
     <span class="navbar-brand mx-auto d-block text-center order-0 order-md-1 w-25">
        <h1 class="h1">Data Analytics Platform</h1> 
@@ -27,19 +27,33 @@
 
         <nav class="col-md-3 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
             <div class="bd-toc-item sidebar-sticky">
+                <h5 class="border-bottom"></h5>
+
+                <div class="input-group">
+                    
+                        <label class="btn btn-default btn-file">
+                            Import File + <input type="file"  id="ImportFile" style="display: none;"  onchange='onFilePicked(event)'>
+                            <!-- <span class="glyphicon glyphicon-plus"></span> -->
+                            <!-- <i class="glyphicon glyphicon-plus"></i> -->
+                            <!-- <span aria-hidden="true">&plus;</span> -->
+                        </label> 
+                    
+                    </div>
+                    <div class="dropdown mb-3">
+                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          Data Reset / Deletion
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                          <a class="dropdown-item" onclick="resetAll()">Reset All</a>
+                          <a class="dropdown-item" onclick="resetToOriginalData()">Reset to Original Data</a>
+                          <a class="dropdown-item" onclick="deleteSeries()">Delete selected series</a>
+                        </div>
+                      </div>
                 <h5 class="border-bottom">Select dataset</h5>
 
                         <div class="input-group">
-                            <div class="input-group">
-                                <label class="btn btn-default btn-file">
-                                    Import File + <input type="file"  id="ImportFile" style="display: none;"  onchange='onFilePicked(event)'>
-                                    <!-- <span class="glyphicon glyphicon-plus"></span> -->
-                                    <!-- <i class="glyphicon glyphicon-plus"></i> -->
-                                    <!-- <span aria-hidden="true">&plus;</span> -->
-                                </label> 
-                              </div>
                             <select class="custom-select " id="selectDataSet" onchange="onChangeselectDataSet()">
-                                <option selected>Choose dataset...</option>
+                                <option selected>Choose dataset:</option>
                                 <!-- <option value="1">One</option> -->
                               </select>
                         </div><br>
@@ -104,10 +118,7 @@
                           
                             <div class="text-center">
                                 <button type="submit" class="btn btn-outline-secondary">Calculate</button>
-                           
                             </div>
-
-                        
                     </li >
                     <!-- <li class="nav-item">
                         <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#MeanStandartdeviation"> Mean & Standart deviation </button>
@@ -139,18 +150,12 @@
                                     <button type="button" class="btn btn-secondary" onclick="buttonInterpolationClick()">Submit</button>
                                 </div>
                               </div>
-                              
-                              
-
                         </div>
-                   
-                   
                     </li >
                     <li class="nav-item">
                         <button  type="button" class="btn btn-light"> Quadratic interpolation </button>
                     </li >
                 </ul> -->
-
                 <h5 class="border-bottom"> Smoothing:</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -180,18 +185,13 @@
                           </div>
                           <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary">Calculate</button>
-                       
                         </div>
-
                     </li >
                 </ul>
-
                 <h5 class="border-bottom"> I/O Relationship models:</h5>
                 <ul class="nav flex-column">
                     <!-- Neural Network -->
                     <li class="nav-item"> 
-
-
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="NN_RF" id="neuralNet_radio" value="neuralNet" checked>
                             <label class="form-check-label" for="neuralNet_radio">
@@ -232,26 +232,23 @@
                             <div class="input-group">
                                 Hidden layers
                             </div>
-                            <table cellpadding="3">
-                                <tr >
-                                    <td><input type="number" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                </tr>
-                                <tr>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
-                                </tr>                                                          
-                            </table> 
-                        </div>
-
+                            <div class="mb-1">
+                                <input type="number" id="hl1" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl2" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl3" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl4" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl5" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                            </div>
+                            <div>
+                                <input type="number" id="hl6" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl7" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl8" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl9" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" id="hl10" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                            </div>   
+                            <p>  </p>
                         <!--Iterations -->
-                        <div class="input-group input-group-sm mb-3 ml-1">
+                        <div class="input-group input-group-sm mb-3 mt-3 ml-1">
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Iterations</span>
                             </div>
@@ -296,7 +293,7 @@
                         </div>
                         <br>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-outline-secondary">Calculate</button>                       
+                            <button type="submit" class="btn btn-outline-secondary mb-5">Calculate</button>                       
                         </div>
                     </li >
                 </ul>
@@ -349,9 +346,15 @@
     //Get global data object from Python
     getGlobalDataObject() 
 
+    function resetAll(){
 
-
-    
+    }
+    function resetToOriginalData(){
+        
+    }
+    function deleteSeries(){
+        
+    }
     // Import file, button action
     var onFilePicked = function(event) {
         var input = event.target;
@@ -488,8 +491,6 @@
         
         document.getElementById("Smooth_Window").setAttribute("max",dataSeriesDict[currKey].currentData.length); // set a new value;
     };
-
-    }
 
     function plotData(key){
 
