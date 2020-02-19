@@ -3,6 +3,15 @@ import numpy as np
 
 from typing import NamedTuple
 
+#Error codes
+eIoSize         = "Input and output array size does not match"
+eNoOfHiddLyr    = "Number of hidden layers should be within 1 and 10"
+eNeuronCount    = "Number of Neurons should is in range 1 to 1000"
+eIterCount      = "Number of Iteration should be in range 1 to 2000"
+eTestSize       = "Test size should be in range 0.1 to 0.9"
+eNoOfTrees      = "Number of trees should be within 1000"
+
+
 # Neural Net paramenters selected by user should remain in the following range:
 actv1 = ("identity", "logistic", "tanh", "relu")
 slvr1 = ("lbfgs", "sgd", "adam")
@@ -19,16 +28,16 @@ class NN_inputs(NamedTuple):
     hid_lyrs:   tuple
     slvr:       tuple
     itr:        int
-    sclng:      bool
+    sclng:      bool #scaling
 
 # Output structure for Neural Network
 class NN_outputs(NamedTuple):
-    y_test:     float
-    X_test:     float 
-    y_actual:   float
-    length:     int
-    tst_mse:    float
-    tst_accrc:  float
+    y_test:     float # resulting output
+    X_test:     float # test input
+    y_actual:   float # expected output
+    length:     int   # length of y_test
+    tst_mse:    float # mean square error
+    tst_accrc:  float # accuracy
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],

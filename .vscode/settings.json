@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\Subbo\\Anaconda3\\python.exe"
+    "python.pythonPath": "/Users/Munchis/Downloads/TH KOELN/Wolf/GITHUB/DataAnalyticsPlatform/venv/bin/python3",
+    "python.linting.pylintEnabled": true,
+    "python.linting.enabled": true
 }

@@ -3,6 +3,14 @@ import numpy as np
 import pandas as pd 
 from typing import NamedTuple
 
+#Error codes
+eIoSize         = "Input and output array size does not match"
+eNoOfHiddLyr    = "Number of hidden layers should be within 1 and 10"
+eNeuronCount    = "Number of Neurons should is in range 1 to 1000"
+eIterCount      = "Number of Iteration should be in range 1 to 2000"
+eTestSize       = "Test size should be in range 0.1 to 0.9"
+eNoOfTrees      = "Number of trees should be within 1000"
+
 # Input structure for Neural Network
 class RF_inputs(NamedTuple):
     X: float
