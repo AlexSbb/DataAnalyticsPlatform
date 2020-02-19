@@ -73,10 +73,10 @@ class DataSeries:
         fil =  Smoothing.Filter()       
         # Amrita use an array of arrays like the input 
         smooothInput= [self.currentData]
-        flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smooothInput,self.window,self.smoothingType)
+        # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smooothInput,self.window,self.smoothingType)
         # Amrita use an array of arrays like the output also, so I use only the first array
-        self.beforeSmoothingArray = list(beforeSmoothingArray[0])
-        self.afterSmoothingArray = list(afterSmoothingArray[0])
+        # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
+        # self.afterSmoothingArray = list(afterSmoothingArray[0])
 
 class DataObject:
     def __init__(self, dataSeries, fileName):
@@ -175,11 +175,11 @@ hid_lyrs1 = (8,4,4)
 inputSeries1.selectedMax = 0.9
 inputSeries1.selectedMin = 0.1
 inputSeries1.maxMin()
-inputSeries1.stdDev()
-inputSeries1.smoothing()
+# inputSeries1.stdDev()
+# inputSeries1.smoothing()
 
-print('original data \n', inputSeries1.originalData)
-print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
+# print('original data \n', inputSeries1.originalData)
+# print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],
@@ -233,12 +233,12 @@ y1 = [8.55055,5.53195,9.1547,11.91745]
 
 #TESTING THE RANDOM FOREST
 
-RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
+# RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
 
-#Printing outputs
-print('Predicted Output:       ', RF_outputs1.y_test)
-print('test input:             ', RF_outputs1.X_test)
-print('expected output:        ', RF_outputs1.y_actual)
-print('length of output array: ', RF_outputs1.length)
-print('Mean Square error:      ', RF_outputs1.tst_mse)
-print('Accuracy:               ', RF_outputs1.tst_accrc)
+# #Printing outputs
+# print('Predicted Output:       ', RF_outputs1.y_test)
+# print('test input:             ', RF_outputs1.X_test)
+# print('expected output:        ', RF_outputs1.y_actual)
+# print('length of output array: ', RF_outputs1.length)
+# print('Mean Square error:      ', RF_outputs1.tst_mse)
+# print('Accuracy:               ', RF_outputs1.tst_accrc)
