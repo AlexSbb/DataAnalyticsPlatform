@@ -14,7 +14,7 @@
 
 <header class="navbar fixed-top navbar-dark bg-dark"> 
     <a class="navbar-brand" href="#">
-        <img src="../img/logo.svg"  width="90" height="60" alt="" >
+        <img src="../img/logo.svg"  width="90" height="60" alt="">
     </a>
     <span class="navbar-brand mx-auto d-block text-center order-0 order-md-1 w-25">
        <h1 class="h1">Data Analytics Platform</h1> 
@@ -25,7 +25,7 @@
     
     <div class="row">
 
-        <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
+        <nav class="col-md-3 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
             <div class="bd-toc-item sidebar-sticky">
                 <h5 class="border-bottom">Select dataset</h5>
 
@@ -203,7 +203,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Test Size</span>
                             </div>
-                            <input type="text" class="form-control" id='NN_testSize' aria-label="window" value="80%">
+                            <input type="number" class="form-control" id='NN_testSize' aria-label="window" value="80.0" min="1" max="100" onKeyUp="this.reportValidity()">
                         </div>
 
                         <div class="input-group input-group-sm mb-3 ml-1">
@@ -228,10 +228,25 @@
 
                         <!--Hidden layers  -->
                         <div class="input-group input-group-sm mb-3 ml-1">
-                            <div class="input-group-prepend">
-                                <span class="input-group-text">Hidden layers </span>
+                            <div class="input-group">
+                                Hidden layers
                             </div>
-                            <input type="text" class="form-control" id='NN_layers' aria-label="window" value="1,2,3,3,2">
+                            <table cellpadding="3">
+                                <tr >
+                                    <td><input type="number" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                </tr>
+                                <tr>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                    <td><input type="number" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/></td>
+                                </tr>                                                          
+                            </table> 
                         </div>
 
                         <!--Iterations -->
@@ -239,7 +254,7 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Iterations</span>
                             </div>
-                            <input type="text" class="form-control" id='NN_iterations' aria-label="window" value="100">
+                            <input type="number" class="form-control" id='NN_iterations' aria-label="window" value="200" min="1" max="2000" onKeyUp="this.reportValidity();">
                         </div>
 
 
@@ -251,12 +266,13 @@
                         </div>
                         
                     </li >
-                    <!-- Random Fores -->
+                    <br>
+                    <!-- Random Forest -->
                     <li class="nav-item">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="NN_RF" id="ranromF_radio" value="randomForest">
                             <label class="form-check-label" for="ranromF_radio">
-                                Random Fores
+                                Random Forest
                             </label>
                         </div>        
                         <!--Iterations -->
@@ -264,11 +280,12 @@
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Trees</span>
                             </div>
-                            <input type="text" class="form-control" id='RF_trees' aria-label="Trees" value="5">
+                            <input type="number" class="form-control" id='RF_Trees' aria-label="Trees" value="300" min="1" max="1000" onKeyUp="this.reportValidity();" >    
                             <div class="input-group-prepend">
                                 <span class="input-group-text">Test size</span>
                             </div>
-                            <input type="text" class="form-control" id='RF_testSize' aria-label="Test size" value="80%">             
+                            <input type="number" class="form-control" id='RF_TestSize' aria-label="Test size" value="20"
+                            min=0 max=100 onKeyUp="this.reportValidity();">
                         </div>
                         <div class="form-check ml-1">
                             <input class="form-check-input" type="checkbox" value="" id="RF_useHistory">
@@ -276,19 +293,19 @@
                               Use history
                             </label>
                         </div>
+                        <br>
                         <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary">Calculate</button>                       
                         </div>
                     </li >
                 </ul>
-
             </div>
         </nav>
 
 
 
 
-        <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="padding-top: 90px;">
+        <main role="main" class="col-md-8 ml-sm-auto col-lg-9 px-4" style="padding-top: 90px;">
 
             <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
                 <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
@@ -299,7 +316,7 @@
                 </div>
             </div>
 
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
                 <h4 class="h4">Dashboard</h4>
             </div>
             <canvas id="myChart"  class="border-bottom"></canvas>
