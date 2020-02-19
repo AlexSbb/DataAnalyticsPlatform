@@ -1,0 +1,349 @@
+        <!-- Modals Всплывающие окошки -->
+        <!-- Modal Hadr limit values -->
+        <div class="modal fade" id="Hadrlimitvalues" tabindex="-1" role="dialog" aria-labelledby="HadrlimitvaluesTitle" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                <h5 class="modal-title" id="HadrlimitvaluesLongTitle">Hadr limit values</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                </div>
+                <div class="modal-body" id="HadrlimitvaluesText"> 
+                ...
+                </div>
+                <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" onclick="button1Click()">Send</button>
+                </div>
+            </div>
+            </div>
+        </div>
+        <!--  -->
+
+                <!--  Mean & Standart deviation-->
+                <div class="modal fade" id="MeanStandartdeviation" tabindex="-1" role="dialog" aria-labelledby="MeanStandartdeviationTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                        <h5 class="modal-title" id="MeanStandartdeviationLongTitle"> Mean & Standart deviation</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                        <div class="modal-body">
+                            Mean & Standart deviation
+                        </div>
+                        <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-primary">Send</button>
+                        </div>
+                    </div>
+                    </div>
+                </div>
+                <!--  -->
+
+
+                <script>
+
+                    // Get data from python
+                    async function getData() {
+                    const url = 'http://127.0.0.1:5000/data';
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    console.log(data);
+                    console.log('_________');
+                    var myobj = JSON.parse(data.data_0);
+                    console.log(myobj);
+                    return myobj;
+                    };
+            
+                    async function getAllData() {
+                    const url = 'http://127.0.0.1:5000/data';
+                    const response = await fetch(url);
+                    const data = await response.json();
+                    console.log(data);
+                    console.log('___getAllData___');
+                    var MyAllDataInJS=[];
+                    for (var j in data){
+                        MyAllDataInJS.push(JSON.parse(data[j]))
+            
+                    };
+                    console.log(MyAllDataInJS);
+                    return MyAllDataInJS;
+                    };
+            
+            
+            
+                    // Convert data from python to js array - old function
+                    // function getMydata() {
+                    //     var mydata3 =[];
+                    //     getData().then((res)=>{
+                    //         for (var i in res){
+                    //         mydata3.push({
+                    //             x: res[i].x.toFixed(2),
+                    //             y: res[i].y.toFixed(2), 
+                    //         })
+                    //         };
+                            
+                    //     });
+                    //     return mydata3;
+                    //     };
+            
+            
+                    // Convert data from python to js array - new function
+                    function getMydata() {
+                        var linedata= {
+                            label: [],
+                            value: []
+                        }  
+                        getData().then((res)=>{
+                            for (var i in res){
+                                linedata.label.push(res[i].index);
+                                linedata.value.push(res[i].value);
+                            };
+                            
+                        });
+                        return linedata;
+                        };
+                        
+                    
+            
+                        // random dots for line graf
+                        function getLineDots() {           
+                        var linedata= {
+                            label: [],
+                            value: []
+                        }         
+                        var mydata4 =[];
+            
+                            for (var index=0; index <10; ++index) {
+                                mydata4.push(Math.floor(Math.random() * 10));
+            
+                                linedata.label.push(index);
+                                linedata.value.push(Math.floor(Math.random() * 10));
+            
+                                }
+                                console.log(mydata4);
+                                //return mydata4;
+                                return linedata;
+                        };
+            
+            
+                    // Post data to python
+                    async function postData()
+                    {
+                        const posturl = 'http://127.0.0.1:5000/data';
+                        const postdata = { username: 'Sbb' };
+                        try {
+                                const response = await fetch(posturl, {
+                                method: 'POST', // или 'PUT'
+                                body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                                });
+                                const json = await response.json();
+                                console.log('Успех:', JSON.stringify(json));
+                            } 
+                        catch (error) {
+                                console.error('Ошибка:', error);
+                            } 
+            
+                    }   
+            
+                    async function buttonInterpolationClick ()
+                    {
+                        const posturl = 'http://127.0.0.1:5000/interpolation';
+                        const postdata = { 
+                            MIN:  document.getElementById('Intrp_Min').value,
+                            MAX:  document.getElementById('Intrp_Max').value,
+                            };
+                            console.log(postdata);
+                            try {
+                                const response = await fetch(posturl, {
+                                method: 'POST', // или 'PUT'
+                                body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                }
+                                });
+                                const json = await response.json();
+                                console.log('Успех:', JSON.stringify(json));
+                                
+                            } 
+                        catch (error) {
+                                console.error('Ошибка:', error);
+                            } 
+            
+                    }
+            
+                    
+                    var onFilePicked = function(event) {
+                        var input = event.target;
+                        var file = input.files[0];
+                        console.log(file.name);
+                        ProcessFile(file);
+                    };
+            
+            
+                    function ProcessFile(file){
+                        Papa.parse(file, {
+                            config: {
+                                delimiter: ";",
+                                dynamicTyping: true,
+                                skipEmptyLines: true
+                            },
+                            complete: function(results) {
+                            console.log("Finished:", results.data);
+            
+                            console.log("Arr:", results.data[0].length);
+                            // 
+              
+                            config.data.datasets=[];  //!!!!!!!!!
+                            for (var index=0; index < results.data[0].length; ++index){
+                                var linedata= {
+                                            label: [],
+                                            value: []
+                                }
+                                for (var j in results.data){
+                                linedata.label.push(j);
+                                linedata.value.push(results.data[j][index]);
+                                };
+                                // console.log("linedata", linedata);
+                                
+                                AddData(linedata);
+            
+                            }
+            
+            
+            
+                            // 
+            
+                            }           
+                        });
+                    }
+            
+                    function buttonProcessDataClick() {
+            
+            
+            
+                    };
+            
+                    // Temp function Button Click
+                    function button1Click()
+                    {
+                        postData();
+                        document.getElementById("HadrlimitvaluesText").innerHTML = "You did it!!!";
+                    }    
+            
+               
+            
+            
+            
+            
+               </script>
+
+
+
+<script>
+    var ctx = document.getElementById('myChart').getContext('2d');
+    //var PlotData= getLineDots();    
+    var PlotData= getMydata(); 
+
+
+
+    getAllData().then((res)=>{
+        for(var i in res){
+            
+            var linedata= {
+            label: [],
+            value: []
+            }  
+            for (var j in res[i]){
+                linedata.label.push(res[i][j].index);
+                linedata.value.push(res[i][j].value);
+            };
+            console.log('lidata:');
+            console.log(linedata);
+            AddData(linedata);
+
+        }
+
+    });
+
+
+
+
+    var config = {
+        // type: 'scatter',
+        type: 'line',
+        data: {
+            labels: PlotData.label,
+            datasets: [{
+                label: 'Data Set - 1',
+                //data: getMydata(),
+                data: PlotData.value,
+                borderColor: "#ff0000",
+
+            }]
+        },
+        options: {
+            responsive: true,
+            scaleShowGridLines : true,
+            scaleShowVerticalLines: true,
+            scaleShowHorizontalLines: true,
+            maintainAspectRatio: true,
+            scales: {
+                xAxes: [{
+                ticks: {
+                    // suggestedMin: -20,
+                    // suggestedMax: 15,
+
+                },
+            }],
+                yAxes: [{
+                    ticks: {
+                        // suggestedMin: -15,
+                        // suggestedMax: 20,
+
+                    },
+                }],
+
+            }
+        }
+    };
+
+    var myChart = new Chart(ctx, config);
+
+    var chartColors = {
+        red:    'rgb(255, 99, 132)',
+        orange: 'rgb(255, 159, 64)',
+        yellow: 'rgb(255, 205, 86)',
+        green:  'rgb(75, 192, 192)',
+        blue:   'rgb(54, 162, 235)',
+        purple: 'rgb(153, 102, 255)',
+        grey:   'rgb(201, 203, 207)'
+    };
+
+    var colorNames = Object.keys(window.chartColors);
+   
+   
+    function AddData(newData) {
+    var colorName = colorNames[config.data.datasets.length % colorNames.length];
+    var newColor = window.chartColors[colorName];
+    var newDataset = {
+        label: 'Dataset ' + config.data.datasets.length,
+        backgroundColor: newColor,
+        borderColor: newColor,
+        data: newData.value,
+        fill: false
+};
+    config.data.labels = newData.label;
+    config.data.datasets.push(newDataset);
+    console.log('Data in config')
+    window.myChart.update();
+};
+
+
+    </script>

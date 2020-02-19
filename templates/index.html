@@ -27,32 +27,103 @@
 
         <nav class="col-md-2 d-none d-md-block bg-light sidebar" style="padding-top: 90px;"> 
             <div class="bd-toc-item sidebar-sticky">
-                <h5 class="border-bottom">Import data</h5>
-                <div class="input-group">
-                    <form>
-                        <div class="form-group">
-                          <label for="ImportInputFile">File with input data:</label>
-                          <input type="file" class="form-control-file form-control-sm" id="ImportInputFile" onchange='onFilePicked(event)'>
-                          <label for="ImportOutputFile">File with output data:</label>
-                          <input type="file"  class="form-control-file form-control-sm" id="ImportOutputFile" onchange='onFilePicked(event)'>
-                          <button type="button" class="btn btn-light" onclick="buttonProcessDataClick()" >Process data</button>
-                          <!--type="submit"  -->
-                          <!-- style="display: none;" -->
+                <h5 class="border-bottom">Select dataset</h5>
+
+                        <div class="input-group">
+                            <select class="custom-select " id="selectDataSet" onchange="onChangeselectDataSet()">
+                                <option selected>Choose dataset...</option>
+                                <option value="1">One</option>
+                                <option value="2">Two</option>
+                                <option value="3">Three</option>
+                              </select>
+
+                              <div class="input-group-append">
+                                <label class="btn btn-default btn-file">
+                                    Import<input type="file"  id="ImportFile" style="display: none;"  onchange='onFilePicked(event)'>
+                                    <!-- <span class="glyphicon glyphicon-plus"></span> -->
+                                    <!-- <i class="glyphicon glyphicon-plus"></i> -->
+                                    <span aria-hidden="true">&plus;</span>
+                                </label> 
+                              </div>
                         </div>
-                      </form>
 
-                </div>
 
-                <h5 class="border-bottom">Recognition:</h5>
+
+                <h5 class="border-bottom">Interpolation:</h5>
+
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#Hardlimitvalues" > Hard limit values </button>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="exampleRadios1" value="option1" checked>
+                            <label class="form-check-label" for="exampleRadios1">
+                                Hard limit values
+                            </label>
+                          </div>
+                          <!-- MinMax -->
+                          <div class="input-group input-group-sm mb-3 ml-1">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Min</span>
+                            </div>
+                            <input type="text" class="form-control" id='Intrp_Min' aria-label="Min Value">
+                          </div>
+
+                          <div class="input-group input-group-sm mb-3 ml-1">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Max</span>
+                            </div>
+                            <input type="text" class="form-control" id='Intrp_Max' aria-label="Max Value">
+                          </div>
+                          <!--  -->
+
+
+
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="exampleRadios2" value="option2">
+                            <label class="form-check-label" for="exampleRadios2">
+                                Standart deviation
+                            </label>
+                          </div>
+
+                         <!-- Standart deviation factor -->
+                          <div class="input-group input-group-sm mb-3 ml-1">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Std factor</span>
+                            </div>
+                            <input type="text" class="form-control" id='Std_factor' aria-label="Std factor" value="1">
+                          </div>
+
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Linear_quadratic" id="linear_radio" value="linear" checked>
+                            <label class="form-check-label" for="linear_radio">
+                                Linear
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Linear_quadratic" id="quadratic_radio" value="quadratic">
+                            <label class="form-check-label" for="quadratic_radio">
+                                Quadratic
+                            </label>
+                          </div>
+                          
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-outline-secondary">Culculate</button>
+                           
+                            </div>
+
+
+
+
+
+
+
+                        
                     </li >
-                    <li class="nav-item">
+                    <!-- <li class="nav-item">
                         <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#MeanStandartdeviation"> Mean & Standart deviation </button>
-                    </li >
+                    </li > -->
                 </ul>
-                <h5 class="border-bottom"> Interpolation:</h5>
+
+                <!-- <h5 class="border-bottom"> Interpolation:</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <button  type="button" class="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-pressed="true"> Linear Interpolation </button>
@@ -87,11 +158,43 @@
                     <li class="nav-item">
                         <button  type="button" class="btn btn-light"> Quadratic interpolation </button>
                     </li >
-                </ul>
+                </ul> -->
+
                 <h5 class="border-bottom"> Smoothing:</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
-                        <button  type="button" class="btn btn-light"> Moving average </button>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Smoothing" id="backward_radio" value="backward" checked>
+                            <label class="form-check-label" for="backward_radio">
+                                Backward
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Smoothing" id="forward_radio" value="forward">
+                            <label class="form-check-label" for="forward_radio">
+                                Forward
+                            </label>
+                          </div>
+                          <div class="form-check">
+                            <input class="form-check-input" type="radio" name="Smoothing" id="fixed_radio" value="fixed">
+                            <label class="form-check-label" for="fixed_radio">
+                                Fixed
+                            </label>
+                          </div>
+                          <div class="input-group input-group-sm mb-3 ml-1">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Window</span>
+                            </div>
+                            <input type="text" class="form-control" id='Std_factor' aria-label="window" value="2">
+                          </div>
+
+
+                          <div class="text-center">
+                            <button type="submit" class="btn btn-outline-secondary">Culculate</button>
+                       
+                        </div>
+
+
                     </li >
                 </ul>
 
@@ -107,56 +210,11 @@
 
             </div>
         </nav>
-        <!-- Modals Всплывающие окошки -->
-        <!-- Modal Hadr limit values -->
-        <div class="modal fade" id="Hadrlimitvalues" tabindex="-1" role="dialog" aria-labelledby="HadrlimitvaluesTitle" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="HadrlimitvaluesLongTitle">Hadr limit values</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body" id="HadrlimitvaluesText"> 
-                ...
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" onclick="button1Click()">Send</button>
-                </div>
-            </div>
-            </div>
-        </div>
-        <!--  -->
 
-                <!--  Mean & Standart deviation-->
-                <div class="modal fade" id="MeanStandartdeviation" tabindex="-1" role="dialog" aria-labelledby="MeanStandartdeviationTitle" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered" role="document">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                        <h5 class="modal-title" id="MeanStandartdeviationLongTitle"> Mean & Standart deviation</h5>
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                        </div>
-                        <div class="modal-body">
-                            Mean & Standart deviation
-                        </div>
-                        <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="button" class="btn btn-primary">Send</button>
-                        </div>
-                    </div>
-                    </div>
-                </div>
-                <!--  -->
 
 
 
         <main role="main" class="col-md-9 ml-sm-auto col-lg-10 px-4" style="padding-top: 90px;">
-
-
 
             <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
                 <div class="chartjs-size-monitor-expand" style="position:absolute;left:0;top:0;right:0;bottom:0;overflow:hidden;pointer-events:none;visibility:hidden;z-index:-1;">
@@ -179,322 +237,35 @@
     
     </div>
 </div>
+
     
 
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
-    <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
-   
-   <script>
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
+<script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
 
-        // Get data from python
-        async function getData() {
-        const url = 'http://127.0.0.1:5000/data';
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-        console.log('_________');
-        var myobj = JSON.parse(data.data_0);
-        console.log(myobj);
-        return myobj;
-        };
-
-        async function getAllData() {
-        const url = 'http://127.0.0.1:5000/data';
-        const response = await fetch(url);
-        const data = await response.json();
-        console.log(data);
-        console.log('___getAllData___');
-        var MyAllDataInJS=[];
-        for (var j in data){
-            MyAllDataInJS.push(JSON.parse(data[j]))
-
-        };
-        console.log(MyAllDataInJS);
-        return MyAllDataInJS;
-        };
+<script>
+     function addRowsToSelectDataset() {
+         var selectDataSet = document.getElementById("selectDataSet");
+         var option= document.createElement("option");
+         
+         option.textContent = 'newDataSet'
+         selectDataSet.appendChild(option)
+     }
 
 
+     
 
-        // Convert data from python to js array - old function
-        // function getMydata() {
-        //     var mydata3 =[];
-        //     getData().then((res)=>{
-        //         for (var i in res){
-        //         mydata3.push({
-        //             x: res[i].x.toFixed(2),
-        //             y: res[i].y.toFixed(2), 
-        //         })
-        //         };
-                
-        //     });
-        //     return mydata3;
-        //     };
+     function onChangeselectDataSet(){
+        addRowsToSelectDataset()
+     }
 
-
-        // Convert data from python to js array - new function
-        function getMydata() {
-            var linedata= {
-                label: [],
-                value: []
-            }  
-            getData().then((res)=>{
-                for (var i in res){
-                    linedata.label.push(res[i].index);
-                    linedata.value.push(res[i].value);
-                };
-                
-            });
-            return linedata;
-            };
-            
-        
-
-            // random dots for line graf
-            function getLineDots() {           
-            var linedata= {
-                label: [],
-                value: []
-            }         
-            var mydata4 =[];
-
-                for (var index=0; index <10; ++index) {
-                    mydata4.push(Math.floor(Math.random() * 10));
-
-                    linedata.label.push(index);
-                    linedata.value.push(Math.floor(Math.random() * 10));
-
-                    }
-                    console.log(mydata4);
-                    //return mydata4;
-                    return linedata;
-            };
-
-
-        // Post data to python
-        async function postData()
-        {
-            const posturl = 'http://127.0.0.1:5000/data';
-            const postdata = { username: 'Sbb' };
-            try {
-                    const response = await fetch(posturl, {
-                    method: 'POST', // или 'PUT'
-                    body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                    });
-                    const json = await response.json();
-                    console.log('Успех:', JSON.stringify(json));
-                } 
-            catch (error) {
-                    console.error('Ошибка:', error);
-                } 
-
-        }   
-
-        async function buttonInterpolationClick ()
-        {
-            const posturl = 'http://127.0.0.1:5000/interpolation';
-            const postdata = { 
-                MIN:  document.getElementById('Intrp_Min').value,
-                MAX:  document.getElementById('Intrp_Max').value,
-                };
-                console.log(postdata);
-                try {
-                    const response = await fetch(posturl, {
-                    method: 'POST', // или 'PUT'
-                    body: JSON.stringify(postdata), // данные могут быть 'строкой' или {объектом}!
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                    });
-                    const json = await response.json();
-                    console.log('Успех:', JSON.stringify(json));
-                    
-                } 
-            catch (error) {
-                    console.error('Ошибка:', error);
-                } 
-
-        }
-
-        
-        var onFilePicked = function(event) {
-            var input = event.target;
-            var file = input.files[0];
-            console.log(file.name);
-            ProcessFile(file);
-        };
-
-
-        function ProcessFile(file){
-            Papa.parse(file, {
-                config: {
-                    delimiter: ";",
-                    dynamicTyping: true,
-                    skipEmptyLines: true
-	            },
-                complete: function(results) {
-                console.log("Finished:", results.data);
-
-                console.log("Arr:", results.data[0].length);
-                // 
-  
-                config.data.datasets=[];  //!!!!!!!!!
-                for (var index=0; index < results.data[0].length; ++index){
-                    var linedata= {
-                                label: [],
-                                value: []
-                    }
-                    for (var j in results.data){
-                    linedata.label.push(j);
-                    linedata.value.push(results.data[j][index]);
-                    };
-                    // console.log("linedata", linedata);
-                    
-                    AddData(linedata);
-
-                }
-
-
-
-                // 
-
-	            }           
-            });
-        }
-
-        function buttonProcessDataClick() {
-
-
-
-        };
-
-        // Temp function Button Click
-        function button1Click()
-        {
-            postData();
-            document.getElementById("HadrlimitvaluesText").innerHTML = "You did it!!!";
-        }    
-
-   
-
-
-
-
-   </script>
-   
-   <script>
-        var ctx = document.getElementById('myChart').getContext('2d');
-        //var PlotData= getLineDots();    
-        var PlotData= getMydata(); 
-
-
-
-        getAllData().then((res)=>{
-            for(var i in res){
-                
-                var linedata= {
-                label: [],
-                value: []
-                }  
-                for (var j in res[i]){
-                    linedata.label.push(res[i][j].index);
-                    linedata.value.push(res[i][j].value);
-                };
-                console.log('lidata:');
-                console.log(linedata);
-                AddData(linedata);
-
-            }
-
-        });
-
-
-
-
-        var config = {
-            // type: 'scatter',
-            type: 'line',
-            data: {
-                labels: PlotData.label,
-                datasets: [{
-                    label: 'Data Set - 1',
-                    //data: getMydata(),
-                    data: PlotData.value,
-                    borderColor: "#ff0000",
-
-                }]
-            },
-            options: {
-                responsive: true,
-                scaleShowGridLines : true,
-                scaleShowVerticalLines: true,
-                scaleShowHorizontalLines: true,
-                maintainAspectRatio: true,
-                scales: {
-                    xAxes: [{
-                    ticks: {
-                        // suggestedMin: -20,
-                        // suggestedMax: 15,
-
-                    },
-                }],
-                    yAxes: [{
-                        ticks: {
-                            // suggestedMin: -15,
-                            // suggestedMax: 20,
-
-                        },
-                    }],
-
-                }
-            }
-        };
-
-        var myChart = new Chart(ctx, config);
-
-        var chartColors = {
-            red:    'rgb(255, 99, 132)',
-            orange: 'rgb(255, 159, 64)',
-            yellow: 'rgb(255, 205, 86)',
-            green:  'rgb(75, 192, 192)',
-            blue:   'rgb(54, 162, 235)',
-            purple: 'rgb(153, 102, 255)',
-            grey:   'rgb(201, 203, 207)'
-        };
-
-        var colorNames = Object.keys(window.chartColors);
-       
-       
-        function AddData(newData) {
-        var colorName = colorNames[config.data.datasets.length % colorNames.length];
-        var newColor = window.chartColors[colorName];
-        var newDataset = {
-            label: 'Dataset ' + config.data.datasets.length,
-            backgroundColor: newColor,
-            borderColor: newColor,
-            data: newData.value,
-            fill: false
-    };
-        config.data.labels = newData.label;
-        config.data.datasets.push(newDataset);
-        console.log('Data in config')
-        window.myChart.update();
-};
-
-
-        </script>
-
-
-
-
-
+</script>
+    
 
   </body>
 </html>
