@@ -563,18 +563,6 @@
 
     }
 
-
-    function resetAll(){
-        
-    }
-    function resetToOriginalData(){
-        
-    }
-    function deleteSeries(){
-        
-    }
-
-
     function resetAll(){
         postData = { 
             action: "deleteAll"
@@ -588,8 +576,9 @@
         postActionToPython(postData)   // Go to send data to python
     }
     function deleteSeries(){
+        seriesName = document.getElementById("selectDataSet").value
         postData = { 
-            seriesName: "dddd",
+            seriesName: seriesName,
             action: "deleteSeries"
         };
         postActionToPython(postData)   // Go to send data to python
