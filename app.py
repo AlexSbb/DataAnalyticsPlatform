@@ -49,10 +49,5 @@ def getGlobalDataObject():
         return jsonify(globalDataObject.toJSON()) 
 
 
-
-
-
-
-
 if __name__ == '__main__':
     app.run(debug=True)

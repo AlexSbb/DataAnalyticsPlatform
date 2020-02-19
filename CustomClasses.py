@@ -60,20 +60,32 @@ class DataSeries:
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
-    def maxMin (self):
-        self.replaceArray=T2F.MaxMin(self.currentData,self.selectedMax,self.selectedMin)
+    def maxMin (self, selectedMax=None, selectedMin=None):
+        if selectedMax is None or selectedMin is None:
+            if self.selectedMax is None or self.selectedMin is None:
+                self.selectedMax = self.realMax
+                self.selectedMin = self.realMin
+        elif selectedMax != None and selectedMin != None:
+            self.selectedMax = selectedMax
+            self.selectedMin = selectedMin
+        self.replaceArray=T2F.MaxMin(self.currentData, self.selectedMax, self.selectedMin)
 
-    def stdDev(self):
+    def stdDev(self, stdDevFactor=None):
+        if stdDevFactor is None:
+            if self.stdDevFactor is None:
+                self.stdDevFactor = 1
+        else:
+            self.stdDevFactor = stdDevFactor
         self.replaceArray=T2F.StdDev(self.currentData,self.stdDevFactor)
 
     def interpolation(self):
         return('We dont have this function yet')   
    
-    def smoothing(self):
+    def smoothing(self, smoothingType, window):
         fil =  Smoothing.Filter()       
         # Amrita use an array of arrays like the input 
-        smooothInput= [self.currentData]
-        # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smooothInput,self.window,self.smoothingType)
+        smoothInput= [self.currentData]
+        # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smoothInput,self.window,self.smoothingType)
         # Amrita use an array of arrays like the output also, so I use only the first array
         # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
         # self.afterSmoothingArray = list(afterSmoothingArray[0])
@@ -149,7 +161,7 @@ testDataSeries.stdDev()
 #print ('replaceArray=',testDataSeries.replaceArray)
 #print ('_'*80)
 # Test smoothing Function
-testDataSeries.smoothing()
+testDataSeries.smoothing("backward", 2)
 #print (testDataSeries.error)
 #print ('beforeSmoothingArray')
 #print (testDataSeries.beforeSmoothingArray)

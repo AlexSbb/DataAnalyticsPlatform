@@ -14,7 +14,7 @@
 
 <header class="navbar fixed-top navbar-dark bg-dark"> 
     <a class="navbar-brand" href="#">
-        <img src="../img/logo.svg"  width="90" height="60" alt="">
+        <img src="logo.svg"  width="90" height="60" alt="">
     </a>
     <span class="navbar-brand mx-auto d-block text-center order-0 order-md-1 w-25">
        <h1 class="h1">Data Analytics Platform</h1> 
@@ -61,14 +61,14 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Min</span>
                             </div>
-                            <input type="text" class="form-control" id='Intrp_Min' aria-label="Min Value">
+                            <input type="number" class="form-control" id='Intrp_Min' step="0.0001" aria-label="Min Value" onKeyUp="this.reportValidity()">
                           </div>
 
                           <div class="input-group input-group-sm mb-3 ml-1">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Max</span>
                             </div>
-                            <input type="text" class="form-control" id='Intrp_Max' aria-label="Max Value">
+                            <input type="number" class="form-control" id='Intrp_Max' step="0.0001" aria-label="Max Value" onKeyUp="this.reportValidity()">
                           </div>
                           <!--  -->
 
@@ -86,7 +86,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Std factor</span>
                             </div>
-                            <input type="text" class="form-control" id='Std_factor' aria-label="Std factor" value="1" min="1" max="6" onKeyUp="this.reportValidity()">
+                            <input type="number" class="form-control" id='Std_factor' aria-label="Std factor" value="1" min="1" max="6" onKeyUp="this.reportValidity()">
                           </div>
 
                           <div class="form-check">
@@ -176,7 +176,7 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Window</span>
                             </div>
-                            <input type="text" class="form-control" id='Smooth_Window' aria-label="window" value="2" onKeyUp="this.reportValidity()">
+                            <input type="number" class="form-control" id='Smooth_Window' aria-label="window" value="2" min="2" onKeyUp="this.reportValidity()">
                           </div>
                           <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary">Calculate</button>
@@ -203,24 +203,25 @@
                             <div class="input-group-prepend">
                               <span class="input-group-text">Test Size</span>
                             </div>
-                            <input type="number" class="form-control" id='NN_testSize' aria-label="window" value="80.0" min="1" max="100" onKeyUp="this.reportValidity()">
+                            <input type="number" class="form-control" id='NN_testSize' aria-label="window" value="80.0" min="10" max="90" step="0.01" onKeyUp="this.reportValidity()">
                         </div>
 
                         <div class="input-group input-group-sm mb-3 ml-1">
                             <select class="custom-select " id="NN_activFunction" onchange="onChangeNN_activFunction()">
                                 <option selected>Choose Active Function</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <option value="1">Identity</option>
+                                <option value="2">Logistic</option>
+                                <option value="3">Tanh</option>
+                                <option value="4">Relu</option>
                               </select>
                         </div>
 
                         <div class="input-group input-group-sm mb-3 ml-1">
                             <select class="custom-select " id="NN_solverFunction" onchange="onChangeNN_solverFunction()">
                                 <option selected>Choose Solver Function</option>
-                                <option value="1">One</option>
-                                <option value="2">Two</option>
-                                <option value="3">Three</option>
+                                <option value="1">Lbfgs</option>
+                                <option value="2">Sgd</option>
+                                <option value="3">Adam</option>
                               </select>
                         </div>
 
@@ -285,7 +286,7 @@
                                 <span class="input-group-text">Test size</span>
                             </div>
                             <input type="number" class="form-control" id='RF_TestSize' aria-label="Test size" value="20"
-                            min=0 max=100 onKeyUp="this.reportValidity();">
+                            min=10 max=90 step="0.01" onKeyUp="this.reportValidity();">
                         </div>
                         <div class="form-check ml-1">
                             <input class="form-check-input" type="checkbox" value="" id="RF_useHistory">
@@ -478,8 +479,15 @@
 
         var HardLimitValuesMin = document.getElementById("Intrp_Min");
         var HardLimitValuesMax = document.getElementById("Intrp_Max");
-        HardLimitValuesMin.value = dataSeriesDict[key].realMin
-        HardLimitValuesMax.value = dataSeriesDict[key].realMax
+        document.getElementById("Intrp_Min").setAttribute("min",dataSeriesDict[currKey].realMin); // set a new value;
+        document.getElementById("Intrp_Min").setAttribute("max",dataSeriesDict[currKey].realMax); // set a new value;
+        document.getElementById("Intrp_Max").setAttribute("min",dataSeriesDict[currKey].realMin); // set a new value;
+        document.getElementById("Intrp_Max").setAttribute("max",dataSeriesDict[currKey].realMax); // set a new value;
+        HardLimitValuesMin.value = dataSeriesDict[currKey].realMin;
+        HardLimitValuesMax.value = dataSeriesDict[currKey].realMax;
+        
+        document.getElementById("Smooth_Window").setAttribute("max",dataSeriesDict[currKey].currentData.length); // set a new value;
+    };
 
     }
 
@@ -568,7 +576,6 @@
 
 
 </script>
-    
 
   </body>
 </html>
