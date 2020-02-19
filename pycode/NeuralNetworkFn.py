@@ -112,8 +112,6 @@ def NeuralNet(NN_inputs):
                    NN_inputs.X = sc.fit_transform(NN_inputs.X)
                 else:
                     pass
-                print(NN_inputs.X)
-                print(NN_inputs.y)
                 #Train the model with training data and test it with test data  (80% train and 20% test)
                 from sklearn.model_selection import train_test_split
                 from sklearn.metrics import mean_squared_error
