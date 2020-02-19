@@ -233,12 +233,12 @@ y1 = [8.55055,5.53195,9.1547,11.91745]
 
 #TESTING THE RANDOM FOREST
 
-RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
+# RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
 
-#Printing outputs
-print('Predicted Output:       ', RF_outputs1.y_test)
-print('test input:             ', RF_outputs1.X_test)
-print('expected output:        ', RF_outputs1.y_actual)
-print('length of output array: ', RF_outputs1.length)
-print('Mean Square error:      ', RF_outputs1.tst_mse)
-print('Accuracy:               ', RF_outputs1.tst_accrc)
+# #Printing outputs
+# print('Predicted Output:       ', RF_outputs1.y_test)
+# print('test input:             ', RF_outputs1.X_test)
+# print('expected output:        ', RF_outputs1.y_actual)
+# print('length of output array: ', RF_outputs1.length)
+# print('Mean Square error:      ', RF_outputs1.tst_mse)
+# print('Accuracy:               ', RF_outputs1.tst_accrc)
