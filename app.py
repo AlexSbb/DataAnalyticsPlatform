@@ -54,7 +54,8 @@ def resetGlobalDataObject():
         globalDataObject.deleteSeries(request.get_json()['seriesName'])
     elif action == "resetToOriginalData":
         globalDataObject.resetToOriginalData()
-    return jsonify(globalDataObject.toJSON()) 
+ #   return jsonify(globalDataObject.toJSON()) 
+    return jsonify("Success") 
 
 if __name__ == '__main__':
     app.run(debug=True)

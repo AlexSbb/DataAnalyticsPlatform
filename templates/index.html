@@ -575,8 +575,12 @@
         };
         postActionToPython(postData)   // Go to send data to python
     }
+
     function deleteSeries(){
         seriesName = document.getElementById("selectDataSet").value
+        if (seriesName == "Choose dataset:"){
+            return
+        }
         postData = { 
             seriesName: seriesName,
             action: "deleteSeries"
@@ -602,7 +606,8 @@
                 const keys = Object.keys(dataSeriesDict);
                 console.log(keys);
                 //prepares the information for the dropdown menu of the data series
-                addOptionsToSelectDataset(keys)
+                addOptionsToSelectDataset(keys);
+                location.reload();
                 // console.log('Success:', JSON.stringify(json));
             } 
         catch (error) {
