@@ -131,6 +131,7 @@ def NeuralNet(NN_inputs):
                 #Mean squared error and accuracy
                 NN_outputs.tst_mse = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
                 NN_outputs.tst_accrc = maxAccuracy - NN_outputs.tst_mse
+                NN_outputs.flag = success
                 return NN_outputs
     except:
             NN_outputs.flag = error
@@ -146,6 +147,7 @@ if NN_outputs1.flag==error:
     print(NN_outputs1.msg)
 else:
     #Printing outputs
+    print('flag:                   ', NN_outputs1.flag)
     print('Predicted Output:       ', NN_outputs1.y_test)
     print('test input:             ', NN_outputs1.X_test)
     print('expected output:        ', NN_outputs1.y_actual)
