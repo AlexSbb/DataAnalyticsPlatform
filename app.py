@@ -15,13 +15,7 @@ CORS(app, resources=r'/*')
 
 
 
-def randomData():
-    d = {'index': np.arange(20), 'value': np.random.rand(20)}
-    return d
 
-RandomDataArr= {}
-for x in range(2):
-    RandomDataArr['data_'+ str(x)]=pd.DataFrame(randomData()).to_json(orient='records')
 
 
 
@@ -42,8 +36,8 @@ def importDataFromFile():
         print(fileName)
         print(dataArray)  
         testDataObject = DataObject(dataArray, fileName)
-        print(testDataObject.getDataSeriesDict())
-        return jsonify(message = "OK") 
+        print(testDataObject.toJSON())
+        return jsonify(testDataObject.toJSON()) 
 
 
 
@@ -51,44 +45,8 @@ def importDataFromFile():
 
 
 
-@app.route('/data', methods=['POST', 'GET'] )
-def data():
-    if request.method == 'GET':
-        
-        
-        #  df1 = pd.DataFrame(np.random.randn(6, 2)*10, columns=list('xy'))
-        #  df2 = pd.DataFrame(np.random.randn(6, 2), columns=list('xy'))
-        df3 = pd.DataFrame(randomData())
-        jf3=df3.to_json(orient='records')
-        
-        RandomDataArr= {}
-        for x in range(2):
-            RandomDataArr['data_'+ str(x)]=pd.DataFrame(randomData()).to_json(orient='records')
 
 
-        return jsonify(RandomDataArr)
-        # return jsonify( data1=df3.to_json(orient='records'), data2=rcd.ImportData().to_json(orient='records'))
-
-
-
-    else:
-        print(request.get_json())
-        print(request.get_json()['username'])
-        return jsonify(response_value_1=1,response_value_2="value")
-
-
-
-@app.route('/interpolation', methods=['POST', 'GET'] )
-def interpolation():
-    if request.method == 'GET':
-        print ('GET')
-        return jsonify(message = "GET") 
-    else:
-        print(request.get_json())
-        varmin = float(request.get_json()['MIN'])
-        varmax = float(request.get_json()['MAX'])
-        print(varmin,varmax)
-        return jsonify(message = "OK") 
 
 
 

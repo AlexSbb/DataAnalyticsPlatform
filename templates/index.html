@@ -371,7 +371,7 @@
             for (var index=0; index < results.data[0].length; ++index){
                 var column= []
                 for (var j in results.data){
-                column.push(results.data[j][index]);
+                column.push(parseFloat(results.data[j][index]));
                 };
                 correctResult.push(column)
             }
