@@ -56,21 +56,5 @@ def resetGlobalDataObject():
         globalDataObject.resetToOriginalData()
     return jsonify(globalDataObject.toJSON()) 
 
-@app.route('/deleteAllData', methods=['POST'] )
-def resetGlobalDataObject():
-    if (globalDataObject is None):
-        return jsonify(message = "Empty") 
-    else:
-        globalDataObject.clearSeries()
-        return jsonify(globalDataObject.toJSON()) 
-
-@app.route('/deleteSeries', methods=['POST'] )
-def resetGlobalDataObject():
-    if (globalDataObject is None):
-        return jsonify(message = "Empty") 
-    else:
-        globalDataObject.deleteSeries(self, seriesName)
-        return jsonify(globalDataObject.toJSON()) 
-
 if __name__ == '__main__':
     app.run(debug=True)
