@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd 
 from typing import NamedTuple
 
+#DEFINITIONS-----------------------------------------------------------------------
 #Error codes
 eIoSize         = "Input and output array size does not match"
 eNoOfHiddLyr    = "Number of hidden layers should be within 1 and 10"
@@ -17,16 +18,20 @@ class RF_inputs(NamedTuple):
     y: float
     trees: int
     tst_siz: float
-   
+
 # Output structure for Neural Network
 class RF_outputs(NamedTuple):
-    y_test: float
-    X_test: float 
-    y_actual: float
-    length: int
-    tst_mse: float
-    tst_accrc: float
+    flag:       str
+    y_test:     float
+    X_test:     float 
+    y_actual:   float
+    length:     int
+    tst_mse:    float
+    tst_accrc:  float
+    msg:        str
+#END OF DEFINITIONS--------------------------------------------------------------------
 
+#IMPORTING DATA------------------------------------------------------------------------
 # input dataset 
 X1 = [   [4.5,6.7],
         [8.9,3.8],
@@ -35,11 +40,12 @@ X1 = [   [4.5,6.7],
 
 # output dataset            
 y1 = [8.55055,5.53195,9.1547,11.91745]
+#END OF IMPORTING DATA----------------------------------------------------------------
 
 # Input initialization
 RF_inputs1 = RF_inputs(X1,y1,1000,0.2)
 
-# Random Forest regressor function 
+# Random Forest regressor function----------------------------------------------------
 def RFreg(RF_inputs):
     from sklearn.ensemble import RandomForestRegressor 
     #regressor = RandomForestRegressor(n_estimators = 100, random_state = 0) 
@@ -56,6 +62,7 @@ def RFreg(RF_inputs):
     RF_outputs.tst_mse = mean_squared_error(RF_outputs.y_actual, RF_outputs.y_test)
     RF_outputs.tst_accrc = 100.0 -  RF_outputs.tst_mse
     return RF_outputs
+#End of Random forest function---------------------------------------------------------
 
 # Function call
 RF_outputs1 = RFreg(RF_inputs1)
