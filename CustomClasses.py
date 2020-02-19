@@ -73,10 +73,10 @@ class DataSeries:
         fil =  Smoothing.Filter()       
         # Amrita use an array of arrays like the input 
         smooothInput= [self.currentData]
-        flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smooothInput,self.window,self.smoothingType)
+        # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smooothInput,self.window,self.smoothingType)
         # Amrita use an array of arrays like the output also, so I use only the first array
-        self.beforeSmoothingArray = list(beforeSmoothingArray[0])
-        self.afterSmoothingArray = list(afterSmoothingArray[0])
+        # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
+        # self.afterSmoothingArray = list(afterSmoothingArray[0])
 
 class DataObject:
     def __init__(self, dataSeries, fileName):
@@ -175,11 +175,11 @@ hid_lyrs1 = (8,4,4)
 inputSeries1.selectedMax = 0.9
 inputSeries1.selectedMin = 0.1
 inputSeries1.maxMin()
-inputSeries1.stdDev()
-inputSeries1.smoothing()
+# inputSeries1.stdDev()
+# inputSeries1.smoothing()
 
-print('original data \n', inputSeries1.originalData)
-print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
+# print('original data \n', inputSeries1.originalData)
+# print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],
