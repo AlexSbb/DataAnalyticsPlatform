@@ -51,8 +51,8 @@
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <div class="form-check">
-                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="exampleRadios1" value="option1" checked>
-                            <label class="form-check-label" for="exampleRadios1">
+                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="HardLimitRadios" value="option1" checked>
+                            <label class="form-check-label" for="HardLimitRadios">
                                 Hard limit values
                             </label>
                           </div>
@@ -75,8 +75,8 @@
 
 
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="exampleRadios2" value="option2">
-                            <label class="form-check-label" for="exampleRadios2">
+                            <input class="form-check-input" type="radio" name="HardLimit_deviation" id="StdRadios" value="option2">
+                            <label class="form-check-label" for="StdRadios">
                                 Standart deviation
                             </label>
                           </div>
@@ -103,7 +103,7 @@
                           </div>
                           
                             <div class="text-center">
-                                <button type="submit" class="btn btn-outline-secondary">Calculate</button>
+                                <button type="submit" class="btn btn-outline-secondary" onclick="buttonInterpolationClick()">Calculate</button>
                            
                             </div>
 
@@ -429,6 +429,7 @@
             const url = 'http://127.0.0.1:5000/getGlobalDataObject';
             const response = await fetch(url);
             const json = await response.json();
+            console.log(json)
             dataSeriesDict = JSON.parse(json).dataSeriesDict;
             const keys = Object.keys(dataSeriesDict);
             console.log(keys);
@@ -489,7 +490,21 @@
         document.getElementById("Smooth_Window").setAttribute("max",dataSeriesDict[currKey].currentData.length); // set a new value;
     };
 
-    }
+    function buttonInterpolationClick(){
+        //true for HardLimit and false for standart deviation
+        //true for linear and false for quadratic interpolation
+        postData = { 
+            limit_or_dev: document.getElementById("HardLimitRadios").value, 
+            selectedMin: document.getElementById("Intrp_Min").value,
+            selectedMax: document.getElementById("Intrp_Max").value,
+            stdDevFactor: document.getElementById("Std_factor").value,
+            interpolationType: document.getElementById("linear_radio").value
+        };  
+        console.log(postData)     
+        
+
+
+    };
 
     function plotData(key){
 
@@ -505,7 +520,9 @@
         };
         var colorNames = Object.keys(chartColors);
 
-        var dataForPlot=dataSeriesDict[key].currentData;
+        var currentData=dataSeriesDict[key].currentData;
+        var originalData=dataSeriesDict[key].originalData;
+
 
         // var colorName = colorNames[config.data.datasets.length % colorNames.length];
         var colorName = colorNames[4];
@@ -513,31 +530,36 @@
         var config = {
             type: 'line',
             data: {
-                labels: [...Array(dataForPlot.length).keys()],
-                datasets: [{
-                    label: 'currentData',
-                    backgroundColor: newColor,
-                    data: dataForPlot,
-                    borderColor: newColor,
-                    fill: false
+                labels: [...Array(currentData.length).keys()],
+                datasets: [
+                    {
+                        label: 'currentData',
+                        backgroundColor: newColor,
+                        data: currentData,
+                        borderColor: newColor,
+                        fill: false
+                    },
+                    {
+                        label: 'originalData',
+                        backgroundColor: colorNames[3],
+                        data: originalData,
+                        borderColor: colorNames[3],
+                        fill: false
 
-                }]
+                    }
+            ]
             },
             options: {
-                // responsive: true,
-                // scaleShowGridLines : true,
-                // scaleShowVerticalLines: true,
-                // scaleShowHorizontalLines: true,
+                responsive: true,
+                scaleShowGridLines : true,
+                scaleShowVerticalLines: true,
+                scaleShowHorizontalLines: true,
                 maintainAspectRatio: true,
             }
 
         
         };        
-        
-        
-        
-        
-        
+               
         // var plotData = {
         //         labels: [...Array(dataForPlot.length).keys()],
         //         datasets: [{
@@ -549,26 +571,16 @@
 
         //         }]
         //     };
-        // console.log(config.data)
-        // config.data.push(plotData);
-
- //       myChart = new Chart(ctx,config);    
+ 
         if (typeof myChart != "undefined") { 
-                // var canvas = document.getElementById('myChart');
-                // ctx.clearRect(0,0,canvas.width, canvas.height);
-                // delete myChart;
-                // myChart = new Chart(ctx,config);
-                myChart.update();
+                myChart.destroy();
+                myChart = new Chart(ctx,config);
+                // myChart.update();
             } else { 
 
                 myChart = new Chart(ctx,config);
 
             } 
-  
-
-
-       
-
 
     }
 
