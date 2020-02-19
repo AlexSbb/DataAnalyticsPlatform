@@ -1,6 +1,8 @@
 import numpy as np 
-#import matplotlib.pyplot as plt 
-import pandas as pd 
+import pandas as pd
+from sklearn.ensemble import RandomForestRegressor 
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import mean_squared_error
 from typing import NamedTuple
 
 #DEFINITIONS-----------------------------------------------------------------------
@@ -47,12 +49,9 @@ RF_inputs1 = RF_inputs(X1,y1,1000,0.2)
 
 # Random Forest regressor function----------------------------------------------------
 def RFreg(RF_inputs):
-    from sklearn.ensemble import RandomForestRegressor 
     #regressor = RandomForestRegressor(n_estimators = 100, random_state = 0) 
     regressor = RandomForestRegressor(n_estimators = RF_inputs.trees, random_state = 42) 
     #Train the model with training data and test it with test data  (80% train and 20% test)
-    from sklearn.model_selection import train_test_split
-    from sklearn.metrics import mean_squared_error
     X_train, RF_outputs.X_test, y_train, RF_outputs.y_actual = train_test_split(RF_inputs.X, RF_inputs.y, test_size= RF_inputs.tst_siz, random_state=40)
     # fit the regressor with x and y data 
     regressor.fit(X_train, y_train)   
