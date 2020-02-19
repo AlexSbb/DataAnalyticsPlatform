@@ -19,16 +19,16 @@ class NN_inputs(NamedTuple):
     hid_lyrs:   tuple
     slvr:       tuple
     itr:        int
-    sclng:      bool
+    sclng:      bool #scaling
 
 # Output structure for Neural Network
 class NN_outputs(NamedTuple):
-    y_test:     float
-    X_test:     float 
-    y_actual:   float
-    length:     int
-    tst_mse:    float
-    tst_accrc:  float
+    y_test:     float # resulting output
+    X_test:     float # test input
+    y_actual:   float # expected output
+    length:     int   # length of y_test
+    tst_mse:    float # mean square error
+    tst_accrc:  float # accuracy
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],
