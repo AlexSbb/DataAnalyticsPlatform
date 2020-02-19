@@ -13,7 +13,7 @@ eNoOfTrees      = "Number of trees should be in range 1 to 1000"
 eUnexpected     = "Something went wrong"
 
 #Flags
-error = "error"
+error   = "error"
 success = "success"
 
 #Constants
@@ -33,11 +33,11 @@ maxAccuracy     = 100.0
 
 # Input structure for Neural Network
 class RF_inputs(NamedTuple):
-    X: float
-    y: float
-    trees: int
-    tst_siz: float
-    his_dat: bool
+    X:          float
+    y:          float
+    trees:      int
+    tst_siz:    float
+    his_dat:    bool
 
 # Output structure for Neural Network
 class RF_outputs(NamedTuple):
@@ -53,7 +53,7 @@ class RF_outputs(NamedTuple):
 
 #IMPORTING DATA------------------------------------------------------------------------
 # input dataset 
-X1 = [   [4.5,6.7],
+X1 = [  [4.5,6.7],
         [8.9,3.8],
         [9,6.8],
         [12.3,8.8] ]
@@ -69,16 +69,15 @@ RF_inputs1 = RF_inputs(X1,y1,300,0.5,True)
 def RFreg(RF_inputs):
     try:
         #Error Checks
-        #check size of input and output
-        if  len(RF_inputs.X) != len(RF_inputs.y):
+        if  len(RF_inputs.X) != len(RF_inputs.y):                                   #Check size of input and output
             RF_outputs.flag = error
             RF_outputs.msg  = eIoSize
             return RF_outputs
-        elif RF_inputs.trees < minTrees or RF_inputs.trees > maxTrees:
+        elif RF_inputs.trees < minTrees or RF_inputs.trees > maxTrees:              #Check number of trees is in range 1 to 1000
             RF_outputs.flag = error
             RF_outputs.msg  = eNoOfTrees
             return RF_outputs
-        elif RF_inputs.tst_siz < minTst_siz or RF_inputs.tst_siz > maxTst_siz:
+        elif RF_inputs.tst_siz < minTst_siz or RF_inputs.tst_siz > maxTst_siz:      #Check test size is in range 0.1 to 0.9
             RF_outputs.flag = error
             RF_outputs.msg  = eTestSize
             return RF_outputs
@@ -108,7 +107,6 @@ def RFreg(RF_inputs):
             #Mean squared error and accuracy
             RF_outputs.tst_mse = mean_squared_error(RF_outputs.y_actual, RF_outputs.y_test)
             RF_outputs.tst_accrc = maxAccuracy -  RF_outputs.tst_mse
-            #RF_outputs.tst_accrc = maxAccuracy / 0
             return RF_outputs
     except:
         RF_outputs.flag = error
@@ -119,6 +117,7 @@ def RFreg(RF_inputs):
 # Function call
 RF_outputs1 = RFreg(RF_inputs1)
 
+# Output result
 if RF_outputs1.flag == error:
     print(RF_outputs1.msg)
 else:
