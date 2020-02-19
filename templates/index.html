@@ -343,7 +343,8 @@
 
     // Global var!!!!!!!!!!!!!!
     var dataSeriesDict ={}
-
+    var ctx = document.getElementById('myChart').getContext('2d');
+    var myChart
     //Get global data object from Python
     getGlobalDataObject() 
 
@@ -439,7 +440,7 @@
     //removes all options from any dropdown menu
     function removeOptions(selectbox) {
         var i;
-        for(i = selectbox.options.length - 2 ; i >= 0 ; i--)
+        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
         {
             selectbox.remove(i);
         }
@@ -450,11 +451,14 @@
     function addOptionsToSelectDataset(dataSetsNames) {
         var selectDataSet = document.getElementById("selectDataSet");        
         removeOptions(selectDataSet)
+        var option= document.createElement("option"); 
+        option.textContent = 'Choose dataset...';
+        selectDataSet.appendChild(option);
         dataSetsNames.forEach((element, index) => {
             var option= document.createElement("option"); 
             console.log(index); // 0, 1, 2
-            option.textContent = element
-            selectDataSet.appendChild(option)
+            option.textContent = element;
+            selectDataSet.appendChild(option);
         });
     };
     
@@ -464,13 +468,104 @@
         currKey=selectDataSet.value
         console.log(currKey);
         console.log(dataSeriesDict[currKey].name);
-        // dataSeriesDict[selectDataSet.value].name
+        fillAllElements(currKey);
+        plotData(currKey);
+
+
+    };
+
+    function fillAllElements(key){
 
         var HardLimitValuesMin = document.getElementById("Intrp_Min");
         var HardLimitValuesMax = document.getElementById("Intrp_Max");
-        HardLimitValuesMin.value = dataSeriesDict[currKey].realMin
-        HardLimitValuesMax.value = dataSeriesDict[currKey].realMax
-    };
+        HardLimitValuesMin.value = dataSeriesDict[key].realMin
+        HardLimitValuesMax.value = dataSeriesDict[key].realMax
+
+    }
+
+    function plotData(key){
+
+
+        var chartColors = {
+            red:    'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green:  'rgb(75, 192, 192)',
+            blue:   'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey:   'rgb(201, 203, 207)'
+        };
+        var colorNames = Object.keys(chartColors);
+
+        var dataForPlot=dataSeriesDict[key].currentData;
+
+        // var colorName = colorNames[config.data.datasets.length % colorNames.length];
+        var colorName = colorNames[4];
+        var newColor = chartColors[colorName];
+        var config = {
+            type: 'line',
+            data: {
+                labels: [...Array(dataForPlot.length).keys()],
+                datasets: [{
+                    label: 'currentData',
+                    backgroundColor: newColor,
+                    data: dataForPlot,
+                    borderColor: newColor,
+                    fill: false
+
+                }]
+            },
+            options: {
+                // responsive: true,
+                // scaleShowGridLines : true,
+                // scaleShowVerticalLines: true,
+                // scaleShowHorizontalLines: true,
+                maintainAspectRatio: true,
+            }
+
+        
+        };        
+        
+        
+        
+        
+        
+        // var plotData = {
+        //         labels: [...Array(dataForPlot.length).keys()],
+        //         datasets: [{
+        //             label: 'currentData',
+        //             backgroundColor: newColor,
+        //             data: dataForPlot,
+        //             borderColor: newColor,
+        //             fill: false
+
+        //         }]
+        //     };
+        // console.log(config.data)
+        // config.data.push(plotData);
+
+ //       myChart = new Chart(ctx,config);    
+        if (typeof myChart != "undefined") { 
+                // var canvas = document.getElementById('myChart');
+                // ctx.clearRect(0,0,canvas.width, canvas.height);
+                // delete myChart;
+                // myChart = new Chart(ctx,config);
+                myChart.update();
+            } else { 
+
+                myChart = new Chart(ctx,config);
+
+            } 
+  
+
+
+       
+
+
+    }
+
+
+
 
 </script>
     
