@@ -53,17 +53,18 @@ class RF_outputs(NamedTuple):
 
 #IMPORTING DATA------------------------------------------------------------------------
 # input dataset 
+
 X1 = [  [4.5,6.7],
         [8.9,3.8],
         [9,6.8],
-        [12.3,8.8] ]
+       [12.3,8.8] ]
 
 # output dataset            
 y1 = [8.55055,5.53195,9.1547,11.91745]
 #END OF IMPORTING DATA----------------------------------------------------------------
 
 # Input initialization
-RF_inputs1 = RF_inputs(X1,y1,300,0.5,True)
+RF_inputs1 = RF_inputs(X1,y1,300,0.5,False)
 
 # Random Forest regressor function----------------------------------------------------
 def RFreg(RF_inputs):
@@ -86,15 +87,16 @@ def RFreg(RF_inputs):
             c = np.shape(RF_inputs.X)[column]
             r = np.shape(RF_inputs.X)[row]
             if c < minColumn and RF_inputs.his_dat:
-                X3 = np.delete(RF_inputs.X,r-1,firstColumn)
-                RF_inputs.X = np.delete(RF_inputs.X,firstRow,firstColumn)
-                RF_inputs.X = np.append(RF_inputs.X,X3,axis=1)
-                RF_inputs.y = np.delete(RF_inputs.y,firstRow,firstColumn)
+                rfX1 = np.delete(RF_inputs.X,r-1,firstColumn)
+                rfX2 = np.delete(RF_inputs.X,0,0)
+                rfX2 = np.append(rfX2,rfX1,axis=1)
+                rfy1 = np.delete(RF_inputs.y,firstRow,firstColumn)
             else:
-                pass
+                rfX2 = RF_inputs.X
+                rfy1 = RF_inputs.y
             regressor = RandomForestRegressor(n_estimators = RF_inputs.trees, random_state = defSplitLeaf) 
             #Train the model with training data and test it with test data  (80% train and 20% test)
-            X_train, RF_outputs.X_test, y_train, RF_outputs.y_actual = train_test_split(RF_inputs.X, RF_inputs.y, test_size= RF_inputs.tst_siz, random_state=defSplit)
+            X_train, RF_outputs.X_test, y_train, RF_outputs.y_actual = train_test_split(rfX2, rfy1, test_size= RF_inputs.tst_siz, random_state=defSplit)
             # fit the regressor with x and y data 
             regressor.fit(X_train, y_train)   
             # test the output by changing values 
@@ -107,6 +109,7 @@ def RFreg(RF_inputs):
             #Mean squared error and accuracy
             RF_outputs.tst_mse = mean_squared_error(RF_outputs.y_actual, RF_outputs.y_test)
             RF_outputs.tst_accrc = maxAccuracy -  RF_outputs.tst_mse
+            RF_outputs.flag = success
             return RF_outputs
     except:
         RF_outputs.flag = error

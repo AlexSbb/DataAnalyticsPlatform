@@ -112,8 +112,6 @@ def NeuralNet(NN_inputs):
                    NN_inputs.X = sc.fit_transform(NN_inputs.X)
                 else:
                     pass
-                print(NN_inputs.X)
-                print(NN_inputs.y)
                 #Train the model with training data and test it with test data  (80% train and 20% test)
                 from sklearn.model_selection import train_test_split
                 from sklearn.metrics import mean_squared_error
@@ -131,6 +129,7 @@ def NeuralNet(NN_inputs):
                 #Mean squared error and accuracy
                 NN_outputs.tst_mse = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
                 NN_outputs.tst_accrc = maxAccuracy - NN_outputs.tst_mse
+                NN_outputs.flag = success
                 return NN_outputs
     except:
             NN_outputs.flag = error
@@ -146,6 +145,7 @@ if NN_outputs1.flag==error:
     print(NN_outputs1.msg)
 else:
     #Printing outputs
+    print('flag:                   ', NN_outputs1.flag)
     print('Predicted Output:       ', NN_outputs1.y_test)
     print('test input:             ', NN_outputs1.X_test)
     print('expected output:        ', NN_outputs1.y_actual)
