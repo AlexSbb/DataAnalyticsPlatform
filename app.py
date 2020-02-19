@@ -6,6 +6,10 @@ from flask_cors import CORS
 import temp_test.read_csv_data as rcd
 import json
 import pycode.Team2Functions as T2F
+from CustomClasses import DataObject, DataSeries
+
+
+
 app = Flask(__name__)
 CORS(app, resources=r'/*')
 
@@ -36,7 +40,9 @@ def importDataFromFile():
         fileName = request.get_json()['fileName']
         dataArray = list(request.get_json()['dataArray'])
         print(fileName)
-        print(dataArray)
+        print(dataArray)  
+        testDataObject = DataObject(dataArray, fileName)
+        print(testDataObject.getDataSeriesDict())
         return jsonify(message = "OK") 
 
 
