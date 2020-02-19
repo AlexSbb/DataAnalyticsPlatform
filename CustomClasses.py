@@ -50,6 +50,23 @@ class DataSeries:
 
         self.neuralNetworkResults = []
 
+    def resetToOriginalData(self):
+        self.currentData = self.originalData
+        self.window = 2
+        self.smoothingType = backward
+        self.selectedMin = 0.0
+        self.selectedMax = 1.0
+        self.maxMinMatrix = []
+        self.stdDevMaxMinMatrix = [] # what is this???
+        self.stdDevFactor =  1.0
+        self.interpolationType = linear #true for linear and false for quadratic interpolation
+        self.interpolationArray = []
+        self.replaceArray = []
+        self.beforeSmoothingArray = []
+        self.afterSmoothingArray = []
+        self.error = ''
+        self.neuralNetworkResults = []
+
     def resetError(self):
         self.error = ''
 
@@ -115,6 +132,10 @@ class DataObject:
     def clearSeries(self):
          self.dataSeriesDict.clear()
 
+    def resetToOriginalData(self):
+        for i in range(len(self.dataSeriesDict)):
+            self.dataSeriesDict[i].resetToOriginalData()
+
     def getDataSeriesDict(self):
          return self.dataSeriesDict
     
@@ -124,7 +145,6 @@ class DataObject:
 
     # def neuralNetwork(self, inputDataSeries, outputDataSeries, testSize, activationFunction, hiddenLayersInput, solverInput, iterationNumber, scalingOnOff):
     #     self.neuralNetworkResults = NN.NeuralNet(NN.NN_inputs(inputDataSeries,outputDataSeries,testSize,activationFunction,hiddenLayersInput,solverInput,iterationNumber,scalingOnOff))
-
 
 def changeDataSeriesForm(dataSeriesArray):
     convertedArray = []

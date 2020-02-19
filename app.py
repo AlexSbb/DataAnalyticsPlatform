@@ -9,7 +9,6 @@ import pycode.Team2Functions as T2F
 from CustomClasses import DataObject, DataSeries
 
 
-
 app = Flask(__name__)
 CORS(app, resources=r'/*')
 
@@ -37,7 +36,6 @@ def importDataFromFile():
             globalDataObject.addSeries(dataArray, fileName)       
         return jsonify(globalDataObject.toJSON()) 
 
-
 @app.route('/getGlobalDataObject', methods=['GET'] )
 def getGlobalDataObject():
     if (globalDataObject is None):
@@ -45,6 +43,34 @@ def getGlobalDataObject():
     else:
         return jsonify(globalDataObject.toJSON()) 
 
+@app.route('/dataReset', methods=['POST'] )
+def resetGlobalDataObject():
+    action = request.get_json()['action']
+    if (globalDataObject is None):
+        return jsonify(message = "Empty") 
+    elif action == "deleteAll":
+        globalDataObject.clearSeries()
+    elif action == "deleteSeries":
+        globalDataObject.deleteSeries(request.get_json()['seriesName'])
+    elif action == "resetToOriginalData":
+        globalDataObject.resetToOriginalData()
+    return jsonify(globalDataObject.toJSON()) 
+
+@app.route('/deleteAllData', methods=['POST'] )
+def resetGlobalDataObject():
+    if (globalDataObject is None):
+        return jsonify(message = "Empty") 
+    else:
+        globalDataObject.clearSeries()
+        return jsonify(globalDataObject.toJSON()) 
+
+@app.route('/deleteSeries', methods=['POST'] )
+def resetGlobalDataObject():
+    if (globalDataObject is None):
+        return jsonify(message = "Empty") 
+    else:
+        globalDataObject.deleteSeries(self, seriesName)
+        return jsonify(globalDataObject.toJSON()) 
 
 if __name__ == '__main__':
     app.run(debug=True)
