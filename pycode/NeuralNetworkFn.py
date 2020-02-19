@@ -37,24 +37,15 @@ class NN_inputs(NamedTuple):
 
 # Output structure for Neural Network
 class NN_outputs(NamedTuple):
-<<<<<<< HEAD
+    flag:       str
     y_test:     float # resulting output
     X_test:     float # test input
     y_actual:   float # expected output
     length:     int   # length of y_test
     tst_mse:    float # mean square error
     tst_accrc:  float # accuracy
-=======
-    flag:       str
-    y_test:     float
-    X_test:     float 
-    y_actual:   float
-    length:     int
-    tst_mse:    float
-    tst_accrc:  float
     msg:        str
 #END OF DEFINITIONS--------------------------------------------------------------------
->>>>>>> master
 
 #IMPORTING DATA------------------------------------------------------------------------
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
