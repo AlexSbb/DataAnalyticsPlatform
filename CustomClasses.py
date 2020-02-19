@@ -111,22 +111,17 @@ class DataObject:
 
     def changeDataSeriesForm(self, dataSeriesArray):
         convertedArray = []
-        if len(dataSeriesArray) > 0:
-                for i in range(len(dataSeriesArray)):
-                    if len(dataSeriesArray[0]) != len(dataSeriesArray[i]):
-                        return 'ERROR, arrays of different sizes'
-                for i in range(len(dataSeriesArray[0])): #the length of the arrays
-                tempArray = []
-                for ii in range(len(dataSeriesArray)): #the number of arrays
-                    tempArray.append(dataSeriesArray[ii][i])
-                convertedArray.append([tempArray])
-            return convertedArray
-        else:
-            return []
-
-
-
-
+        if len(dataSeriesArray) == 0:
+            return 'ERROR: no arrays attached'
+        for i in range(len(dataSeriesArray)):
+            if len(dataSeriesArray[0]) != len(dataSeriesArray[i]):
+                return 'ERROR: arrays of different sizes'
+        for i in range(len(dataSeriesArray[0])): #the length of the arrays
+            tempArray = []
+            for ii in range(len(dataSeriesArray)): #the number of arrays
+                tempArray.append(dataSeriesArray[ii][i])
+                convertedArray.append(tempArray)
+        return convertedArray
 
 testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
 inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
@@ -202,6 +197,10 @@ y1 = [8.55055,5.53195,9.1547,11.91745]
 
 mergedSeries = testDataObject.changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData])
 print(mergedSeries)
+
+print(inputSeries1.originalData)
+print(inputSeries2.originalData)
+
 # NN_outputs1 = NeuralNet(NN_inputs1)
 
 
