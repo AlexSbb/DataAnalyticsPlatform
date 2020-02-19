@@ -3,6 +3,7 @@ import numpy as np
 
 from typing import NamedTuple
 
+#DEFINITIONS-----------------------------------------------------------------------
 #Error codes
 eIoSize         = "Input and output array size does not match"
 eNoOfHiddLyr    = "Number of hidden layers should be within 1 and 10"
@@ -10,6 +11,10 @@ eNeuronCount    = "Number of Neurons should is in range 1 to 1000"
 eIterCount      = "Number of Iteration should be in range 1 to 2000"
 eTestSize       = "Test size should be in range 0.1 to 0.9"
 eNoOfTrees      = "Number of trees should be within 1000"
+
+#Flags
+error = "error"
+success = "success"
 
 
 # Neural Net paramenters selected by user should remain in the following range:
@@ -32,13 +37,17 @@ class NN_inputs(NamedTuple):
 
 # Output structure for Neural Network
 class NN_outputs(NamedTuple):
+    flag:       str
     y_test:     float
     X_test:     float 
     y_actual:   float
     length:     int
     tst_mse:    float
     tst_accrc:  float
+    msg:        str
+#END OF DEFINITIONS--------------------------------------------------------------------
 
+#IMPORTING DATA------------------------------------------------------------------------
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
 X1 = [   [4.5,6.7],
          [8.9,3.8],
@@ -47,11 +56,12 @@ X1 = [   [4.5,6.7],
 
 # output dataset (raw or processed selection)           
 y1 = [8.55055,5.53195,9.1547,11.91745]
+#END OF IMPORTING DATA---------------------------------------------------------------
 
 # Input initialization
 NN_inputs1 = NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],200,False)     # Activation=relu, solver=sgd
 
-# Neural Network function definition:
+# Neural Network function definition-------------------------------------------------
 def NeuralNet(NN_inputs):
     from sklearn.preprocessing import StandardScaler
     from sklearn.neural_network import MLPRegressor
@@ -77,7 +87,7 @@ def NeuralNet(NN_inputs):
     NN_outputs.tst_mse = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
     NN_outputs.tst_accrc = 100 - NN_outputs.tst_mse
     return NN_outputs
-
+# END of Neural Network function definition-------------------------------------------------
 
 # Function call
 NN_outputs1 = NeuralNet(NN_inputs1)
