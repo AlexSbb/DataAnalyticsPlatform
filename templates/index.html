@@ -772,7 +772,8 @@
             var numberOfInputsForHiddenLayers = 10;
             var arrayWithHiddenLayerInfo = [];
             for (i = 1; i <= numberOfInputsForHiddenLayers; i++) {
-                var inputName = "hl" + str(i);
+                var inputName = "hl" + i;
+                console.log(inputName)
                 if (document.getElementById(inputName).value == ""){
                 } else {
                     if (!valueWithinLimits(inputName)) {
@@ -780,7 +781,7 @@
                         document.getElementById("alertRelationshipModel").style.display = "";
                         return;
                     } else {
-                        arrayWithHiddenLayerInfo.appendChild(document.getElementById(inputName).value);
+                        arrayWithHiddenLayerInfo.push(document.getElementById(inputName).value);
                     }
                 }
             }
@@ -800,7 +801,7 @@
                 action: "performNNCalculations",
                 inputSeries: inputSeriesNameArray,
                 outputSeries: outputSeriesName,
-                testSize: document.getElementById("NN_testSize"),
+                testSize: document.getElementById("NN_testSize").value,
                 activeFunction: activeFunction,
                 solverFunction: solverFunction,
                 hiddenLayers: arrayWithHiddenLayerInfo,

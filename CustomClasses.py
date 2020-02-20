@@ -52,8 +52,8 @@ class DataSeries:
         self.ExpectedOutput = []
         self.TestInput = []
         
-        self.randomForestMeanSquareError =0
-        self.randomForestAccuracy=0
+        self.MeanSquareError =0
+        self.Accuracy=0
 
 
         self.error = ''
@@ -81,8 +81,8 @@ class DataSeries:
         self.ExpectedOutput = []
         self.TestInput = []
         
-        self.randomForestMeanSquareError =0
-        self.randomForestAccuracy=0
+        self.MeanSquareError =0
+        self.Accuracy=0
 
 
     def resetError(self):
@@ -172,15 +172,14 @@ class DataSeries:
     
     def randonForest(self, inputSeriesData,trees,testSize,historyOnOff):
         print('Hi, Im random forest')
-
         rfInput = RF.RF_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData,trees,testSize/100,historyOnOff)
         RF_outputs=RF.RFreg(rfInput)
         if (RF_outputs.flag=="success"): 
             self.ExpectedOutput=RF_outputs.y_actual
             self.PredictedOutput = RF_outputs.y_test
             self.TestInput =  RF_outputs.X_test
-            self.randomForestMeanSquareError = RF_outputs.test_mean_squared_error
-            self.randomForestAccuracy= RF_outputs.test_accuracy
+            self.MeanSquareError = RF_outputs.test_mean_squared_error
+            self.Accuracy= RF_outputs.test_accuracy
         else:
             print('Error:')
             print(RF_outputs.message)
@@ -193,6 +192,31 @@ class DataSeries:
         # print('Mean Square error:      ', RF_outputs.tst_mse)
         # print('Accuracy:               ', RF_outputs.tst_accrc)
         # print('flag:                   ', RF_outputs.flag)
+    def neuralNetwork(self,inputSeriesData, testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff ):
+        print('Hi, Im neuralNetwork')
+
+        NN_outputs = NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData, testSize/100, activeFunction, hiddenLayers, solverFunction, iterations, scalingOnOff))
+        if (NN_outputs.flag=="success"): 
+            self.ExpectedOutput     = NN_outputs.y_actual
+            self.PredictedOutput    = NN_outputs.y_test
+            self.TestInput          = NN_outputs.X_test
+            self.MeanSquareError    = NN_outputs.test_mean_squared_error
+            self.Accuracy           = NN_outputs.test_accuracy
+        else:
+            print('Error:')
+            print(NN_outputs.message)
+            self.error = NN_outputs.message
+        
+        
+        print('flag:                   ', NN_outputs.flag)
+        print('Predicted Output:       ', NN_outputs.y_test)
+        # print('test input:             ', NN_outputs.X_test)
+        print('expected output:        ', NN_outputs.y_actual)
+        print('length of output array: ', NN_outputs.length)
+        print('Mean Square error:      ', NN_outputs.test_mean_squared_error)
+        print('Accuracy:               ', NN_outputs.test_accuracy)
+
+
 
 class DataObject:
     def __init__(self, dataSeries, fileName):
@@ -253,19 +277,19 @@ def changeDataSeriesForm(dataSeriesArray):
 
 
 
-testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
-inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
-inputSeries2 = DataSeries('input2',list(np.random.rand(100)))
-outputSeries = DataSeries('output',list(np.random.rand(100)))
+# testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
+# inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
+# inputSeries2 = DataSeries('input2',list(np.random.rand(100)))
+# outputSeries = DataSeries('output',list(np.random.rand(100)))
 
-print ('realMax=',testDataSeries.realMax)
-print ('realMin=',testDataSeries.realMin)
+# print ('realMax=',testDataSeries.realMax)
+# print ('realMin=',testDataSeries.realMin)
 # print ('median=',testDataSeries.median)
 # print ('_'*80)
 # Test maxMin Function
-testDataSeries.selectedMax = 0.9
-testDataSeries.selectedMin = 0.1
-testDataSeries.maxMin()
+# testDataSeries.selectedMax = 0.9
+# testDataSeries.selectedMin = 0.1
+# testDataSeries.maxMin()
 
 
 # Test stdDev Function
@@ -282,7 +306,7 @@ testDataSeries.maxMin()
 # testDataSeries.interpolation()
 
 # Test smoothing Function
-testDataSeries.smoothing("backward", 2)
+# testDataSeries.smoothing("backward", 2)
 #print (testDataSeries.error)
 #print ('beforeSmoothingArray')
 #print (testDataSeries.beforeSmoothingArray)
@@ -291,12 +315,12 @@ testDataSeries.smoothing("backward", 2)
 
 #print (testDataSeries.toJSON())
 
-inputSeries1 = DataSeries('input1',list(np.random.rand(20)))
-inputSeries2 = DataSeries('input2',list(np.random.rand(20)))
-outputSeries = DataSeries('output',list(np.random.rand(20)))
+# inputSeries1 = DataSeries('input1',list(np.random.rand(20)))
+# inputSeries2 = DataSeries('input2',list(np.random.rand(20)))
+# outputSeries = DataSeries('output',list(np.random.rand(20)))
 
-testDataObject = DataObject([inputSeries1.originalData ,inputSeries2.originalData], 'input')
-testDataObject.addSeries([list(np.random.rand(10)), list(np.random.rand(10))], 'output')
+# testDataObject = DataObject([inputSeries1.originalData ,inputSeries2.originalData], 'input')
+# testDataObject.addSeries([list(np.random.rand(10)), list(np.random.rand(10))], 'output')
 # print (testDataObject.getDataSeriesDict())
 
 #NN_inputs1 = NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],200,False)     # Activation=relu, solver=sgd
