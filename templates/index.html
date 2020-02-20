@@ -360,9 +360,6 @@
             </div>
         </nav>
 
-
-
-
         <main role="main" class="col-md-8 ml-sm-auto col-lg-9 px-4" style="padding-top: 90px;">
 
             <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
@@ -379,7 +376,18 @@
             </div>
             <canvas id="myChart"  class="border-bottom"></canvas>
             <!-- <textarea class="form-control" id="exampleFormControlTextarea1" rows="3"></textarea> -->
-
+            <!-- Adding information below the chart -->
+            <div class="jumbotron jumbotron-fluid mt-3 padding=0px">
+                <div class="container" id="jumboContainer">
+                    <!-- <h4 class="h4" id="titleInfoBox">Information about latest transaction</h4>  -->
+                    <!-- adding a splitting line between information blocks -->
+                    <!--<hr class="my-4"> -->
+                    <!-- adding a subtitle -->
+                    <!--<p class="lead">Outlier Recognition and Interpolation Information</p> -->
+                    <!--<p class="lead">I/O Relationship Models</p> -->
+                    <!--<label id="inputSeriesChosen">Input series chosen: n/a</label><br> -->
+                </div>
+            </div>
 
 
         </main>
@@ -543,8 +551,45 @@
         console.log(dataSeriesDict[currKey].name);
         fillAllElements(currKey);
         plotData(currKey);
+        updateSeriesInformation(currKey);
     };
+    //make sure that there is no other info in the Info Box
+    function emptyInfoDiv(){
+        var div = document.getElementById("jumboContainer");
+        while(div.firstChild){
+            div.removeChild(div.firstChild);
+        }
+        var heading4 = document.createElement("h4");                 // Create a <p> element
+        heading4.innerHTML = "Information about latest transaction";                // Insert text
+        document.getElementById("jumboContainer").appendChild(heading4);     // Append <p> to <div> with id="myDIV"
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create a <p> element
+    };  
+    //upon choosing a dataset, the side information block is updated
+    function updateSeriesInformation(key){  
+        emptyInfoDiv();
+        var lbl1 = document.createElement("label");                 // Create a <label> element
+        var lbl2 = document.createElement("label");                 // Create a <label> element
+        var lbl3 = document.createElement("label");                 // Create a <label> element
+        var lbl4 = document.createElement("label");                 // Create a <label> element
+        var lbl5 = document.createElement("label");                 // Create a <label> element
+        lbl1.innerHTML = "Data series name: " + dataSeriesDict[key].name;                // Insert text
+        document.getElementById("jumboContainer").appendChild(lbl1);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+        lbl2.innerHTML = "Original length: " + dataSeriesDict[key].originalData.length;                // Insert text
+        document.getElementById("jumboContainer").appendChild(lbl2);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+        lbl3.innerHTML = "Minimum value: " + dataSeriesDict[key].realMin;                // Insert text
+        document.getElementById("jumboContainer").appendChild(lbl3);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+        lbl4.innerHTML = "Maximum value: " + dataSeriesDict[key].realMax;                // Insert text
+        document.getElementById("jumboContainer").appendChild(lbl4);     // Append <p> to <div> with id="myDIV" 
 
+//         document.getElementById("seriesName").innerHTML = "Data series name: " + dataSeriesDict[key].name; // set a new value;
+//         document.getElementById("seriesLength").innerHTML = "Original length: " + dataSeriesDict[key].originalData.length; // set a new value;
+//         document.getElementById("seriesRealMin").innerHTML = "Minimum value: " + dataSeriesDict[key].realMin; // set a new value;
+//         document.getElementById("seriesRealMax").innerHTML = "Maximum value: " + dataSeriesDict[key].realMax; // set a new value;
+//  //       document.getElementById("seriesRealMedian").innerHTML = "Median value: " + dataSeriesDict[key].data.Median; // set a new value;
+    };
     function fillAllElements(key){
 
         var HardLimitValuesMin = document.getElementById("Intrp_Min");
