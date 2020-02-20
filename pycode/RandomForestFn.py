@@ -10,17 +10,11 @@ from typing import NamedTuple
 eIoSize         = "Input and output array size does not match"
 eTestSize       = "Test size should be in range 0.1 to 0.9"
 eNoOfTrees      = "Number of trees should be in range 1 to 1000"
-eUnexpected     = "Internal Error"
-#Warning code
-wAccur          = "Selected data is not appropriate to predict data"
-
-          
+eUnexpected     = "Something went wrong"
 
 #Flags
 error   = "error"
 success = "success"
-warning = "Warning"
-
 
 #Constants
 maxTrees        = 1000
@@ -35,11 +29,6 @@ firstColumn     = 0
 defSplit        = 40
 defSplitLeaf    = 42
 maxAccuracy     = 100.0
-recomAccuracy   = 70
-
-
-
-
 
 
 # Input structure for Neural Network
@@ -120,12 +109,8 @@ def RFreg(RF_inputs):
             #Mean squared error and accuracy
             RF_outputs.tst_mse = mean_squared_error(RF_outputs.y_actual, RF_outputs.y_test)
             RF_outputs.tst_accrc = maxAccuracy -  RF_outputs.tst_mse
-            if RF_outputs.tst_accrc < recomAccuracy:
-                RF_outputs.flag = warning
-                RF_outputs.msg  = wAccur
-            else:
-                RF_outputs.flag = success
-            return RF_outputs         
+            RF_outputs.flag = success
+            return RF_outputs
     except:
         RF_outputs.flag = error
         RF_outputs.msg  = eUnexpected
@@ -146,5 +131,3 @@ else:
     print('length of output array: ', RF_outputs1.length)
     print('Mean Square error:      ', RF_outputs1.tst_mse)
     print('Accuracy:               ', RF_outputs1.tst_accrc)
-    if RF_outputs1.flag == warning:
-        print(RF_outputs1.msg)

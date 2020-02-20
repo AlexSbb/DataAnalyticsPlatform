@@ -17,7 +17,6 @@ X2 = [  [4.5,6.7],
 # output dataset            
 y1 = [8.55055,5.53195,9.1547,11.91745]
 y2 = [8.55055,5.53195,9.1547]
-y3 = [8.55055,5.53195,0,11.91745]
 
 actv1 = ("identity", "logistic", "tanh", "relu")
 slvr1 = ("lbfgs", "sgd", "adam")
@@ -38,8 +37,6 @@ NN_inputs6 = NN.NN_inputs(X1,y1,0.95,actv1[3],hid_lyrs1,slvr1[1],200,True)
 NN_inputs7 = NN.NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],2001,True)
 #no of hidden layers
 NN_inputs8 = NN.NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs3,slvr1[1],200,True)
-#Test minimum accuracy check
-NN_inputs9 = NN.NN_inputs(X1,y3,0.2,actv1[3],hid_lyrs1,slvr1[1],500,True)
 
 #Positive cases----------------------------------------------------------
 
@@ -105,15 +102,6 @@ if NN_outputs1.flag == NN.error and NN_outputs1.msg == NN.eNoOfHiddLyr:
     print('Case5 Run1: Pass \n')
 else:
     print('Case5 Run1: Fail \n')
-
-#Test minimum accuracy check
-print('Selected data is not appropriate to train the model')
-NN_outputs1 = NN.NeuralNet(NN_inputs9)
-if NN_outputs1.flag == NN.warning and NN_outputs1.msg == NN.wAccur:
-    print('Case5 Run1: Pass \n')
-else:
-    print('Case5 Run1: Fail \n')
-    
 
 
 

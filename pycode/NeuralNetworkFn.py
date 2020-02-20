@@ -12,13 +12,10 @@ eIterCount      = "Number of Iteration should be in range 1 to 2000"
 eTestSize       = "Test size should be in range 0.1 to 0.9"
 eNoOfTrees      = "Number of trees should be within 1000"
 eUnexpected     = "Something went wrong"
-#Waring code
-wAccur          = "Selected data is not appropriate to predict data"
 
 #Flags
 error = "error"
 success = "success"
-warning = "Warning"
 
 #Constants
 minTst_siz      = 0.1
@@ -30,7 +27,6 @@ hid_layrslen    = 10
 maxAccuracy     = 100
 defSplit        = 40
 defSplitLeaf    = 1
-recomAccuracy   = 70
 
 # Neural Net paramenters selected by user should remain in the following range:
 actv1 = ("identity", "logistic", "tanh", "relu")
@@ -72,7 +68,7 @@ X1 = [   [4.5,6.7],
          [12.3,8.8] ]
 
 # output dataset (raw or processed selection)           
-y1 = [8.55055,5.53195,1,11.91745]
+y1 = [8.55055,5.53195,9.1547,11.91745]
 #END OF IMPORTING DATA---------------------------------------------------------------
 
 # Input initialization
@@ -133,12 +129,8 @@ def NeuralNet(NN_inputs):
                 #Mean squared error and accuracy
                 NN_outputs.tst_mse = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
                 NN_outputs.tst_accrc = maxAccuracy - NN_outputs.tst_mse
-                if NN_outputs.tst_accrc < recomAccuracy:
-                    NN_outputs.flag = warning
-                    NN_outputs.msg  = wAccur
-                else:
-                    NN_outputs.flag = success
-                return NN_outputs  
+                NN_outputs.flag = success
+                return NN_outputs
     except:
             NN_outputs.flag = error
             NN_outputs.msg  = eUnexpected
@@ -160,7 +152,3 @@ else:
     print('length of output array: ', NN_outputs1.length)
     print('Mean Square error:      ', NN_outputs1.tst_mse)
     print('Accuracy:               ', NN_outputs1.tst_accrc)
-    if NN_outputs1.flag == warning:
-        print(NN_outputs1.msg)
-
-    
