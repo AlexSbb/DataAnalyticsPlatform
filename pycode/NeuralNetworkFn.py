@@ -22,10 +22,11 @@ wAccuracy                = "Selected data is not appropriate to predict data"
 #Flags
 error   = "error"
 success = "success"
+warning = "Warning" 
 
 #Constants
-mintest_size          = 0.1
-maxtest_size          = 0.9
+minTest_size          = 0.1
+maxTest_size          = 0.9
 maxIteration          = 2000
 minIteration          = 0
 maxNeurons            = 1000
@@ -90,7 +91,6 @@ def NeuralNet(NN_inputs):
                    NN_outputs.flag = error
                    NN_outputs.message = eNeuronCount
                    return NN_outputs
-                   break
                 else:
                     pass
             if  NN_inputs.iterations > maxIteration or NN_inputs.iterations < minIteration:     # check for number of iterations
@@ -98,7 +98,7 @@ def NeuralNet(NN_inputs):
                 NN_outputs.message = eIterationCount 
               
             
-            elif NN_inputs.test_size < mintest_size or NN_inputs.test_size > maxtest_size:      # check for test size
+            elif NN_inputs.test_size < minTest_size or NN_inputs.test_size > maxTest_size:      # check for test size
                  NN_outputs.flag = error
                  NN_outputs.message = eTestSize
              

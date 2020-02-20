@@ -18,6 +18,7 @@ X2 = [  [4.5,6.7],
 # output dataset            
 y1 = [8.55055,5.53195,9.1547,11.91745]
 y2 = [8.55055,5.53195,9.1547]
+y3 = [8.55055,5.53195,0,11.91745]
 
 RF_inputs1 = RF.RF_inputs(X0,y1,300,0.5,True)
 RF_inputs2 = RF.RF_inputs(X1,y1,300,0.5,False)
@@ -26,7 +27,7 @@ RF_inputs3 = RF.RF_inputs(X2,y1,300,0.5,True)
 RF_inputs4 = RF.RF_inputs(X1,y2,300,0.5,True)
 RF_inputs5 = RF.RF_inputs(X1,y1,300,1.1,True)
 RF_inputs6 = RF.RF_inputs(X1,y1,3000,0.5,True)
-
+RF_inputs7 = RF.RF_inputs(X1,y3,300,0.5,True)
 
 
 #Positive cases----------------------------------------------------------

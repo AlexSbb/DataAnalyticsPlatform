@@ -17,6 +17,7 @@ wAccuracy                = "Selected data is not appropriate to predict data"
 #Flags
 error   = "error"
 success = "success"
+warning = "Warning" 
 
 #Constants
 maxTrees              = 1000
@@ -32,9 +33,6 @@ defSplit              = 40
 defSplitLeaf          = 42
 maxAccuracy           = 100.0
 recommendedAccuracy   = 70
-
-
-
 
 # Input structure for Neural Network
 class RF_inputs(NamedTuple):
