@@ -48,9 +48,13 @@ class DataSeries:
         self.beforeSmoothingArray = []
         self.afterSmoothingArray = []
 
-        self.randomForestPredictedOutput = []
-        self.randomForestExpectedOutput = []
-        self.randomForestTestInput = []
+        self.PredictedOutput = []
+        self.ExpectedOutput = []
+        self.TestInput = []
+        
+        self.randomForestMeanSquareError =0
+        self.randomForestAccuracy=0
+
 
         self.error = ''
 
@@ -73,9 +77,13 @@ class DataSeries:
         self.afterSmoothingArray = []
         self.error = ''
         self.neuralNetworkResults = []
-        self.randomForestPredictedOutput = []
-        self.randomForestExpectedOutput = []
-        self.randomForestTestInput = []
+        self.PredictedOutput = []
+        self.ExpectedOutput = []
+        self.TestInput = []
+        
+        self.randomForestMeanSquareError =0
+        self.randomForestAccuracy=0
+
 
     def resetError(self):
         self.error = ''
@@ -168,21 +176,23 @@ class DataSeries:
         rfInput = RF.RF_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData,trees,testSize/100,historyOnOff)
         RF_outputs=RF.RFreg(rfInput)
         if (RF_outputs.flag=="success"): 
-            self.randomForestExpectedOutput=RF_outputs.y_actual
-            self.randomForestPredictedOutput = RF_outputs.y_test
-            self.randomForestTestInput =  RF_outputs.X_test
+            self.ExpectedOutput=RF_outputs.y_actual
+            self.PredictedOutput = RF_outputs.y_test
+            self.TestInput =  RF_outputs.X_test
+            self.randomForestMeanSquareError = RF_outputs.test_mean_squared_error
+            self.randomForestAccuracy= RF_outputs.test_accuracy
         else:
             print('Error:')
-            print(RF_outputs.msg)
-            self.error = RF_outputs.msg
+            print(RF_outputs.message)
+            self.error = RF_outputs.message
         #Printing outputs
         # print('Predicted Output:       ', RF_outputs.y_test)
         # print('test input:             ', RF_outputs.X_test)
         # print('expected output:        ', RF_outputs.y_actual)
-        print('length of output array: ', RF_outputs.length)
-        print('Mean Square error:      ', RF_outputs.tst_mse)
-        print('Accuracy:               ', RF_outputs.tst_accrc)
-        print('flag:                   ', RF_outputs.flag)
+        # print('length of output array: ', RF_outputs.length)
+        # print('Mean Square error:      ', RF_outputs.tst_mse)
+        # print('Accuracy:               ', RF_outputs.tst_accrc)
+        # print('flag:                   ', RF_outputs.flag)
 
 class DataObject:
     def __init__(self, dataSeries, fileName):

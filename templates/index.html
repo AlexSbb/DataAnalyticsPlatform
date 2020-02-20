@@ -571,20 +571,20 @@
             }
         };        
         
-        var randomForestPredictedOutput=dataSeriesDict[key].randomForestPredictedOutput;
-        var randomForestExpectedOutput=dataSeriesDict[key].randomForestExpectedOutput;
-        if (randomForestPredictedOutput.length != []){
+        var PredictedOutput=dataSeriesDict[key].PredictedOutput;
+        var ExpectedOutput=dataSeriesDict[key].ExpectedOutput;
+        if (PredictedOutput.length != []){
             addDataSet_1 = {
                 label: 'PredictedOutput',
                 backgroundColor: colorNames[5],
-                data: randomForestPredictedOutput,
+                data: PredictedOutput,
                 borderColor: colorNames[5],
                 fill: false
             }
             addDataSet_2 = {
                 label: 'ExpectedOutput',
                 backgroundColor: colorNames[6],
-                data: randomForestExpectedOutput,
+                data: ExpectedOutput,
                 borderColor: colorNames[6],
                 fill: false
             }

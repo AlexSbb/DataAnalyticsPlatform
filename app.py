@@ -83,6 +83,9 @@ def resetGlobalDataObject():
         print("not working")
         globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
     elif action == "performNNCalculations":
+        # Random Forest      
+        print("performRFCalculations")
+
         print()
     elif action == "performRFCalculations":
         # Random Forest      
