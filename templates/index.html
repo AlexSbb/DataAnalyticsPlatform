@@ -5,10 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-    <title>MAIT 2019</title>
+<title>MAIT 2019</title>
   </head>
   <body>
 
@@ -52,7 +53,7 @@
                 <h5 class="border-bottom">Select dataset</h5>
 
                         <div class="input-group">
-                            <select class="custom-select " id="selectDataSet" onchange="onChangeselectDataSet()">
+                            <select class="custom-select" id="selectDataSet" onchange="onChangeselectDataSet()">
                                 <option selected>Choose dataset:</option>
                                 <!-- <option value="1">One</option> -->
                               </select>
@@ -204,13 +205,13 @@
                 <h5 class="border-bottom"> I/O Relationship models:</h5>
                 <ul class="nav flex-column">
                     <label>Select input:   </label>
-                    <select class="custom-select" id="selectDataSetNNInput" onchange="onChangeselectDataSet()">
+                    <select class="custom-select mb-2" multiple size="4" id="selectDataSetNNInput" onchange="onChangeselectDataSet()">
                         <option selected>Choose one or more datasets:</option>
                         <!-- <option value="1">One</option> -->
                     </select>
                     <label>Select output:   </label>
-                    <select class="custom-select " id="selectDataSetNNOutput" onchange="onChangeselectDataSet()">
-                        <option selected>Choose one datasets:</option>
+                    <select class="custom-select mb-2" id="selectDataSetNNOutput" onchange="onChangeselectDataSet()">
+                        <option selected>Choose one dataset:</option>
                         <!-- <option value="1">One</option> -->
                     </select>
 
@@ -218,7 +219,7 @@
                     <li class="nav-item"> 
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="NN_RF" id="neuralNet_radio" value="neuralNet" checked>
-                            <label class="form-check-label" for="neuralNet_radio">
+                            <label class="form-check-label mb-2" for="neuralNet_radio">
                                 Neural Network
                             </label>
                         </div>
@@ -256,19 +257,19 @@
                             <div class="input-group">
                                 Hidden layers
                             </div>
-                            <div class="mb-1">
-                                <input type="number" id="hl1" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl2" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl3" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl4" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl5" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                            <div class="input-group mb-1" style="font-size:small" >
+                                <input type="number" class="mr-1" id="hl1" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl2" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl3" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl4" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl5" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                             </div>
-                            <div>
-                                <input type="number" id="hl6" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl7" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl8" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl9" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
-                                <input type="number" id="hl10" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                            <div class="input-group mb-1 " style="font-size:small">
+                                <input type="number" class="mr-1" id="hl6" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl7" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl8" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl9" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
+                                <input type="number" class="mr-1" id="hl10" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                             </div>   
                             <p>  </p>
                         <!--Iterations -->
@@ -288,12 +289,11 @@
                         </div>
                         
                     </li >
-                    <br>
                     <!-- Random Forest -->
                     <li class="nav-item">
                         <div class="form-check">
                             <input class="form-check-input" type="radio" name="NN_RF" id="ranromF_radio" value="randomForest">
-                            <label class="form-check-label" for="ranromF_radio">
+                            <label class="form-check-label mb-2" for="ranromF_radio">
                                 Random Forest
                             </label>
                         </div>        
@@ -375,6 +375,9 @@
     var dataSeriesDict ={}
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart
+    var selectDataMenusArray = ["selectDataSet", "selectDataSetNNInput", "selectDataSetNNOutput"];
+    var selectDataMenusArrayOptions = ["Choose dataset:", "Choose one or more datasets:", "Choose one dataset:"];
+
     //Get global data object from Python
     getGlobalDataObject() 
 
@@ -478,17 +481,19 @@
     //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
         
-        var selectDataSet = document.getElementById("selectDataSet");        
-        removeOptions(selectDataSet)
-        var option= document.createElement("option"); 
-        option.textContent = 'Choose dataset:';
-        selectDataSet.appendChild(option);
-        dataSetsNames.forEach((element, index) => {
+        for (i = 0; i < selectDataMenusArray.length; i++) {
+            var selectDataSet = document.getElementById(selectDataMenusArray[i]);   
+            removeOptions(selectDataSet)
             var option= document.createElement("option"); 
-            console.log(index); // 0, 1, 2
-            option.textContent = element;
+            option.textContent = selectDataMenusArrayOptions[i];
             selectDataSet.appendChild(option);
-        });
+            dataSetsNames.forEach((element, index) => {
+                var option= document.createElement("option"); 
+                console.log(index); // 0, 1, 2
+                option.textContent = element;
+                selectDataSet.appendChild(option);
+            });
+        }
     };
     
     //action triggered when any selection is made in a dropdown menu
@@ -499,8 +504,6 @@
         console.log(dataSeriesDict[currKey].name);
         fillAllElements(currKey);
         plotData(currKey);
-
-
     };
 
     function fillAllElements(key){
@@ -567,8 +570,6 @@
                 scaleShowHorizontalLines: true,
                 maintainAspectRatio: true,
             }
-
-        
         };        
                
         // var plotData = {
