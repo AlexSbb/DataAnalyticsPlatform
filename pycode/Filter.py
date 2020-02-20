@@ -537,7 +537,7 @@ class Filter():
                                                   InterpolatedMatrixIndex2[index][3],
                                                   InterpolatedMatrixIndex2[index][4]],
                                                  kind='quadratic')
-                        InterpolatedMatrix[val2] = round(float(val2), 4)
+                        InterpolatedMatrix[val2] = round(float(f(val2)), 4)
 
         except:
             flag = Filter.Error
