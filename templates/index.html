@@ -583,6 +583,34 @@
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         lbl4.innerHTML = "Maximum value: " + dataSeriesDict[key].realMax;                // Insert text
         document.getElementById("jumboContainer").appendChild(lbl4);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+        
+        if(dataSeriesDict[key].valPercent != ''){
+            var lbl20 = document.createElement("label");
+            lbl20.innerHTML = "Percentage of replaced: " + dataSeriesDict[key].valPercent;                // Insert text
+            document.getElementById("jumboContainer").appendChild(lbl20);     // Append <p> to <div> with id="myDIV" 
+            document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+
+        }
+        
+        if(dataSeriesDict[key].MeanSquareError != ''){
+            var lbl21 = document.createElement("label");
+            lbl21.innerHTML = "Mean Square Error: " + dataSeriesDict[key].MeanSquareError;                // Insert text
+            document.getElementById("jumboContainer").appendChild(lbl21);     // Append <p> to <div> with id="myDIV" 
+            document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+
+        }
+        if(dataSeriesDict[key].Accuracy != ''){
+            var lbl22 = document.createElement("label");
+            lbl22.innerHTML = "Accuracy: " + dataSeriesDict[key].Accuracy;                // Insert text
+            document.getElementById("jumboContainer").appendChild(lbl22);     // Append <p> to <div> with id="myDIV" 
+            document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+
+        }
+
+        
+        
+
 
 //         document.getElementById("seriesName").innerHTML = "Data series name: " + dataSeriesDict[key].name; // set a new value;
 //         document.getElementById("seriesLength").innerHTML = "Original length: " + dataSeriesDict[key].originalData.length; // set a new value;
