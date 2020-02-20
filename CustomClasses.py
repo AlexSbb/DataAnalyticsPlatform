@@ -195,7 +195,17 @@ class DataSeries:
     def neuralNetwork(self,inputSeriesData, testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff ):
         print('Hi, Im neuralNetwork')
 
-        NN_outputs = NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData, testSize/100, activeFunction, hiddenLayers, solverFunction, iterations, scalingOnOff))
+        NnInput = NN.NN_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData, testSize/100, activeFunction.lower(), hiddenLayers, solverFunction.lower(), iterations, scalingOnOff)
+      
+        # print("inputSeriesData",NnInput.X)
+        # print("NnInput.y",NnInput.y)
+        # print("NnInput.test_size)",NnInput.test_size)
+        # print("activation_fun)",NnInput.activation_fun)
+        # print("hidden_layers)",NnInput.hidden_layers)
+        # print("solver_fun)",NnInput.solver_fun)
+        # print("iterations)",NnInput.iterations)
+        # print("scaling",NnInput.scaling)
+        NN_outputs = NN.NeuralNet(NnInput)
         if (NN_outputs.flag=="success"): 
             self.ExpectedOutput     = NN_outputs.y_actual
             self.PredictedOutput    = NN_outputs.y_test
@@ -205,16 +215,14 @@ class DataSeries:
         else:
             print('Error:')
             print(NN_outputs.message)
-            self.error = NN_outputs.message
-        
-        
-        print('flag:                   ', NN_outputs.flag)
-        print('Predicted Output:       ', NN_outputs.y_test)
+            self.error = NN_outputs.message      
+        # print('flag:                   ', NN_outputs.flag)
+        # print('Predicted Output:       ', NN_outputs.y_test)
         # print('test input:             ', NN_outputs.X_test)
-        print('expected output:        ', NN_outputs.y_actual)
-        print('length of output array: ', NN_outputs.length)
-        print('Mean Square error:      ', NN_outputs.test_mean_squared_error)
-        print('Accuracy:               ', NN_outputs.test_accuracy)
+        # print('expected output:        ', NN_outputs.y_actual)
+        # print('length of output array: ', NN_outputs.length)
+        # print('Mean Square error:      ', NN_outputs.test_mean_squared_error)
+        # print('Accuracy:               ', NN_outputs.test_accuracy)
 
 
 
