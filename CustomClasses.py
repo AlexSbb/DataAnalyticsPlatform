@@ -48,6 +48,14 @@ class DataSeries:
         self.beforeSmoothingArray = []
         self.afterSmoothingArray = []
 
+        self.PredictedOutput = []
+        self.ExpectedOutput = []
+        self.TestInput = []
+        
+        self.randomForestMeanSquareError =0
+        self.randomForestAccuracy=0
+
+
         self.error = ''
 
         self.neuralNetworkResults = []
@@ -69,6 +77,13 @@ class DataSeries:
         self.afterSmoothingArray = []
         self.error = ''
         self.neuralNetworkResults = []
+        self.PredictedOutput = []
+        self.ExpectedOutput = []
+        self.TestInput = []
+        
+        self.randomForestMeanSquareError =0
+        self.randomForestAccuracy=0
+
 
     def resetError(self):
         self.error = ''
@@ -147,12 +162,37 @@ class DataSeries:
         if flag == 'error':
             print('Error:')
             print(msg)
+            self.error=msg
         else:
             self.currentData = list(newarr[0])
             self.originalData = list(revisedInputarr[0])
             # Amrita use an array of arrays like the output also, so I use only the first array
             # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
             # self.afterSmoothingArray = list(afterSmoothingArray[0])
+    
+    def randonForest(self, inputSeriesData,trees,testSize,historyOnOff):
+        print('Hi, Im random forest')
+
+        rfInput = RF.RF_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData,trees,testSize/100,historyOnOff)
+        RF_outputs=RF.RFreg(rfInput)
+        if (RF_outputs.flag=="success"): 
+            self.ExpectedOutput=RF_outputs.y_actual
+            self.PredictedOutput = RF_outputs.y_test
+            self.TestInput =  RF_outputs.X_test
+            self.randomForestMeanSquareError = RF_outputs.test_mean_squared_error
+            self.randomForestAccuracy= RF_outputs.test_accuracy
+        else:
+            print('Error:')
+            print(RF_outputs.message)
+            self.error = RF_outputs.message
+        #Printing outputs
+        # print('Predicted Output:       ', RF_outputs.y_test)
+        # print('test input:             ', RF_outputs.X_test)
+        # print('expected output:        ', RF_outputs.y_actual)
+        # print('length of output array: ', RF_outputs.length)
+        # print('Mean Square error:      ', RF_outputs.tst_mse)
+        # print('Accuracy:               ', RF_outputs.tst_accrc)
+        # print('flag:                   ', RF_outputs.flag)
 
 class DataObject:
     def __init__(self, dataSeries, fileName):
@@ -190,9 +230,9 @@ class DataObject:
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
-    # def neuralNetwork(self, inputDataSeries, outputDataSeries, testSize, activationFunction, hiddenLayersInput, solverInput, iterationNumber, scalingOnOff):
-    #     self.neuralNetworkResults = NN.NeuralNet(NN.NN_inputs(inputDataSeries,outputDataSeries,testSize,activationFunction,hiddenLayersInput,solverInput,iterationNumber,scalingOnOff))
 
+
+ 
 def changeDataSeriesForm(dataSeriesArray):
     convertedArray = []
     if len(dataSeriesArray) == 0:
@@ -206,6 +246,11 @@ def changeDataSeriesForm(dataSeriesArray):
             tempArray.append(dataSeriesArray[ii][i])
         convertedArray.append(tempArray)
     return convertedArray
+
+
+
+
+
 
 
 testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
@@ -323,10 +368,4 @@ testDataObject.addSeries([list(np.random.rand(10)), list(np.random.rand(10))], '
 
 # RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
 
-# #Printing outputs
-# print('Predicted Output:       ', RF_outputs1.y_test)
-# print('test input:             ', RF_outputs1.X_test)
-# print('expected output:        ', RF_outputs1.y_actual)
-# print('length of output array: ', RF_outputs1.length)
-# print('Mean Square error:      ', RF_outputs1.tst_mse)
-# print('Accuracy:               ', RF_outputs1.tst_accrc)
+
