@@ -14,7 +14,7 @@ eNeuronCount             = "Number of Neurons should be in range 1 to 1000"
 eIterationCount          = "Number of Iteration should be in range 1 to 2000"
 eTestSize                = "Test size should be in range 0.1 to 0.9"
 eNoOfTrees               = "Number of trees should be within 1000"
-eUnexpected              = "Something went wrong"
+eUnexpected              = "Internal Error"
 #Waring code
 wAccuracy                = "Selected data is not appropriate to predict data"
 
