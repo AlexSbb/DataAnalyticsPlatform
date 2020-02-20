@@ -372,8 +372,8 @@ class Filter():
                     count1 = count1 + 1
                     count = 0
 
-            if count != 0:
-                count1 += 1
+        if count != 0:
+            count1 += 1
 
         return count1
 

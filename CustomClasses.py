@@ -39,7 +39,9 @@ class DataSeries:
         self.maxMinMatrix = []
         self.stdDevMaxMinMatrix = [] # what is this???
         self.stdDevFactor =  1.0
-        self.interpolationType = linear #true for linear and false for quadratic interpolation
+        self.interpolationType = linear 
+        # 0 - Linear Interpolation
+        # 1 - Quadratic Interpolation
         self.interpolationArray = []
         self.replaceArray = []
         self.valPercent = 0
@@ -81,10 +83,11 @@ class DataSeries:
     def maxMin (self):
         print("I am in maxMin in maxMin")
         filterObj = Filter.Filter()
-        flag,valPercent,replaceArray,msg =filterObj.maxMin(self.currentData, self.selectedMax, self.selectedMin)
+        flag,valPercent,replaceArray,msg =filterObj.maxMin(self.originalData, self.selectedMax, self.selectedMin)
         if flag == 'error':
             print('Error:')
             print(msg)
+            self.error=msg
         else:
             self.replaceArray = replaceArray
             self.valPercent = valPercent
@@ -99,10 +102,11 @@ class DataSeries:
         # What does maxValue and minValue mean here? Do we really want to overwrite our self.selectedMax, self.selectedMin? 
         # I thought we are only using max and min for the hard limits.
         filterObj = Filter.Filter()
-        flag, valPercent, replaceArray, selectedMax, selectedMin, msg = filterObj.stdDev(self.currentData,self.stdDevFactor)
+        flag, valPercent, replaceArray, selectedMax, selectedMin, msg = filterObj.stdDev(self.originalData,self.stdDevFactor)
         if flag == 'error':
             print('Error:')
             print(msg)
+            self.error=msg
         else:
             self.replaceArray = replaceArray
             self.valPercent = valPercent
@@ -122,10 +126,15 @@ class DataSeries:
             self.selectedMin = min
         # We are not setting the replace array anywhere. Either we or them needs to run their max min method, so that it is produced. 
         filterObj = Filter.Filter()
-        flag, InterpolatedMatrix, msg = filterObj.interpolation(self.currentData, self.replaceArray, 0, self.selectedMax, self.selectedMin)
+        print("selectedMax= ", self.selectedMax)
+        print("selectedMin= ", self.selectedMin)
+        print("interpolationType= ", self.interpolationType)
+        print('0 - Linear Interpolation, 1 - Quadratic Interpolation ')
+        flag, InterpolatedMatrix, msg = filterObj.interpolation(self.originalData, self.replaceArray, self.interpolationType, self.selectedMax, self.selectedMin)
         if flag == 'error':
             print('Error:')
             print(msg)
+            self.error=msg
         else:
             self.currentData = InterpolatedMatrix
 
