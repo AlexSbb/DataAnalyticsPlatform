@@ -570,6 +570,7 @@
     }
 
     function performInterpolation(){
+        seriesName = document.getElementById("selectDataSet").value
         if (seriesName == "Choose dataset:"){
             window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
