@@ -645,9 +645,11 @@
             return
         }
         if (document.getElementById("quadratic_radio").checked){
-            interpolationType = 'quadratic';
+            // Quadratic
+            interpolationType = 1;
         } else {
-            interpolationType = 'linear';
+            // Linear
+            interpolationType = 0;
         }
         if (document.getElementById("HardLimitRadios").checked){
             interpolationOutlierType = 'hardLimit'
@@ -677,8 +679,8 @@
                 action: "performInterpolationHardLimits",
                 seriesName: seriesName,
                 interpolationType: interpolationType, //linear or quadratic
-                Intrp_Min: document.getElementById("Intrp_Min").value,
-                Intrp_Max: document.getElementById("Intrp_Max").value
+                selectedMin: document.getElementById("Intrp_Min").value,
+                selectedMax: document.getElementById("Intrp_Max").value
             }; 
         } else {
             postData = { 

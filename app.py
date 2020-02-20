@@ -57,7 +57,7 @@ def resetGlobalDataObject():
         seriesName= request.get_json()['seriesName']
         smoothingType = request.get_json()['smoothingType']
         globalDataObject.dataSeriesDict[seriesName].smoothing(smoothingType,window)    
-    elif action == "performInterpolation_Limit":
+    elif action == "performInterpolationHardLimits":
         # Interpolation with hard limits, done!
         seriesName=request.get_json()['seriesName']
         selectedMin=float(request.get_json()['selectedMin'])
@@ -77,10 +77,26 @@ def resetGlobalDataObject():
             errorMsg=globalDataObject.dataSeriesDict[seriesName].error
             globalDataObject.dataSeriesDict[seriesName].resetError()
             return jsonify(message = errorMsg ) 
-    elif action == "performInterpolation_StandardDev":
+    elif action == "performInterpolationStdDev":
         # Interpolation with standart deviation
         print("not working")
-        globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+        seriesName = request.get_json()['seriesName']
+        Std_factor = int(request.get_json()['Std_factor'])
+        interpolationType=int(request.get_json()['interpolationType']) 
+        # 0 - Linear Interpolation
+        # 1 - Quadratic Interpolation
+        
+        globalDataObject.dataSeriesDict[seriesName].stdDevFactor=Std_factor
+        globalDataObject.dataSeriesDict[seriesName].interpolationType=interpolationType
+        globalDataObject.dataSeriesDict[seriesName].standardDeviation()
+        if (globalDataObject.dataSeriesDict[seriesName].error == ''):
+            # if StDev is OK, than calculate interpolation
+            globalDataObject.dataSeriesDict[seriesName].interpolation()
+        else:
+            errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+            globalDataObject.dataSeriesDict[seriesName].resetError()
+            return jsonify(message = errorMsg ) 
+
     elif action == "performNNCalculations":
         # Neural Network     
         print("Neural Network")  
@@ -106,18 +122,18 @@ def resetGlobalDataObject():
     elif action == "performRFCalculations":
         # Random Forest      
         print("performRFCalculations")
-        seriesName              = request.get_json()['outputSeries'] 
-        inputSeriesNameArray    = list(request.get_json()['inputSeries'])
-        trees                   = int(request.get_json()['trees'])
-        testSize                = float(request.get_json()['testSize'])
-        historyOnOff            = bool(request.get_json()['historyOnOff'])
-        
+        try:
+            seriesName              = request.get_json()['outputSeries'] 
+            inputSeriesNameArray    = list(request.get_json()['inputSeries'])
+            trees                   = int(request.get_json()['trees'])
+            testSize                = float(request.get_json()['testSize'])
+            historyOnOff            = bool(request.get_json()['historyOnOff'])
+        except:
+            return jsonify(message = 'Wrong input' ) 
         inputSeriesData =[]
         for name in inputSeriesNameArray:
             inputSeriesData.append(globalDataObject.dataSeriesDict[name].currentData)
-        globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeriesData,trees,testSize,historyOnOff)
-
-
+        globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeriesData,trees,testSize,historyOnOff)  
     
     if (globalDataObject.dataSeriesDict[seriesName].error == ''):
         return  jsonify(globalDataObject.toJSON()) 
@@ -126,29 +142,29 @@ def resetGlobalDataObject():
         globalDataObject.dataSeriesDict[seriesName].resetError()
         return jsonify(message = errorMsg) 
 
-@app.route('/interpolation', methods=['POST'] )
-def interpolation():
-    seriesName= request.get_json()['seriesName']      
-    limit_or_dev=bool(request.get_json()['limit_or_dev'])
-    selectedMin=float(request.get_json()['selectedMin'])
-    selectedMax=float(request.get_json()['selectedMax'])
-    stdDevFactor=int(request.get_json()['stdDevFactor'])
-    interpolationType=bool(request.get_json()['interpolationType'])
-    if  limit_or_dev:
-        # Calculate hard limit
-        globalDataObject.dataSeriesDict[seriesName].maxMin(selectedMax,selectedMin)
-        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
-    else:
-        # Calculate standart deviation
-        globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
-        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+# @app.route('/interpolation', methods=['POST'] )
+# def interpolation():
+#     seriesName= request.get_json()['seriesName']      
+#     limit_or_dev=bool(request.get_json()['limit_or_dev'])
+#     selectedMin=float(request.get_json()['selectedMin'])
+#     selectedMax=float(request.get_json()['selectedMax'])
+#     stdDevFactor=int(request.get_json()['stdDevFactor'])
+#     interpolationType=bool(request.get_json()['interpolationType'])
+#     if  limit_or_dev:
+#         # Calculate hard limit
+#         globalDataObject.dataSeriesDict[seriesName].maxMin(selectedMax,selectedMin)
+#         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+#     else:
+#         # Calculate standart deviation
+#         globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
+#         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
     
-    if (globalDataObject.dataSeriesDict[seriesName].error == ''):
-        return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
-    else:
-        errorMsg=globalDataObject.dataSeriesDict[seriesName].error
-        globalDataObject.dataSeriesDict[seriesName].resetError()
-        return jsonify(message = errorMsg ) 
+#     if (globalDataObject.dataSeriesDict[seriesName].error == ''):
+#         return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
+#     else:
+#         errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+#         globalDataObject.dataSeriesDict[seriesName].resetError()
+#         return jsonify(message = errorMsg ) 
 
 
 if __name__ == '__main__':
