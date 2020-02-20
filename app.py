@@ -57,5 +57,24 @@ def resetGlobalDataObject():
  #   return jsonify(globalDataObject.toJSON()) 
     return jsonify("Success") 
 
+@app.route('/interpolation', methods=['POST'] )
+def interpolation():
+    seriesName= request.get_json()['seriesName']      
+    limit_or_dev=bool(request.get_json()['limit_or_dev'])
+    selectedMin=float(request.get_json()['selectedMin'])
+    selectedMax=float(request.get_json()['selectedMax'])
+    stdDevFactor=int(request.get_json()['stdDevFactor'])
+    interpolationType=bool(request.get_json()['interpolationType'])
+    if  limit_or_dev:
+        # Calculate hard limit
+        globalDataObject.dataSeriesDict[seriesName].maxMin(selectedMax,selectedMin)
+        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+    else:
+        # Calculate standart deviation
+        globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
+        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+    return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
+
+
 if __name__ == '__main__':
     app.run(debug=True)

@@ -21,125 +21,247 @@ class Filter():
     Error= 'error'
     success = 'success'
     Error_msg1 = 'File can not be processed'
-    Error_msg2 = 'For fixed moving average provide odd no window '
+    Error_msg2 = 'For fixed moving average provide odd numbers of window '
+    Error_msg3 = 'Window is bigger than the input length.'
+    Error_msg4 = 'Number of input values less than 3'
+    Error_msg5 = 'Provide a proper moving average type' 
+    Error_msg6 = 'Provide a Integer value '
+    inputNo = 3
+    stdDevFactorMax = 6
+    stdDevFactorMin = 1
 
     """This is the initializer.   
-    def __init__(self):
+       def __init__(self):
         pass
 
         #self.name = name""" 
-    
-     
-    """method moving_avg_forward: is the moving average for the data which moved forward by the number
-    of periods determined by the trader
-    parameters:
-        input_array : input array provided to smooth
-        window : window to calculate moving average
-    variables:
-        values : array to capture intermediate values after convolution
-        weights : array calulated with numpy Repeat method anf geting output of size window and
-                  value 1.0/window
-        input_array_len : length of input_array
-            
-    return:
-        newarr : array to capture intermediate values after convolution
-    
+
     """
+    *****************************************************************************************************************************
+    method maxMin       : 
+        inputArray      : input array provided to fid outlier
+        stdDevFactor    : Factor that multiply the Standard Deviation and is used to calculate the MaxValue and MinValue for the limits.
+
+    variables:
+ 
+        stdDevNum        : Calculates the Standard Deviation of the Data
+        stdMeanNum       : Calculates the Mean of the Data
+            
+     return:
+        valPercent         : Calculates de amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
+        replaceMatrixIndex : Array with identyfied rows that are detected as Outliers.
+        flag               : success or error
+        msg                : success or error massage reason
+        maxValue           : Calculates the Maximum Value limit 
+        minValue           : Calculates the Minimum Value limit 
+    *****************************************************************************************************************************"""    
     
 
     
-    def maxMin(self,OriginalMatrix, MaxValue, MinValue):
+    def maxMin(self,inputArray, maxValue, minValue):
         
-        ReplaceMatrixIndex = []
+        replaceMatrixIndex = []
         val_percent = 0
         flag = Filter.success
         msg = ''
         try:
-            if(MaxValue < MinValue ):
+            #checking valid length of array
+            if(len(inputArray) < Filter.inputNo):
+                msg = Filter.Error_msg4 #'Number of input values less than 3'
+                flag = Filter.Error #'error'
+                return flag,val_percent, replaceMatrixIndex,msg
+            
+            if(maxValue < minValue ):
                 flag = Filter.Error
                 msg = 'Max value is lower than Min value'
-            elif(MaxValue == MinValue):
+            elif(maxValue == minValue):
                 flag = Filter.Error
                 msg = 'Max value equal to than Min value'
             else:
                 
-                for index in range(len(OriginalMatrix)):
-                    if OriginalMatrix[index] > MaxValue or OriginalMatrix[index] < MinValue:
-                        ReplaceMatrixIndex.append(index)
-                        val_percent = len(ReplaceMatrixIndex) * 100 / len(OriginalMatrix)   
+                for index in range(len(inputArray)):
+                    if inputArray[index] > maxValue or inputArray[index] < minValue:
+                        replaceMatrixIndex.append(index)
+                        val_percent = len(replaceMatrixIndex) * 100 / len(inputArray)   
 
         except:
             flag = Filter.Error
             msg = Filter.Error_msg1 
                      
 
-        return flag,val_percent, ReplaceMatrixIndex,msg 
+        return flag,val_percent, replaceMatrixIndex,msg 
     
+    """
+    *****************************************************************************************************************************
+    method stdDev       : This method measure of the amount of variation or dispersion of a set of values parameters:
+        inputArray      : input array provided to fid outlier
+        stdDevFactor    : Factor that multiply the Standard Deviation and is used to calculate the MaxValue and MinValue for the limits.
 
-
-    
-    
-    
-    def stdDev(self,OriginalMatrix, StdDevFactor):
-        ReplaceMatrixIndex = []
-        flag = Filter.success
-        msg = ''        
-        try:
-            StdDevNum = np.std(OriginalMatrix, axis=0)
-            StdMeanNum = np.mean(OriginalMatrix, axis=0)
-            MaxValue = StdMeanNum+(StdDevNum*StdDevFactor)
-            MinValue = StdMeanNum-(StdDevNum*StdDevFactor)
-            flag,val_percent, ReplaceMatrixIndex,msg = Filter.maxMin(self, OriginalMatrix, MaxValue, MinValue)
-        except:
-            flag = Filter.Error
-            msg = Filter.Error_msg1
-
-        return flag, val_percent, ReplaceMatrixIndex, MaxValue, MinValue,msg
-    
-
-    
-    
-    def movingAvg(self,input_array, window, avg_type):
-        flag = ''
-        msg = ''
-        try:
-            values=[]
-            newarr = []
-            revised_inputarr1 = []
-            revised_inputarr = []
-            flag = Filter.success
-            weights = np.repeat(1.0, window)/window 
-            input_array_len = len(input_array)
-            if( window == 1):
-                msg = 'Provide a proper window'
-                flag = Filter.Error
-            else:
-                for i in range(input_array_len):
-                    values = np.convolve(input_array[i], weights, 'valid')
-                    newarr.append(values)
-                    if avg_type == 'forward':
-                        for i in range(input_array_len):
-                            revised_inputarr.append(np.flip(np.delete(np.flip(input_array[i]),np.s_[0: int(window - 1) :])))
-                    elif avg_type == 'backward':
-                        for i in range(input_array_len):
-                            revised_inputarr.append(np.delete(input_array[i],np.s_[0: window - 1 :]))
-                    elif avg_type == 'fixed':
-                        if(window % 2 != 0):
-                            for i in range(input_array_len):
-                                revised_inputarr1.append(np.flip(np.delete(np.flip(input_array[i]),np.s_[0: int((window - 1)/2) :])))
-                            for j in range(input_array_len):
-                                revised_inputarr.append(np.delete(revised_inputarr1[i],np.s_[0: int((window - 1)/2) :]))
-                        else:
-                            msg = Filter.Error_msg2
-                            flag = Filter.Error
-                    else:
-                        flag = Filter.Error
-        except:
-            flag = Filter.Error
-            msg = Filter.Error_msg2
+    variables:
+ 
+        stdDevNum        : Calculates the Standard Deviation of the Data
+        stdMeanNum       : Calculates the Mean of the Data
             
+     return:
+        valPercent         : Calculates de amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
+        replaceMatrixIndex : Array with identyfied rows that are detected as Outliers.
+        flag               : success or error
+        msg                : success or error massage reason
+        maxValue           : Calculates the Maximum Value limit 
+        minValue           : Calculates the Minimum Value limit 
+    *****************************************************************************************************************************"""    
     
-        return flag,revised_inputarr,newarr,msg
+    
+    def stdDev(self,inputArray, stdDevFactor):
+        
+         
+        replaceMatrixIndex = []#initializing array
+        flag = Filter.success
+        msg = '' 
+        
+        #providing try block to handle exceptions
+        try:
+            #initializing variables
+            valPercent = 0
+            maxValue   = 0
+            minValue   = 0
+            
+            if type(stdDevFactor) != int :
+                msg = Filter.Error_msg6  #'Provide a Integer value '
+                flag = Filter.Error #'error' 
+                return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg
+            #check the range of standard deviation factor
+            if stdDevFactor > Filter.stdDevFactorMax or stdDevFactor < Filter.stdDevFactorMin :
+
+                msg  = 'standard deviation factor should be between ' + str(Filter.stdDevFactorMin) + ' and '+ str(Filter.stdDevFactorMax)
+                flag = Filter.Error #'error' 
+                return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg
+            
+            #checking valid length of array
+            if(len(inputArray) < Filter.inputNo):
+                msg = Filter.Error_msg4 #'Number of input values less than 3'
+                flag = Filter.Error #'error'
+                return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg #returing flag(error),0,[],0,0, message
+            
+            #calculation with valid length of array
+            else:
+                stdDevNum = np.std(inputArray, axis=0)
+                stdMeanNum = np.mean(inputArray, axis=0)
+                maxValue = stdMeanNum+(stdDevNum*stdDevFactor)
+                minValue = stdMeanNum-(stdDevNum*stdDevFactor)
+                flag,valPercent, replaceMatrixIndex,msg = Filter.maxMin(self, inputArray, maxValue, minValue)
+
+        except:
+            flag = Filter.Error
+            msg  = Filter.Error_msg1
+
+        return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg
+    
+   
+     
+    """
+    *****************************************************************************************************************************    
+    method movingAvg    : is the moving average for the data to move forward,backward or fixed by the number of windows 
+                          determined by the trader or the user
+    parameters:
+        inputArray      : input array provided to smooth data
+        window          : window to calculate moving average
+        avgType         : type of moving average.default avgType = bakward 
+                          the values can be either of these three values according to user.
+                          1.forward
+                          2.bakward
+                          3.fixed
+    variables:
+        values           : array to capture intermediate values after convolution
+        weights          : array calulated with numpy Repeat method anf geting output of size window and  value 1.0/window
+                          
+        revisedInputarr1 : intermediate array to calcuate final array
+        inputArrayLen    : number of input
+        i,j              : used for looping
+            
+     return:
+        newarr           : array containing smoothed data
+        revisedInputarr  : revised input data according to type of moving average and window
+        flag             : success or error
+        msg              : success or error massage reason
+    *****************************************************************************************************************************"""  
+    
+    def movingAvg(self,inputArray, window, avgType):
+    
+        
+        flag = Filter.success
+        msg  = ''
+        
+        #providing try block to handle exceptions
+        try:
+            
+            if avgType is None :
+                avgType = 'backward'#checking if moving average type is null and setting default value   
+                
+            #initializing  array
+            values=[]
+            newarr = [] 
+            revisedInputarr1 = []
+            revisedInputarr = []
+            
+            #checking wondow is integer
+            if type(window) != int :
+                msg = Filter.Error_msg6  #'Provide a Integer value '
+                flag = Filter.Error #'error' 
+                return flag,revisedInputarr,newarr,msg
+            
+
+            weights = np.repeat(1.0, window)/window #array of window size with value 1.0/window 
+            inputArrayLen = len(inputArray)#calculating number of input
+            
+
+            
+            #checking valid length of array
+            if(len(inputArray[0]) < Filter.inputNo):
+                msg = Filter.Error_msg4 #'Number of input values less than 3'
+                flag = Filter.Error #'error'
+                return flag,revisedInputarr,newarr,msg 
+       
+            # checking the window not crossing 1 and length of input data
+            if( window == 1 or window > len(inputArray[0]) ):
+                flag = Filter.Error #'error'
+                if(window == 1):
+                    msg = 'window should not be 1'                
+                else:
+                    msg = Filter.Error_msg3 #'Window is bigger than the input length.'
+                return flag,revisedInputarr,newarr,msg 
+                
+            #if window is in range     
+            else:
+                for i in range(inputArrayLen):# loop for 1 or more data input
+                    values = np.convolve(inputArray[i], weights, 'valid') # calculating moving average 
+                    newarr.append(values) # appending smoothed data
+                    if avgType == 'forward':
+                        for i in range(inputArrayLen):
+                            revisedInputarr.append(np.flip(np.delete(np.flip(inputArray[i]),np.s_[0: int(window - 1) :]))) #deleting extra data from backside of input array
+                    
+                    elif avgType == 'backward':
+                        for i in range(inputArrayLen):
+                            revisedInputarr.append(np.delete(inputArray[i],np.s_[0: window - 1 :]))#deleting extra data from front of input array
+                    
+                    elif avgType == 'fixed':
+                        if(window % 2 != 0):
+                            for i in range(inputArrayLen):
+                                revisedInputarr1.append(np.flip(np.delete(np.flip(inputArray[i]),np.s_[0: int((window - 1)/2) :])))#deleting extra data from backside of input array
+                            for j in range(inputArrayLen):
+                                revisedInputarr.append(np.delete(revisedInputarr1[i],np.s_[0: int((window - 1)/2) :])) #deleting extra data from front of input array
+                        else:
+                            flag = Filter.Error #'error'
+                            msg = Filter.Error_msg2 #'For fixed moving average provide odd numbers of window '
+                    else:
+                        flag = Filter.Error #'error'
+                        msg = Filter.Error_msg5 #'Provide a proper moving average type'
+                        
+        #handling exceptions in except block
+        except:
+            flag = Filter.Error #'error'
+            msg = Filter.Error_msg1 #unexpected error 'File can not be processed'
+        return flag,revisedInputarr,newarr,msg #returing flag(success or error),reviced input array,smoothed array, messsage
     
     def countConsec(self,val, OutlierMatrix):
         
@@ -156,7 +278,7 @@ class Filter():
             else:
                 if(count!=0):
                     break
-        index_prev = OutlierMatrix[index - count]
+        index_prev = OutlierMatrix[(index+1) - count]
         return index_prev,index_next,index
         
     

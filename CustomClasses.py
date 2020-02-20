@@ -1,7 +1,6 @@
 import numpy as np
 import json
-import pycode.Team2Functions as T2F
-import pycode.Filter as Smoothing
+import pycode.Filter as Filter
 import pycode.NeuralNetworkFn as NN
 import pycode.RandomForestFn as RF
 
@@ -85,7 +84,7 @@ class DataSeries:
         elif selectedMax != None and selectedMin != None:
             self.selectedMax = selectedMax
             self.selectedMin = selectedMin
-        self.replaceArray=T2F.MaxMin(self.currentData, self.selectedMax, self.selectedMin)
+        # flag,val_percent, self.replaceArray,msg =Filter.Filter.maxMin(self.currentData, self.selectedMax, self.selectedMin)
 
     def stdDev(self, stdDevFactor=None):
         if stdDevFactor is None:
@@ -93,13 +92,13 @@ class DataSeries:
                 self.stdDevFactor = 1
         else:
             self.stdDevFactor = stdDevFactor
-        self.replaceArray=T2F.StdDev(self.currentData,self.stdDevFactor)
+        # flag, valPercent, self.replaceArray, self.selectedMax, self.selectedMin,msg =Filter.Filter.stdDev(self.currentData,self.stdDevFactor)
 
     def interpolation(self):
-        return('We dont have this function yet')   
+        flag, self.currentData, msg =Filter.Filter.interpolation(self.currentData,self.replaceArray,self.interpolationType,self.selectedMax,self.selectedMin) 
    
     def smoothing(self, smoothingType, window):
-        fil =  Smoothing.Filter()       
+        fil =  Filter.Filter()       
         # Amrita use an array of arrays like the input 
         smoothInput= [self.currentData]
         # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smoothInput,self.window,self.smoothingType)
