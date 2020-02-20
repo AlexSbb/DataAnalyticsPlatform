@@ -30,7 +30,7 @@ RF_inputs6 = RF.RF_inputs(X1,y1,3000,0.5,True)
 RF_inputs7 = RF.RF_inputs(X1,y3,300,0.5,True)
 
 
-#Positive cases----------------------------------------------------------
+#Positive cases---------------------------------------------------------------------------------------------
 
 #Normal inputs should not produce error
 # Function call
@@ -47,7 +47,7 @@ if RF_outputs1.flag == RF.success:
 else:
     print('Case1 Run2: Fail \n')
     
-#Negative cases----------------------------------------------------------
+#Negative cases-----------------------------------------------------------------------------------------------
 
 #Test input and output sizes
 print('Test input and output sizes')

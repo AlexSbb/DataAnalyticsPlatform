@@ -4,10 +4,9 @@ from sklearn.preprocessing import StandardScaler
 from sklearn.neural_network import MLPRegressor
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error
-
 from typing import NamedTuple
 
-#DEFINITIONS-----------------------------------------------------------------------
+#DEFINITIONS-------------------------------------------------------------------------------------------------
 #Error codes
 eInputOutputSize         = "Input and output array size does not match"
 eNoOfHiddLyr             = "Number of hidden layers should be within 1 and 10"
@@ -64,50 +63,55 @@ class NN_outputs(NamedTuple):
     test_mean_squared_error:    float # mean square error
     test_accuracy:              float # accuracy
     message:                    str   # string
-#END OF DEFINITIONS--------------------------------------------------------------------
+#END OF DEFINITIONS------------------------------------------------------------------------------------------
 
 
  
-#IMPORTING DATA------------------------------------------------------------------------
-# Input array (In final implementation there should be a choice to select between processed input and raw input)
-X1 = [   [4.5,6.7],
-         [8.9,3.8],
-         [9,6.8],
-         [12.3,8.8] ]
+#IMPORTING DATA----------------------------------------------------------------------------------------------
+# Input array (In final implementation there should be a choice to select between processed 
+# input and raw input)
+# X1 = [   [4.5,6.7],
+#          [8.9,3.8],
+#          [9,6.8],
+#          [12.3,8.8] ]
 
 # output dataset (raw or processed selection)           
-y1 = [8.55055,5.53195,9.1547,11.91745]
-#END OF IMPORTING DATA---------------------------------------------------------------
+# y1 = [8.55055,5.53195,9.1547,11.91745]
+#END OF IMPORTING DATA---------------------------------------------------------------------------------------
 
 # Input initialization
-NN_inputs1 = NN_inputs(X1,y1,0.2,activation_fun1[3],hidden_layers1,solver_fun1[1],200,False)     # Activation=relu, solver=sgd
+# NN_inputs1 = NN_inputs(X1,y1,0.2,activation_fun1[3],hidden_layers1,solver_fun1[1],200,False)     
+# Activation=relu, solver=sgd
 
-# Neural Network function definition-------------------------------------------------
+# Neural Network function definition-------------------------------------------------------------------------
 def NeuralNet(NN_inputs):
     try:
-        #Error check    
-            for i in range(len(NN_inputs.hidden_layers)):                                      # check for number of neurons in each layer
+        #Error check
+        # check for number of neurons in each layer    
+            for i in range(len(NN_inputs.hidden_layers)):          
                 if NN_inputs.hidden_layers[i] > maxNeurons:
                    NN_outputs.flag = error
                    NN_outputs.message = eNeuronCount
                    return NN_outputs
                 else:
                     pass
-            if  NN_inputs.iterations > maxIteration or NN_inputs.iterations < minIteration:     # check for number of iterations
+            # check for number of iterations
+            if  NN_inputs.iterations > maxIteration or NN_inputs.iterations < minIteration:                   
                 NN_outputs.flag = error
                 NN_outputs.message = eIterationCount 
               
-            
-            elif NN_inputs.test_size < minTest_size or NN_inputs.test_size > maxTest_size:      # check for test size
+            # check for test size
+            elif NN_inputs.test_size < minTest_size or NN_inputs.test_size > maxTest_size:                    
                  NN_outputs.flag = error
                  NN_outputs.message = eTestSize
              
-            
-            elif len(NN_inputs.hidden_layers) > hidden_layerslen:                               # check for number of hidden layers
+            # check for number of hidden layers
+            elif len(NN_inputs.hidden_layers) > hidden_layerslen:  
                  NN_outputs.flag = error
                  NN_outputs.message = eNoOfHiddLyr
-                
-            elif len(NN_inputs.X)!= len(NN_inputs.y):                                           # check size of input and output
+
+            # check size of input and output    
+            elif len(NN_inputs.X)!= len(NN_inputs.y):              
                  NN_outputs.flag = error
                  NN_outputs.message  = eInputOutputSize
               
@@ -118,9 +122,12 @@ def NeuralNet(NN_inputs):
                 else:
                     nnX1 = NN_inputs.X
                 #Train the model with training data and test it with test data  (80% train and 20% test)
-                X_train, NN_outputs.X_test, y_train, NN_outputs.y_actual = train_test_split(nnX1, NN_inputs.y, test_size= NN_inputs.test_size, random_state=defSplitLeaf)
+                X_train, NN_outputs.X_test, y_train, NN_outputs.y_actual = train_test_split(nnX1, 
+                NN_inputs.y, test_size= NN_inputs.test_size, random_state=defSplitLeaf)
                 #Neural network model
-                reg = MLPRegressor(hidden_layer_sizes = NN_inputs.hidden_layers, activation = NN_inputs.activation_fun, solver = NN_inputs.solver_fun, learning_rate = 'adaptive', max_iter = NN_inputs.iterations, random_state = defSplit)
+                reg = MLPRegressor(hidden_layer_sizes = NN_inputs.hidden_layers, 
+                activation = NN_inputs.activation_fun, solver = NN_inputs.solver_fun, 
+                learning_rate = 'adaptive', max_iter = NN_inputs.iterations, random_state = defSplit)
                 reg.fit(X_train,y_train)
                 #Prediction of the unseen test data
                 NN_outputs.y_test = reg.predict(NN_outputs.X_test)
@@ -130,7 +137,8 @@ def NeuralNet(NN_inputs):
                 NN_outputs.X_test = np.column_stack(NN_outputs.X_test)
                 NN_outputs.X_test = np.ndarray.tolist(NN_outputs.X_test)
                 #Mean squared error and accuracy
-                NN_outputs.test_mean_squared_error = mean_squared_error(NN_outputs.y_actual, NN_outputs.y_test)
+                NN_outputs.test_mean_squared_error = mean_squared_error(NN_outputs.y_actual, 
+                NN_outputs.y_test)
                 NN_outputs.test_accuracy = maxAccuracy - NN_outputs.test_mean_squared_error
                 if NN_outputs.test_accuracy < recommendedAccuracy:
                     NN_outputs.flag = warning
@@ -144,24 +152,24 @@ def NeuralNet(NN_inputs):
             
     finally:
              return NN_outputs
-# END of Neural Network function definition-------------------------------------------------
+# END of Neural Network function definition------------------------------------------------------------------
 
-# Function call
-NN_outputs1 = NeuralNet(NN_inputs1)
+# # Function call
+# NN_outputs1 = NeuralNet(NN_inputs1)
 
-# Output result
-if NN_outputs1.flag==error:
-    print(NN_outputs1.message)
-else:
-    #Printing outputs
-    print('flag:                   ', NN_outputs1.flag)
-    print('Predicted Output:       ', NN_outputs1.y_test)
-    print('test input:             ', NN_outputs1.X_test)
-    print('expected output:        ', NN_outputs1.y_actual)
-    print('length of output array: ', NN_outputs1.length)
-    print('Mean Square error:      ', NN_outputs1.test_mean_squared_error)
-    print('Accuracy:               ', NN_outputs1.test_accuracy)
-    if NN_outputs1.flag == warning:
-        print(NN_outputs1.message)
+# # Output result
+# if NN_outputs1.flag==error:
+#     print(NN_outputs1.message)
+# else:
+#     #Printing outputs
+#     print('flag:                   ', NN_outputs1.flag)
+#     print('Predicted Output:       ', NN_outputs1.y_test)
+#     print('test input:             ', NN_outputs1.X_test)
+#     print('expected output:        ', NN_outputs1.y_actual)
+#     print('length of output array: ', NN_outputs1.length)
+#     print('Mean Square error:      ', NN_outputs1.test_mean_squared_error)
+#     print('Accuracy:               ', NN_outputs1.test_accuracy)
+#     if NN_outputs1.flag == warning:
+#         print(NN_outputs1.message)
 
     
