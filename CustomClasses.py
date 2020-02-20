@@ -120,7 +120,6 @@ class DataSeries:
                 self.selectedMin = self.realMin
         else:
             self.selectedMin = min
-
         # We are not setting the replace array anywhere. Either we or them needs to run their max min method, so that it is produced. 
         filterObj = Filter.Filter()
         flag, InterpolatedMatrix, msg = filterObj.interpolation(self.currentData, self.replaceArray, 0, self.selectedMax, self.selectedMin)
@@ -132,13 +131,19 @@ class DataSeries:
 
    
     def smoothing(self, smoothingType=None, window=None):
-        fil =  Filter.Filter()       
-        # Amrita use an array of arrays like the input 
+        print("Hi, I'm smoothing")
+        filterObj = Filter.Filter()    
         smoothInput= [self.currentData]
-        # flag, beforeSmoothingArray, afterSmoothingArray, self.error = fil.moving_avg(smoothInput,self.window,self.smoothingType)
-        # Amrita use an array of arrays like the output also, so I use only the first array
-        # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
-        # self.afterSmoothingArray = list(afterSmoothingArray[0])
+        flag, revisedInputarr, newarr, msg = filterObj.movingAvg(smoothInput,self.window,self.smoothingType)
+        if flag == 'error':
+            print('Error:')
+            print(msg)
+        else:
+            self.currentData = newarr[0]
+            self.originalData = revisedInputarr[0]
+            # Amrita use an array of arrays like the output also, so I use only the first array
+            # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
+            # self.afterSmoothingArray = list(afterSmoothingArray[0])
 
 class DataObject:
     def __init__(self, dataSeries, fileName):
@@ -213,16 +218,17 @@ testDataSeries.maxMin()
 # testDataSeries.standardDeviation()
 # print ('replaceArray=',testDataSeries.replaceArray)
 # print ('_'*80)
-print(testDataSeries.currentData)
-print ('replaceArray=',testDataSeries.replaceArray)
-print(testDataSeries.selectedMax)
-print(testDataSeries.selectedMin)
+
+# print(testDataSeries.currentData)
+# print ('replaceArray=',testDataSeries.replaceArray)
+# print(testDataSeries.selectedMax)
+# print(testDataSeries.selectedMin)
 
 
-testDataSeries.interpolation()
+# testDataSeries.interpolation()
 
 # Test smoothing Function
-# testDataSeries.smoothing("backward", 2)
+testDataSeries.smoothing("backward", 2)
 #print (testDataSeries.error)
 #print ('beforeSmoothingArray')
 #print (testDataSeries.beforeSmoothingArray)
