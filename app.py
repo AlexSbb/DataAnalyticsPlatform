@@ -85,7 +85,7 @@ def resetGlobalDataObject():
         # Neural Network     
         print("Neural Network")  
         try:      
-            inputSeriesNameArray = request.get_json()['inputSeries']
+            inputSeriesNameArray = list(request.get_json()['inputSeries'])
             seriesName          = request.get_json()['outputSeries']
             testSize            = float(request.get_json()['testSize'])
             activeFunction      = request.get_json()['activeFunction']
@@ -98,22 +98,24 @@ def resetGlobalDataObject():
         except: 
             return jsonify(message = 'Wrong input' ) 
 
-        inputSeriesName = inputSeriesNameArray[0]
-        inputSeriesData = globalDataObject.dataSeriesDict[inputSeriesName].currentData
+        inputSeriesData =[]
+        for name in inputSeriesNameArray:
+            inputSeriesData.append(globalDataObject.dataSeriesDict[name].currentData)
         globalDataObject.dataSeriesDict[seriesName].neuralNetwork(inputSeriesData,testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff)
 
     elif action == "performRFCalculations":
         # Random Forest      
         print("performRFCalculations")
         seriesName              = request.get_json()['outputSeries'] 
-        inputSeriesNameArray    = request.get_json()['inputSeries']
+        inputSeriesNameArray    = list(request.get_json()['inputSeries'])
         trees                   = int(request.get_json()['trees'])
         testSize                = float(request.get_json()['testSize'])
         historyOnOff            = bool(request.get_json()['historyOnOff'])
         
-        inputSeriesName = inputSeriesNameArray[0]
-        inputSeries = globalDataObject.dataSeriesDict[inputSeriesName].currentData
-        globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeries,trees,testSize,historyOnOff)
+        inputSeriesData =[]
+        for name in inputSeriesNameArray:
+            inputSeriesData.append(globalDataObject.dataSeriesDict[name].currentData)
+        globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeriesData,trees,testSize,historyOnOff)
 
 
     

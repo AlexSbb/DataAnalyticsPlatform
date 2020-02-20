@@ -172,7 +172,7 @@ class DataSeries:
     
     def randonForest(self, inputSeriesData,trees,testSize,historyOnOff):
         print('Hi, Im random forest')
-        rfInput = RF.RF_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData,trees,testSize/100,historyOnOff)
+        rfInput = RF.RF_inputs(changeDataSeriesForm(inputSeriesData), self.currentData,trees,testSize/100,historyOnOff)
         RF_outputs=RF.RFreg(rfInput)
         if (RF_outputs.flag=="success"): 
             self.ExpectedOutput=RF_outputs.y_actual
@@ -195,7 +195,7 @@ class DataSeries:
     def neuralNetwork(self,inputSeriesData, testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff ):
         print('Hi, Im neuralNetwork')
 
-        NnInput = NN.NN_inputs(changeDataSeriesForm([inputSeriesData]), self.currentData, testSize/100, activeFunction.lower(), hiddenLayers, solverFunction.lower(), iterations, scalingOnOff)
+        NnInput = NN.NN_inputs(changeDataSeriesForm(inputSeriesData), self.currentData, testSize/100, activeFunction.lower(), hiddenLayers, solverFunction.lower(), iterations, scalingOnOff)
       
         # print("inputSeriesData",NnInput.X)
         # print("NnInput.y",NnInput.y)
