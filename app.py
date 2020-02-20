@@ -54,7 +54,6 @@ def resetGlobalDataObject():
     elif action == "resetToOriginalData":
         globalDataObject.resetToOriginalData()
     elif action == "performSmoothing":
-        # Smoothing done!
         window=int(request.get_json()['window'])
         seriesName= request.get_json()['seriesName']
         smoothingType = request.get_json()['smoothingType']
@@ -107,29 +106,29 @@ def resetGlobalDataObject():
         globalDataObject.dataSeriesDict[seriesName].resetError()
         return jsonify(message = errorMsg) 
 
-# @app.route('/interpolation', methods=['POST'] )
-# def interpolation():
-#     seriesName= request.get_json()['seriesName']      
-#     limit_or_dev=bool(request.get_json()['limit_or_dev'])
-#     selectedMin=float(request.get_json()['selectedMin'])
-#     selectedMax=float(request.get_json()['selectedMax'])
-#     stdDevFactor=int(request.get_json()['stdDevFactor'])
-#     interpolationType=bool(request.get_json()['interpolationType'])
-#     if  limit_or_dev:
-#         # Calculate hard limit
-#         globalDataObject.dataSeriesDict[seriesName].maxMin(selectedMax,selectedMin)
-#         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
-#     else:
-#         # Calculate standart deviation
-#         globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
-#         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+@app.route('/interpolation', methods=['POST'] )
+def interpolation():
+    seriesName= request.get_json()['seriesName']      
+    limit_or_dev=bool(request.get_json()['limit_or_dev'])
+    selectedMin=float(request.get_json()['selectedMin'])
+    selectedMax=float(request.get_json()['selectedMax'])
+    stdDevFactor=int(request.get_json()['stdDevFactor'])
+    interpolationType=bool(request.get_json()['interpolationType'])
+    if  limit_or_dev:
+        # Calculate hard limit
+        globalDataObject.dataSeriesDict[seriesName].maxMin(selectedMax,selectedMin)
+        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
+    else:
+        # Calculate standart deviation
+        globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
+        print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
     
-#     if (globalDataObject.dataSeriesDict[seriesName].error == ''):
-#         return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
-#     else:
-#         errorMsg=globalDataObject.dataSeriesDict[seriesName].error
-#         globalDataObject.dataSeriesDict[seriesName].resetError()
-#         return jsonify(message = errorMsg ) 
+    if (globalDataObject.dataSeriesDict[seriesName].error == ''):
+        return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
+    else:
+        errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+        globalDataObject.dataSeriesDict[seriesName].resetError()
+        return jsonify(message = errorMsg ) 
 
 
 if __name__ == '__main__':
