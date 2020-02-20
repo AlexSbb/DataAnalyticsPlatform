@@ -118,7 +118,12 @@
                           
                             <div class="text-center">
                                 <button type="submit" class="btn btn-outline-secondary" onclick="performInterpolation()">Calculate</button>
-                           
+                                <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertInterpolation" role="alert">
+                                    <label id="alertInterpolationLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                      <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
                             </div>
                     </li >
                     <!-- <li class="nav-item">
@@ -186,11 +191,29 @@
                           </div>
                           <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary" onclick="performSmoothing()">Calculate</button>
+                            <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertSmoothing" role="alert">
+                                <label id="alertSmoothingLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
                         </div>
                     </li >
                 </ul>
                 <h5 class="border-bottom"> I/O Relationship models:</h5>
                 <ul class="nav flex-column">
+                    <label>Select input:   </label>
+                    <select class="custom-select" id="selectDataSetNNInput" onchange="onChangeselectDataSet()">
+                        <option selected>Choose one or more datasets:</option>
+                        <!-- <option value="1">One</option> -->
+                    </select>
+                    <label>Select output:   </label>
+                    <select class="custom-select " id="selectDataSetNNOutput" onchange="onChangeselectDataSet()">
+                        <option selected>Choose one datasets:</option>
+                        <!-- <option value="1">One</option> -->
+                    </select>
+
                     <!-- Neural Network -->
                     <li class="nav-item"> 
                         <div class="form-check">
@@ -338,6 +361,14 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
 <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
 
+<script language = "vbscript" type = "text/vbscript">
+
+    Function sayHello()
+        MsgBox("Welcome") 
+    End Function
+    
+</script>
+
 <script>
 
     // Global var!!!!!!!!!!!!!!
@@ -446,10 +477,11 @@
 
     //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
+        
         var selectDataSet = document.getElementById("selectDataSet");        
         removeOptions(selectDataSet)
         var option= document.createElement("option"); 
-        option.textContent = 'Choose dataset...';
+        option.textContent = 'Choose dataset:';
         selectDataSet.appendChild(option);
         dataSetsNames.forEach((element, index) => {
             var option= document.createElement("option"); 
@@ -563,15 +595,26 @@
 
     }
 
+
     function valueWithinLimits(elementName){
         if (document.getElementById(elementName).reportValidity())
             return true;
         else return false;
     }
-
+    function clearAlerts(){
+        document.getElementById("alertInterpolation").style.display = "none";
+        document.getElementById("alertSmoothing").style.display = "none";
+    }
     function performInterpolation(){
+<<<<<<< HEAD
         seriesName = document.getElementById("selectDataSet").value
+=======
+        clearAlerts();
+        seriesName = document.getElementById("selectDataSet").value;
+>>>>>>> master
         if (seriesName == "Choose dataset:"){
+            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please select the data series to apply this function to.";
+            document.getElementById("alertInterpolation").style.display = "";
             window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
@@ -589,19 +632,26 @@
                 stdFactor: document.getElementById("Std_factor").value
             };
         } else {
-            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please fill in all relevant information and try again.";
+            document.getElementById("alertInterpolation").style.display = "";
+          //  window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
         }
         postActionToPython(postData)   // Go to send data to python  
     }
     // performing smoothing - we check if there is a type selected and also data and inform the customer 
     function performSmoothing(){
+        clearAlerts();
         if (!valueWithinLimits("Smooth_Window")) {
-            window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
+            document.getElementById("alertSmoothingLbl").textContent = "ALERT: The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.";
+            document.getElementById("alertSmoothing").style.display = "";
+            // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
             return
         }
         seriesName = document.getElementById("selectDataSet").value
         if (seriesName == "Choose dataset:"){
-            window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            document.getElementById("alertSmoothingLbl").textContent = "ALERT: The data provided is incomplete. Please select the data series to apply this function to.";
+            document.getElementById("alertSmoothing").style.display = "";
+            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
         var smoothingType = ""
@@ -613,7 +663,9 @@
         } else if (document.getElementById("fixed_radio").checked){
             smoothingType = document.getElementById("fixed_radio").value;
         } else {
-            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            document.getElementById("alertSmoothingLbl").textContent = "ALERT: The data provided is incomplete. Please fill in all relevant information and try again.";
+            document.getElementById("alertSmoothing").style.display = "";
+            // window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
             return;
         }
         postData = { 
@@ -654,9 +706,6 @@
 
 
     };
-
-
-
 
     function resetAll(){
         postData = { 
