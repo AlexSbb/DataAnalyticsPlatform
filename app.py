@@ -80,7 +80,7 @@ def interpolation():
         globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
     
-    if (globalDataObject.dataSeriesDict[seriesName].error = ''):
+    if (globalDataObject.dataSeriesDict[seriesName].error == ''):
         return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
     else:
         errorMsg=globalDataObject.dataSeriesDict[seriesName].error
