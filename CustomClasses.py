@@ -42,6 +42,7 @@ class DataSeries:
         self.interpolationType = linear #true for linear and false for quadratic interpolation
         self.interpolationArray = []
         self.replaceArray = []
+        self.valPercent = 0
         self.beforeSmoothingArray = []
         self.afterSmoothingArray = []
 
@@ -61,6 +62,7 @@ class DataSeries:
         self.interpolationType = linear #true for linear and false for quadratic interpolation
         self.interpolationArray = []
         self.replaceArray = []
+        self.valPercent = 0
         self.beforeSmoothingArray = []
         self.afterSmoothingArray = []
         self.error = ''
@@ -77,8 +79,15 @@ class DataSeries:
             sort_keys=True, indent=4)
 
     def maxMin (self):
-        print("I am in maxMin")
-        # flag,val_percent, self.replaceArray,msg =Filter.Filter.maxMin(self.currentData, self.selectedMax, self.selectedMin)
+        print("I am in maxMin in maxMin")
+        filterObj = Filter.Filter()
+        flag,valPercent,replaceArray,msg =filterObj.maxMin(self.currentData, self.selectedMax, self.selectedMin)
+        if flag == 'error':
+            print('Error:')
+            print(msg)
+        else:
+            self.replaceArray = replaceArray
+            self.valPercent = valPercent
 
     def standardDeviation(self, stdDevFactor=None):
         if stdDevFactor is None:
@@ -89,9 +98,17 @@ class DataSeries:
         # TO DO / QUESTION (Dessi Thursday): 
         # What does maxValue and minValue mean here? Do we really want to overwrite our self.selectedMax, self.selectedMin? 
         # I thought we are only using max and min for the hard limits.
-        # return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg
-        flag, valPercent, self.replaceArray, self.selectedMax, self.selectedMin, msg = Filter.Filter.stdDev(self, self.currentData,self.stdDevFactor)
-
+        filterObj = Filter.Filter()
+        flag, valPercent, replaceArray, selectedMax, selectedMin, msg = filterObj.stdDev(self.currentData,self.stdDevFactor)
+        if flag == 'error':
+            print('Error:')
+            print(msg)
+        else:
+            self.replaceArray = replaceArray
+            self.valPercent = valPercent
+            self.selectedMax = selectedMax
+            self.selectedMin = selectedMin
+    
     def interpolation(self, max=None, min=None, interpolationType=None):
         if max is None:
             if self.selectedMax is None:
@@ -105,7 +122,14 @@ class DataSeries:
             self.selectedMin = min
 
         # We are not setting the replace array anywhere. Either we or them needs to run their max min method, so that it is produced. 
-        flag, self.currentData, msg = Filter.Filter.interpolation(self, self.currentData, self.replaceArray, self.interpolationType, self.selectedMax, self.selectedMin)
+        filterObj = Filter.Filter()
+        flag, InterpolatedMatrix, msg = filterObj.interpolation(self.currentData, self.replaceArray, 0, self.selectedMax, self.selectedMin)
+        if flag == 'error':
+            print('Error:')
+            print(msg)
+        else:
+            self.currentData = InterpolatedMatrix
+
    
     def smoothing(self, smoothingType=None, window=None):
         fil =  Filter.Filter()       
@@ -174,23 +198,31 @@ testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
 inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
 inputSeries2 = DataSeries('input2',list(np.random.rand(100)))
 outputSeries = DataSeries('output',list(np.random.rand(100)))
-# print (testDataSeries.currentData)
-# print ('realMax=',testDataSeries.realMax)
-# print ('realMin=',testDataSeries.realMin)
+
+print ('realMax=',testDataSeries.realMax)
+print ('realMin=',testDataSeries.realMin)
 # print ('median=',testDataSeries.median)
 # print ('_'*80)
 # Test maxMin Function
 testDataSeries.selectedMax = 0.9
 testDataSeries.selectedMin = 0.1
 testDataSeries.maxMin()
-#print ('replaceArray=',testDataSeries.replaceArray)
-#print ('_'*80)
+
+
 # Test stdDev Function
-testDataSeries.standardDeviation(testDataSeries.stdDevFactor)
-#print ('replaceArray=',testDataSeries.replaceArray)
-#print ('_'*80)
+# testDataSeries.standardDeviation()
+# print ('replaceArray=',testDataSeries.replaceArray)
+# print ('_'*80)
+print(testDataSeries.currentData)
+print ('replaceArray=',testDataSeries.replaceArray)
+print(testDataSeries.selectedMax)
+print(testDataSeries.selectedMin)
+
+
+testDataSeries.interpolation()
+
 # Test smoothing Function
-testDataSeries.smoothing("backward", 2)
+# testDataSeries.smoothing("backward", 2)
 #print (testDataSeries.error)
 #print ('beforeSmoothingArray')
 #print (testDataSeries.beforeSmoothingArray)
@@ -208,14 +240,14 @@ testDataObject.addSeries([list(np.random.rand(10)), list(np.random.rand(10))], '
 # print (testDataObject.getDataSeriesDict())
 
 #NN_inputs1 = NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],200,False)     # Activation=relu, solver=sgd
-actv1 = ("identity", "logistic", "tanh", "relu")
-slvr1 = ("lbfgs", "sgd", "adam")
+# actv1 = ("identity", "logistic", "tanh", "relu")
+# slvr1 = ("lbfgs", "sgd", "adam")
 #Tuple of hidden layers in Neural Networks
-hid_lyrs1 = (8,4,4)
+# hid_lyrs1 = (8,4,4)
 
-inputSeries1.selectedMax = 0.9
-inputSeries1.selectedMin = 0.1
-inputSeries1.maxMin()
+# inputSeries1.selectedMax = 0.9
+# inputSeries1.selectedMin = 0.1
+# inputSeries1.maxMin()
 # inputSeries1.stdDev()
 # inputSeries1.smoothing()
 
@@ -223,13 +255,13 @@ inputSeries1.maxMin()
 # print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
 
 # Input array (In final implementation there should be a choice to select between processed input and raw input)
-X1 = [   [4.5,6.7],
-         [8.9,3.8],
-         [9,6.8],
-         [12.3,8.8] ]
+# X1 = [   [4.5,6.7],
+#          [8.9,3.8],
+#          [9,6.8],
+#          [12.3,8.8] ]
 
 # output dataset (raw or processed selection)           
-y1 = [8.55055,5.53195,9.1547,11.91745]
+# y1 = [8.55055,5.53195,9.1547,11.91745]
 # print(outputSeries.originalData)
 # print('above is the output array')
 # NN_outputs1 = NN.NeuralNet(NN.NN_inputs([inputSeries1, inputSeries2], outputSeries, 0.2, actv1[3], hid_lyrs1, slvr1[1], 200, False))

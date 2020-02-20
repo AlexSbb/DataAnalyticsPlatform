@@ -606,12 +606,8 @@
         document.getElementById("alertSmoothing").style.display = "none";
     }
     function performInterpolation(){
-<<<<<<< HEAD
-        seriesName = document.getElementById("selectDataSet").value
-=======
         clearAlerts();
         seriesName = document.getElementById("selectDataSet").value;
->>>>>>> master
         if (seriesName == "Choose dataset:"){
             document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please select the data series to apply this function to.";
             document.getElementById("alertInterpolation").style.display = "";
