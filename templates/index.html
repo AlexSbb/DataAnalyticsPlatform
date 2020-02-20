@@ -203,6 +203,17 @@
                 </ul>
                 <h5 class="border-bottom"> I/O Relationship models:</h5>
                 <ul class="nav flex-column">
+                    <label>Select input:   </label>
+                    <select class="custom-select" id="selectDataSetNNInput" onchange="onChangeselectDataSet()">
+                        <option selected>Choose one or more datasets:</option>
+                        <!-- <option value="1">One</option> -->
+                    </select>
+                    <label>Select output:   </label>
+                    <select class="custom-select " id="selectDataSetNNOutput" onchange="onChangeselectDataSet()">
+                        <option selected>Choose one datasets:</option>
+                        <!-- <option value="1">One</option> -->
+                    </select>
+
                     <!-- Neural Network -->
                     <li class="nav-item"> 
                         <div class="form-check">
@@ -466,6 +477,7 @@
 
     //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
+        
         var selectDataSet = document.getElementById("selectDataSet");        
         removeOptions(selectDataSet)
         var option= document.createElement("option"); 
