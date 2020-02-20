@@ -6,7 +6,6 @@ from flask_cors import CORS
 import temp_test.read_csv_data as rcd
 import json
 import pycode.Team2Functions as T2F
-import CustomClasses as CC
 from CustomClasses import DataObject, DataSeries
 
 
@@ -83,20 +82,36 @@ def resetGlobalDataObject():
         print("not working")
         globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
     elif action == "performNNCalculations":
-        # Random Forest      
-        print("performRFCalculations")
+        # Neural Network     
+        print("Neural Network")  
+        try:      
+            inputSeriesNameArray = request.get_json()['inputSeries']
+            seriesName          = request.get_json()['outputSeries']
+            testSize            = float(request.get_json()['testSize'])
+            activeFunction      = request.get_json()['activeFunction']
+            solverFunction      = request.get_json()['solverFunction']
+            hiddenLayers        = list(request.get_json()['hiddenLayers'])
+            hiddenLayers        = list(map(int, hiddenLayers))
+            print(hiddenLayers)
+            iterations          = int(request.get_json()['iterations'])
+            scalingOnOff        = bool(request.get_json()['scalingOnOff'])
+        except: 
+            return jsonify(message = 'Wrong input' ) 
 
-        print()
+        inputSeriesName = inputSeriesNameArray[0]
+        inputSeriesData = globalDataObject.dataSeriesDict[inputSeriesName].currentData
+        globalDataObject.dataSeriesDict[seriesName].neuralNetwork(inputSeriesData,testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff)
+
     elif action == "performRFCalculations":
         # Random Forest      
         print("performRFCalculations")
-        seriesName = request.get_json()['outputSeries'] 
-        inputSeriesName = request.get_json()['inputSeries'][0]
-        trees = int(request.get_json()['trees'])
-        testSize =int(request.get_json()['testSize'])
-        historyOnOff = bool(request.get_json()['historyOnOff'])
-        print(inputSeriesName)
-        print(seriesName)
+        seriesName              = request.get_json()['outputSeries'] 
+        inputSeriesNameArray    = request.get_json()['inputSeries']
+        trees                   = int(request.get_json()['trees'])
+        testSize                = float(request.get_json()['testSize'])
+        historyOnOff            = bool(request.get_json()['historyOnOff'])
+        
+        inputSeriesName = inputSeriesNameArray[0]
         inputSeries = globalDataObject.dataSeriesDict[inputSeriesName].currentData
         globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeries,trees,testSize,historyOnOff)
 
