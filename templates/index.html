@@ -61,7 +61,7 @@
 
 
 
-                <h5 class="border-bottom">Interpolation:</h5>
+                <h5 class="border-bottom">Outlier Recognition</h5>
 
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -103,24 +103,24 @@
                             </div>
                             <input type="number" class="form-control" id='Std_factor' aria-label="Std factor" value="1" min="1" max="6" onKeyUp="this.reportValidity()">
                           </div>
-
+                          <h5 class="border-bottom">Interpolation</h5>
                           <div class="form-check">
-                            <input class="form-check-input" type="radio" name="Linear_quadratic" id="linear_radio" value="linear" checked>
+                            <input class="form-check-input mb-2" type="radio" name="Linear_quadratic" id="linear_radio" value="linear" checked>
                             <label class="form-check-label" for="linear_radio">
-                                Linear
+                                Linear Interpolation
                             </label>
                           </div>
                           <div class="form-check">
                             <input class="form-check-input" type="radio" name="Linear_quadratic" id="quadratic_radio" value="quadratic">
-                            <label class="form-check-label" for="quadratic_radio">
-                                Quadratic
+                            <label class="form-check-label mb-4" for="quadratic_radio">
+                                Quadratic Interpolation
                             </label>
                           </div>
                           
                             <div class="text-center">
-                                <button type="submit" class="btn btn-outline-secondary" onclick="performInterpolation()">Calculate</button>
+                                <button type="submit" class="btn btn-outline-secondary mb-3" onclick="performInterpolation()">Calculate</button>
                                 <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertInterpolation" role="alert">
-                                    <label id="alertInterpolationLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                    <label id="alertInterpolationLbl"></label> 
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                       <span aria-hidden="true">&times;</span>
                                     </button>
@@ -163,7 +163,7 @@
                         <button  type="button" class="btn btn-light"> Quadratic interpolation </button>
                     </li >
                 </ul> -->
-                <h5 class="border-bottom"> Smoothing:</h5>
+                <h5 class="border-bottom"> Smoothing</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
                         <div class="form-check">
@@ -191,9 +191,9 @@
                             <input type="number" class="form-control" id='Smooth_Window' aria-label="window" value="2" min="2" onKeyUp="this.reportValidity()">
                           </div>
                           <div class="text-center">
-                            <button type="submit" class="btn btn-outline-secondary" onclick="performSmoothing()">Calculate</button>
+                            <button type="submit" class="btn btn-outline-secondary mb-3" onclick="performSmoothing()">Calculate</button>
                             <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertSmoothing" role="alert">
-                                <label id="alertSmoothingLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                <label id="alertSmoothingLbl"></label> 
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
@@ -257,14 +257,14 @@
                             <div class="input-group">
                                 Hidden layers
                             </div>
-                            <div class="input-group mb-1" style="font-size:small" >
+                            <div class="input-group mb-1" id="inputPart1" style="font-size:small" >
                                 <input type="number" class="mr-1" id="hl1" value="8" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl2" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl3" value="4" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl4" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl5" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                             </div>
-                            <div class="input-group mb-1 " style="font-size:small">
+                            <div class="input-group mb-1 " id="inputPart2" style="font-size:small">
                                 <input type="number" class="mr-1" id="hl6" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl7" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
                                 <input type="number" class="mr-1" id="hl8" value="" min="1" max="1000" onKeyUp="this.reportValidity();"/>
@@ -317,7 +317,13 @@
                         </div>
                         <br>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-outline-secondary mb-5">Calculate</button>                       
+                            <button type="submit" class="btn btn-outline-secondary mb-5" onclick="calculateRelationshipModel()">Calculate</button>    
+                            <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertRelationshipModel" role="alert">
+                                <label id="alertRelationshipModelLbl"><</label> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>                   
                         </div>
                     </li >
                 </ul>
@@ -361,13 +367,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.js"></script>
 <script src="https://unpkg.com/papaparse@latest/papaparse.min.js"></script>
 
-<script language = "vbscript" type = "text/vbscript">
-
-    Function sayHello()
-        MsgBox("Welcome") 
-    End Function
-    
-</script>
 
 <script>
 
@@ -605,6 +604,7 @@
     function clearAlerts(){
         document.getElementById("alertInterpolation").style.display = "none";
         document.getElementById("alertSmoothing").style.display = "none";
+        document.getElementById("alertRelationshipModel").style.display = "none";
     }
     function performInterpolation(){
         clearAlerts();
@@ -612,7 +612,7 @@
         if (seriesName == "Choose dataset:"){
             document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please select the data series to apply this function to.";
             document.getElementById("alertInterpolation").style.display = "";
-            window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
         if(document.getElementById("HardLimitRadios").checked && valueWithinLimits("Intrp_Min") && valueWithinLimits("Intrp_Max") &&  (document.getElementById("linear_radio").checked || document.getElementById("quadratic_radio").checked)){
@@ -644,7 +644,7 @@
             // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
             return
         }
-        seriesName = document.getElementById("selectDataSet").value
+        var seriesName = document.getElementById("selectDataSet").value
         if (seriesName == "Choose dataset:"){
             document.getElementById("alertSmoothingLbl").textContent = "ALERT: The data provided is incomplete. Please select the data series to apply this function to.";
             document.getElementById("alertSmoothing").style.display = "";
@@ -652,7 +652,6 @@
             return
         }
         var smoothingType = ""
-        var seriesName = document.getElementById("selectDataSet").value
         if(document.getElementById("backward_radio").checked){
             smoothingType = document.getElementById("backward_radio").value;
         } else if (document.getElementById("forward_radio").checked) {
@@ -672,6 +671,111 @@
                 window: document.getElementById("Smooth_Window").value
         };
         postActionToPython(postData)   // Go to send data to python  
+    }
+
+    function calculateRelationshipModel(){
+        clearAlerts();
+        var inputSeriesNameArray = Array.from(document.getElementById("selectDataSetNNInput").options).filter(option => option.selected).map(option => option.value);
+        if (inputSeriesNameArray.includes("Choose one or more datasets:") && inputSeriesNameArray.length() == 1){
+            document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select at least one input data series.";
+            document.getElementById("alertRelationshipModel").style.display = "";
+            return
+        }
+        var outputSeriesName = document.getElementById("selectDataSetNNOutput").value;
+        if (outputSeriesName == "Choose one dataset:"){
+            document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select an output data series.";
+            document.getElementById("alertRelationshipModel").style.display = "";
+            return;
+        }
+        var modelType;
+        if(document.getElementById("neuralNet_radio").checked){
+            modelType = "Neural Network";
+        } else {
+            modelType = "Random Forest";
+        }
+        if (modelType == "Neural Network"){
+            if (!valueWithinLimits("NN_testSize")) {
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number provided for the test size.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
+                return
+            }  
+            var activeFunction = document.getElementById("NN_activFunction").value;
+            if (activeFunction == "Choose Active Function"){
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select an active function.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+                return;
+            }
+            var solverFunction = document.getElementById("NN_solverFunction").value;
+            if (solverFunction == "Choose Solver Function"){
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select a solver function.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+                return;
+            }
+            var numberOfInputsForHiddenLayers = 10;
+            var arrayWithHiddenLayerInfo = [];
+            for (i = 1; i <= numberOfInputsForHiddenLayers; i++) {
+                var inputName = "hl" + str(i);
+                if (document.getElementById(inputName).value == ""){
+                } else {
+                    if (!valueWithinLimits(inputName)) {
+                        document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select valid hidden layer values.";
+                        document.getElementById("alertRelationshipModel").style.display = "";
+                        return;
+                    } else {
+                        arrayWithHiddenLayerInfo.appendChild(document.getElementById(inputName).value);
+                    }
+                }
+            }
+            console.log(arrayWithHiddenLayerInfo);
+            if(arrayWithHiddenLayerInfo.length == 0){
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select valid hidden layer values.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                return;
+            }
+           if (!valueWithinLimits("NN_iterations")) {
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number of iterations provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
+                return
+            }  
+            postData = { 
+                action: "performNNCalculations",
+                inputSeries: inputSeriesNameArray,
+                outputSeries: outputSeriesName,
+                testSize: document.getElementById("NN_testSize"),
+                activeFunction: activeFunction,
+                solverFunction: solverFunction,
+                hiddenLayers: arrayWithHiddenLayerInfo,
+                iterations: document.getElementById("NN_iterations").value,
+                scalingOnOff: document.getElementById("NN_Scaling").value
+            };
+           postActionToPython(postData)   // Go to send data to python  
+        } else if (modelType == "Random Forest"){
+            if (!valueWithinLimits("RF_Trees")) {
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number of trees provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
+                return
+            }  
+            if (!valueWithinLimits("RF_TestSize")) {
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid test size provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
+                // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
+                return
+            }  
+            postData = { 
+                action: "performRFCalculations",
+                inputSeries: inputSeriesNameArray,
+                outputSeries: outputSeriesName,
+                trees: document.getElementById("RF_Trees").value,
+                testSize: document.getElementById("RF_TestSize").value,
+                historyOnOff: document.getElementById("RF_useHistory").value
+            };
+            postActionToPython(postData)   // Go to send data to python  
+        } 
     }
 
     //Alex, sorry that I am overwriting your method

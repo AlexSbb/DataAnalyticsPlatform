@@ -60,8 +60,16 @@ def resetGlobalDataObject():
         globalDataObject(request.get_json()['seriesName']).interpolation(request.get_json()['Intrp_Max'], request.get_json()['Intrp_Min'])
     elif action == "performInterpolation_StandardDev":
         globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
-#   return jsonify(globalDataObject.toJSON()) 
-    return jsonify("Success") 
+    elif action == "performNNCalculations":
+        print()
+     #   NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]), outputSeries.originalData, 0.5, actv1[3], hid_lyrs1, slvr1[1], 200, False))
+        globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+       # globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+    elif action == "performRFCalculations":
+        print()
+      #  globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+    return jsonify(globalDataObject.toJSON()) 
+ #   return jsonify("Success") 
 
 @app.route('/interpolation', methods=['POST'] )
 def interpolation():
