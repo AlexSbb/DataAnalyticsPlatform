@@ -141,10 +141,10 @@ class DataSeries:
             self.selectedMin = min
         # We are not setting the replace array anywhere. Either we or them needs to run their max min method, so that it is produced. 
         filterObj = Filter.Filter()
-        print("selectedMax= ", self.selectedMax)
-        print("selectedMin= ", self.selectedMin)
-        print("interpolationType= ", self.interpolationType)
-        print('0 - Linear Interpolation, 1 - Quadratic Interpolation ')
+        # print("selectedMax= ", self.selectedMax)
+        # print("selectedMin= ", self.selectedMin)
+        # print("interpolationType= ", self.interpolationType)
+        # print('0 - Linear Interpolation, 1 - Quadratic Interpolation ')
         flag, InterpolatedMatrix, msg = filterObj.interpolation(self.originalData, self.replaceArray, self.interpolationType, self.selectedMax, self.selectedMin)
         if flag == 'error':
             print('Error:')

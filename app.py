@@ -37,7 +37,7 @@ def importDataFromFile():
 @app.route('/getGlobalDataObject', methods=['GET'] )
 def getGlobalDataObject():
     if (globalDataObject is None):
-        return jsonify(message = "Empty") 
+        return jsonify(message = "Empty globalDataObject") 
     else:
         return jsonify(globalDataObject.toJSON()) 
 
@@ -45,7 +45,7 @@ def getGlobalDataObject():
 def resetGlobalDataObject():
     action = request.get_json()['action']
     if (globalDataObject is None):
-        return jsonify(message = "Empty") 
+        return jsonify(message = "Empty globalDataObject") 
     elif action == "deleteAll":
         globalDataObject.clearSeries()
     elif action == "deleteSeries":
@@ -79,13 +79,11 @@ def resetGlobalDataObject():
             return jsonify(message = errorMsg ) 
     elif action == "performInterpolationStdDev":
         # Interpolation with standart deviation
-        print("not working")
         seriesName = request.get_json()['seriesName']
         Std_factor = int(request.get_json()['Std_factor'])
         interpolationType=int(request.get_json()['interpolationType']) 
         # 0 - Linear Interpolation
-        # 1 - Quadratic Interpolation
-        
+        # 1 - Quadratic Interpolation      
         globalDataObject.dataSeriesDict[seriesName].stdDevFactor=Std_factor
         globalDataObject.dataSeriesDict[seriesName].interpolationType=interpolationType
         globalDataObject.dataSeriesDict[seriesName].standardDeviation()
