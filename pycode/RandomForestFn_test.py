@@ -53,13 +53,13 @@ else:
 #Test input and output sizes
 print('Test input and output sizes')
 RF_outputs1 = RF.RFreg(RF_inputs3)
-if RF_outputs1.flag == RF.error and RF_outputs1.msg == RF.eIoSize:
+if RF_outputs1.flag == RF.error and RF_outputs1.message == RF.eInputOutputSize:
     print('Case2 Run1: Pass')
 else:
     print('Case2 Run1: Fail')
 
 RF_outputs1 = RF.RFreg(RF_inputs4)
-if RF_outputs1.flag == RF.error and RF_outputs1.msg == RF.eIoSize:
+if RF_outputs1.flag == RF.error and RF_outputs1.message == RF.eInputOutputSize:
     print('Case2 Run2: Pass \n')
 else:
     print('Case2 Run2: Fail \n')
@@ -67,7 +67,7 @@ else:
 #Test testsize error
 print('Test testsize error')
 RF_outputs1 = RF.RFreg(RF_inputs5)
-if RF_outputs1.flag == RF.error and RF_outputs1.msg == RF.eTestSize:
+if RF_outputs1.flag == RF.error and RF_outputs1.message == RF.eTestSize:
     print('Case3 Run1: Pass \n')
 else:
     print('Case3 Run1: Fail \n')
@@ -75,17 +75,17 @@ else:
 #Test illegal no of trees error
 print('Test illegal no of trees error')
 RF_outputs1 = RF.RFreg(RF_inputs6)
-if RF_outputs1.flag == RF.error and RF_outputs1.msg == RF.eNoOfTrees:
-    print('Case4 Run1: Pass')
+if RF_outputs1.flag == RF.error and RF_outputs1.message == RF.eNoOfTrees:
+    print('Case4 Run1: Pass \n')
 else:
-    print('Case4 Run1: Fail')
+    print('Case4 Run1: Fail \n')
 
 #Test unecpected error
 
 #Test minimum accuracy check
 print('Selected data is not appropriate to train the model')
 RF_outputs1 = RF.RFreg(RF_inputs7)
-if RF_outputs1.flag == RF.warning and RF_outputs1.msg == RF.wAccur:
+if RF_outputs1.flag == RF.warning and RF_outputs1.message == RF.wAccuracy:
     print('Case5 Run1: Pass \n')
 else:
     print('Case5 Run1: Fail \n')
