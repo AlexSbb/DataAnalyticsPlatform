@@ -79,7 +79,13 @@ def interpolation():
         # Calculate standart deviation
         globalDataObject.dataSeriesDict[seriesName].stdDev(stdDevFactor)
         print ('replaceArray=',  globalDataObject.dataSeriesDict[seriesName].replaceArray)
-    return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
+    
+    if (globalDataObject.dataSeriesDict[seriesName].error = ''):
+        return  jsonify(globalDataObject.dataSeriesDict[seriesName].toJSON())
+    else:
+        errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+        globalDataObject.dataSeriesDict[seriesName].resetError()
+        return jsonify(message = errorMsg ) 
 
 
 if __name__ == '__main__':
