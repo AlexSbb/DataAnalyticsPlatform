@@ -120,7 +120,7 @@
                             <div class="text-center">
                                 <button type="submit" class="btn btn-outline-secondary mb-3" onclick="performInterpolation()">Calculate</button>
                                 <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertInterpolation" role="alert">
-                                    <label id="alertInterpolationLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                    <label id="alertInterpolationLbl"></label> 
                                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                       <span aria-hidden="true">&times;</span>
                                     </button>
@@ -193,7 +193,7 @@
                           <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary mb-3" onclick="performSmoothing()">Calculate</button>
                             <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertSmoothing" role="alert">
-                                <label id="alertSmoothingLbl"><strong>Alert:</strong>You should check in on some of those fields below.</label> 
+                                <label id="alertSmoothingLbl"></label> 
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
@@ -317,7 +317,13 @@
                         </div>
                         <br>
                         <div class="text-center">
-                            <button type="submit" class="btn btn-outline-secondary mb-5" onclick="calculateRelationshipModel()">Calculate</button>                       
+                            <button type="submit" class="btn btn-outline-secondary mb-5" onclick="calculateRelationshipModel()">Calculate</button>    
+                            <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertRelationshipModel" role="alert">
+                                <label id="alertRelationshipModelLbl"><</label> 
+                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                  <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>                   
                         </div>
                     </li >
                 </ul>
@@ -598,8 +604,7 @@
     function clearAlerts(){
         document.getElementById("alertInterpolation").style.display = "none";
         document.getElementById("alertSmoothing").style.display = "none";
-        document.getElementById("alertInputSeries").style.display = "none";
-        document.getElementById("alertOutputSeries").style.display = "none";
+        document.getElementById("alertRelationshipModel").style.display = "none";
     }
     function performInterpolation(){
         clearAlerts();
@@ -672,15 +677,14 @@
         clearAlerts();
         var inputSeriesNameArray = Array.from(document.getElementById("selectDataSetNNInput").options).filter(option => option.selected).map(option => option.value);
         if (inputSeriesNameArray.includes("Choose one or more datasets:") && inputSeriesNameArray.length() == 1){
-            document.getElementById("alertInputSeriesLbl").textContent = "ALERT: Please select at least one input data series.";
-            document.getElementById("alertInputSeries").style.display = "";
+            document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select at least one input data series.";
+            document.getElementById("alertRelationshipModel").style.display = "";
             return
         }
         var outputSeriesName = document.getElementById("selectDataSetNNOutput").value;
         if (outputSeriesName == "Choose one dataset:"){
-            document.getElementById("alertOutputSeriesLbl").textContent = "ALERT: Please select an output data series.";
-            document.getElementById("alertOutputSeries").style.display = "";
-            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select an output data series.";
+            document.getElementById("alertRelationshipModel").style.display = "";
             return;
         }
         var modelType;
@@ -691,22 +695,22 @@
         }
         if (modelType == "Neural Network"){
             if (!valueWithinLimits("NN_testSize")) {
-                document.getElementById("alertNN_testSizeLbl").textContent = "ALERT: Invalid number provided for the test size.";
-                document.getElementById("alertNN_testSize").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number provided for the test size.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
             var activeFunction = document.getElementById("NN_activFunction").value;
             if (activeFunction == "Choose Active Function"){
-                document.getElementById("alertActiveFunctionLbl").textContent = "ALERT: Please select an active function.";
-                document.getElementById("alertActiveFunction").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select an active function.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
                 return;
             }
             var solverFunction = document.getElementById("NN_solverFunction").value;
             if (solverFunction == "Choose Solver Function"){
-                document.getElementById("alertSolverFunctionLbl").textContent = "ALERT: Please select a solver function.";
-                document.getElementById("alertSolverFunction").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select a solver function.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
                 return;
             }
@@ -717,8 +721,8 @@
                 if (document.getElementById(inputName).value == ""){
                 } else {
                     if (!valueWithinLimits(inputName)) {
-                        document.getElementById("alertHiddenLayersLbl").textContent = "ALERT: Please select valid hidden layer values.";
-                        document.getElementById("alertHiddenLayers").style.display = "";
+                        document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select valid hidden layer values.";
+                        document.getElementById("alertRelationshipModel").style.display = "";
                         return;
                     } else {
                         arrayWithHiddenLayerInfo.appendChild(document.getElementById(inputName).value);
@@ -727,13 +731,13 @@
             }
             console.log(arrayWithHiddenLayerInfo);
             if(arrayWithHiddenLayerInfo.length == 0){
-                document.getElementById("alertHiddenLayersLbl").textContent = "ALERT: Please select valid hidden layer values.";
-                document.getElementById("alertHiddenLayers").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Please select valid hidden layer values.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 return;
             }
            if (!valueWithinLimits("NN_iterations")) {
-                document.getElementById("alertNN_iterationsLbl").textContent = "ALERT: Invalid number of iterations provided.";
-                document.getElementById("alertNN_iterations").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number of iterations provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
@@ -751,19 +755,17 @@
            postActionToPython(postData)   // Go to send data to python  
         } else if (modelType == "Random Forest"){
             if (!valueWithinLimits("RF_Trees")) {
-                document.getElementById("alertRF_TreesLbl").textContent = "ALERT: Invalid number of trees provided.";
-                document.getElementById("alertRF_Trees").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number of trees provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
             if (!valueWithinLimits("RF_TestSize")) {
-                document.getElementById("alertRF_TestSizeLbl").textContent = "ALERT: Invalid test size provided.";
-                document.getElementById("alertRF_TestSize").style.display = "";
+                document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid test size provided.";
+                document.getElementById("alertRelationshipModel").style.display = "";
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
-
-
             postData = { 
                 action: "performRFCalculations",
                 inputSeries: inputSeriesNameArray,
