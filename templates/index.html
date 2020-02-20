@@ -570,14 +570,20 @@
     }
 
     function performInterpolation(){
+        if (seriesName == "Choose dataset:"){
+            window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            return
+        }
         if(document.getElementById("HardLimitRadios").checked && valueWithinLimits("Intrp_Min") && valueWithinLimits("Intrp_Max") &&  (document.getElementById("linear_radio").checked || document.getElementById("quadratic_radio").checked)){
                 postData = { 
+                seriesName: seriesName,
                 action: "performInterpolation_Limit",
                 selectedMin: document.getElementById("Intrp_Min").value,
                 selectedMax: document.getElementById("Intrp_Max").value
             };
         } else if (document.getElementById("StdRadios").checked && valueWithinLimits("Std_factor")){
             postData = { 
+                seriesName: seriesName,
                 action: "performInterpolation_StandardDev",
                 stdFactor: document.getElementById("Std_factor").value
             };
@@ -591,6 +597,11 @@
     function performSmoothing(){
         if (!valueWithinLimits("Smooth_Window")) {
             window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            return
+        }
+        seriesName = document.getElementById("selectDataSet").value
+        if (seriesName == "Choose dataset:"){
+            window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
         seriesName = document.getElementById("selectDataSet").value
