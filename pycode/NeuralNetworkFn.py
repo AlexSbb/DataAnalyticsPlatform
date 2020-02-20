@@ -109,13 +109,13 @@ def NeuralNet(NN_inputs):
                 from sklearn.neural_network import MLPRegressor
                 if NN_inputs.sclng == True:
                    sc = StandardScaler()
-                   NN_inputs.X = sc.fit_transform(NN_inputs.X)
+                   nnX1 = sc.fit_transform(NN_inputs.X)
                 else:
-                    pass
+                    nnX1 = NN_inputs.X
                 #Train the model with training data and test it with test data  (80% train and 20% test)
                 from sklearn.model_selection import train_test_split
                 from sklearn.metrics import mean_squared_error
-                X_train, NN_outputs.X_test, y_train, NN_outputs.y_actual = train_test_split(NN_inputs.X, NN_inputs.y, test_size= NN_inputs.tst_siz, random_state=defSplitLeaf)
+                X_train, NN_outputs.X_test, y_train, NN_outputs.y_actual = train_test_split(nnX1, NN_inputs.y, test_size= NN_inputs.tst_siz, random_state=defSplitLeaf)
                 #Neural network model
                 reg = MLPRegressor(hidden_layer_sizes = NN_inputs.hid_lyrs, activation = NN_inputs.actv, solver = NN_inputs.slvr, learning_rate = 'adaptive', max_iter = NN_inputs.itr, random_state = defSplit)
                 reg.fit(X_train,y_train)
