@@ -41,7 +41,7 @@ NN_inputs8 = NN.NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs3,slvr1[1],200,True)
 # Test minimum accuracy check
 NN_inputs9 = NN.NN_inputs(X1,y3,0.2,actv1[3],hid_lyrs1,slvr1[1],500,True)
 
-#Positive cases----------------------------------------------------------
+#Positive cases---------------------------------------------------------------------------------------------
 
 #Normal inputs should not produce error
 # Function call
@@ -58,7 +58,7 @@ if NN_outputs1.flag == NN.success:
 else:
     print('Case1 Run2: Fail \n')
     
-#Negative cases----------------------------------------------------------
+#Negative cases----------------------------------------------------------------------------------------------
 
 #Test input and output sizes
 print('Test input and output sizes')
