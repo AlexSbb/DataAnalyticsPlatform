@@ -570,7 +570,33 @@
                 maintainAspectRatio: true,
             }
         };        
-               
+        
+        var randomForestPredictedOutput=dataSeriesDict[key].randomForestPredictedOutput;
+        var randomForestExpectedOutput=dataSeriesDict[key].randomForestExpectedOutput;
+        if (randomForestPredictedOutput.length != []){
+            addDataSet_1 = {
+                label: 'PredictedOutput',
+                backgroundColor: colorNames[5],
+                data: randomForestPredictedOutput,
+                borderColor: colorNames[5],
+                fill: false
+            }
+            addDataSet_2 = {
+                label: 'ExpectedOutput',
+                backgroundColor: colorNames[6],
+                data: randomForestExpectedOutput,
+                borderColor: colorNames[6],
+                fill: false
+            }
+            config.data.datasets.push(addDataSet_1)
+            config.data.datasets.push(addDataSet_2)
+
+        }
+
+
+
+
+
         // var plotData = {
         //         labels: [...Array(dataForPlot.length).keys()],
         //         datasets: [{

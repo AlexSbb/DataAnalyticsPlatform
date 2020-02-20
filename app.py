@@ -6,6 +6,7 @@ from flask_cors import CORS
 import temp_test.read_csv_data as rcd
 import json
 import pycode.Team2Functions as T2F
+import CustomClasses as CC
 from CustomClasses import DataObject, DataSeries
 
 
@@ -26,9 +27,7 @@ def importDataFromFile():
     else:
         # print(request.get_json())
         fileName = request.get_json()['fileName']
-        dataArray = list(request.get_json()['dataArray'])
-        print(fileName)
-        print(dataArray)  
+        dataArray = list(request.get_json()['dataArray']) 
         global globalDataObject
         if (globalDataObject is None):
             globalDataObject = DataObject(dataArray, fileName)
@@ -61,7 +60,7 @@ def resetGlobalDataObject():
         smoothingType = request.get_json()['smoothingType']
         globalDataObject.dataSeriesDict[seriesName].smoothing(smoothingType,window)    
     elif action == "performInterpolation_Limit":
-        # Interpolation with hard limits
+        # Interpolation with hard limits, done!
         seriesName=request.get_json()['seriesName']
         selectedMin=float(request.get_json()['selectedMin'])
         selectedMax=float(request.get_json()['selectedMax'])
@@ -81,15 +80,25 @@ def resetGlobalDataObject():
             globalDataObject.dataSeriesDict[seriesName].resetError()
             return jsonify(message = errorMsg ) 
     elif action == "performInterpolation_StandardDev":
+        # Interpolation with standart deviation
+        print("not working")
         globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
     elif action == "performNNCalculations":
         print()
-     #   NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]), outputSeries.originalData, 0.5, actv1[3], hid_lyrs1, slvr1[1], 200, False))
-        globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
-       # globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
     elif action == "performRFCalculations":
-        print()
-      #  globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+        # Random Forest      
+        print("performRFCalculations")
+        seriesName = request.get_json()['outputSeries'] 
+        inputSeriesName = request.get_json()['inputSeries'][0]
+        trees = int(request.get_json()['trees'])
+        testSize =int(request.get_json()['testSize'])
+        historyOnOff = bool(request.get_json()['historyOnOff'])
+        print(inputSeriesName)
+        print(seriesName)
+        inputSeries = globalDataObject.dataSeriesDict[inputSeriesName].currentData
+        globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeries,trees,testSize,historyOnOff)
+
+
     
     if (globalDataObject.dataSeriesDict[seriesName].error == ''):
         return  jsonify(globalDataObject.toJSON()) 
