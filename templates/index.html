@@ -592,9 +592,7 @@
                 myChart = new Chart(ctx,config);
 
             } 
-
     }
-    
     function valueWithinLimits(elementName){
         if (document.getElementById(elementName).value == "")
             return false;
@@ -653,16 +651,15 @@
                 action: "performInterpolationHardLimits",
                 seriesName: seriesName,
                 interpolationType: interpolationType, //linear or quadratic
-                selectedMin: document.getElementById("Intrp_Min").value,
-                selectedMin: document.getElementById("Intrp_Max").value
+                Intrp_Min: document.getElementById("Intrp_Min").value,
+                Intrp_Max: document.getElementById("Intrp_Max").value
             }; 
         } else {
             postData = { 
                 action: "performInterpolationStdDev",
                 seriesName: seriesName,
                 interpolationType: interpolationType, //linear or quadratic
-                interpolationOutlierType: interpolationOutlierType,
-                standardDevFactor: document.getElementById("Std_factor").value
+                Std_factor: document.getElementById("Std_factor").value
             };
         }
         postActionToPython(postData)   // Go to send data to python  
