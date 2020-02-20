@@ -43,7 +43,7 @@ def getGlobalDataObject():
     else:
         return jsonify(globalDataObject.toJSON()) 
 
-@app.route('/dataReset', methods=['POST'] )
+@app.route('/dataManipulation', methods=['POST'] )
 def resetGlobalDataObject():
     action = request.get_json()['action']
     if (globalDataObject is None):
@@ -56,7 +56,11 @@ def resetGlobalDataObject():
         globalDataObject.resetToOriginalData()
     elif action == "performSmoothing":
         globalDataObject(request.get_json()['seriesName']).smoothing(request.get_json()['smoothingType'], request.get_json()['window'])
- #   return jsonify(globalDataObject.toJSON()) 
+    elif action == "performInterpolation_Limit":
+        globalDataObject(request.get_json()['seriesName']).interpolation(request.get_json()['Intrp_Max'], request.get_json()['Intrp_Min'])
+    elif action == "performInterpolation_StandardDev":
+        globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
+#   return jsonify(globalDataObject.toJSON()) 
     return jsonify("Success") 
 
 @app.route('/interpolation', methods=['POST'] )

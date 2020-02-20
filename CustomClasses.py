@@ -76,28 +76,38 @@ class DataSeries:
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
-    def maxMin (self, selectedMax=None, selectedMin=None):
-        if selectedMax is None or selectedMin is None:
-            if self.selectedMax is None or self.selectedMin is None:
-                self.selectedMax = self.realMax
-                self.selectedMin = self.realMin
-        elif selectedMax != None and selectedMin != None:
-            self.selectedMax = selectedMax
-            self.selectedMin = selectedMin
+    def maxMin (self):
+        print("I am in maxMin")
         # flag,val_percent, self.replaceArray,msg =Filter.Filter.maxMin(self.currentData, self.selectedMax, self.selectedMin)
 
-    def stdDev(self, stdDevFactor=None):
+    def standardDeviation(self, stdDevFactor=None):
         if stdDevFactor is None:
             if self.stdDevFactor is None:
                 self.stdDevFactor = 1
         else:
             self.stdDevFactor = stdDevFactor
-        # flag, valPercent, self.replaceArray, self.selectedMax, self.selectedMin,msg =Filter.Filter.stdDev(self.currentData,self.stdDevFactor)
+        # TO DO / QUESTION (Dessi Thursday): 
+        # What does maxValue and minValue mean here? Do we really want to overwrite our self.selectedMax, self.selectedMin? 
+        # I thought we are only using max and min for the hard limits.
+        # return flag, valPercent, replaceMatrixIndex, maxValue, minValue,msg
+        flag, valPercent, self.replaceArray, self.selectedMax, self.selectedMin, msg = Filter.Filter.stdDev(self, self.currentData,self.stdDevFactor)
 
-    def interpolation(self):
-        flag, self.currentData, msg =Filter.Filter.interpolation(self.currentData,self.replaceArray,self.interpolationType,self.selectedMax,self.selectedMin) 
+    def interpolation(self, max=None, min=None, interpolationType=None):
+        if max is None:
+            if self.selectedMax is None:
+                self.selectedMax = self.realMax
+        else: 
+            self.selectedMax = max
+        if min is None:
+            if self.selectedMin is None:
+                self.selectedMin = self.realMin
+        else:
+            self.selectedMin = min
+
+        # We are not setting the replace array anywhere. Either we or them needs to run their max min method, so that it is produced. 
+        flag, self.currentData, msg = Filter.Filter.interpolation(self, self.currentData, self.replaceArray, self.interpolationType, self.selectedMax, self.selectedMin)
    
-    def smoothing(self, smoothingType, window):
+    def smoothing(self, smoothingType=None, window=None):
         fil =  Filter.Filter()       
         # Amrita use an array of arrays like the input 
         smoothInput= [self.currentData]
@@ -176,7 +186,7 @@ testDataSeries.maxMin()
 #print ('replaceArray=',testDataSeries.replaceArray)
 #print ('_'*80)
 # Test stdDev Function
-testDataSeries.stdDev()
+testDataSeries.standardDeviation(testDataSeries.stdDevFactor)
 #print ('replaceArray=',testDataSeries.replaceArray)
 #print ('_'*80)
 # Test smoothing Function

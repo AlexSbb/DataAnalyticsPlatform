@@ -55,9 +55,7 @@ class Filter():
         maxValue           : Calculates the Maximum Value limit 
         minValue           : Calculates the Minimum Value limit 
     *****************************************************************************************************************************"""    
-    
 
-    
     def maxMin(self,inputArray, maxValue, minValue):
         
         replaceMatrixIndex = []

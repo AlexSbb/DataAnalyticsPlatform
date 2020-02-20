@@ -575,28 +575,27 @@
             return
         }
         if(document.getElementById("HardLimitRadios").checked && valueWithinLimits("Intrp_Min") && valueWithinLimits("Intrp_Max") &&  (document.getElementById("linear_radio").checked || document.getElementById("quadratic_radio").checked)){
-                postData = { 
-                seriesName: seriesName,
+            postData = { 
                 action: "performInterpolation_Limit",
+                seriesName: seriesName,
                 selectedMin: document.getElementById("Intrp_Min").value,
                 selectedMax: document.getElementById("Intrp_Max").value
             };
         } else if (document.getElementById("StdRadios").checked && valueWithinLimits("Std_factor")){
             postData = { 
-                seriesName: seriesName,
                 action: "performInterpolation_StandardDev",
+                seriesName: seriesName,
                 stdFactor: document.getElementById("Std_factor").value
             };
         } else {
             window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
-            //TO DO: ERROR MESSAGE THAT THEY SHOULD SELECT THINGS BEFORE PRESSING CALCULATE
         }
         postActionToPython(postData)   // Go to send data to python  
     }
     // performing smoothing - we check if there is a type selected and also data and inform the customer 
     function performSmoothing(){
         if (!valueWithinLimits("Smooth_Window")) {
-            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
             return
         }
         seriesName = document.getElementById("selectDataSet").value
@@ -604,35 +603,28 @@
             window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
-        seriesName = document.getElementById("selectDataSet").value
+        var smoothingType = ""
+        var seriesName = document.getElementById("selectDataSet").value
         if(document.getElementById("backward_radio").checked){
-                postData = { 
-                action: "performSmoothing",
-                seriesName: seriesName,
-                smoothingType: document.getElementById("backward_radio").value,
-                window: document.getElementById("Smooth_Window").value
-            };
+            smoothingType = document.getElementById("backward_radio").value;
         } else if (document.getElementById("forward_radio").checked) {
-                postData = { 
-                action: "performSmoothing",
-                seriesName: seriesName,
-                smoothingType: document.getElementById("forward_radio").value,
-                window: document.getElementById("Smooth_Window").value
-                };
+            smoothingType = document.getElementById("forward_radio").value;
         } else if (document.getElementById("fixed_radio").checked){
-                postData = { 
-                    action: "performSmoothing",
-                    seriesName: seriesName,
-                    smoothingType: document.getElementById("fixed_radio").value,
-                    window: document.getElementById("Smooth_Window").value
-                };
+            smoothingType = document.getElementById("fixed_radio").value;
         } else {
             window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
             return;
         }
+        postData = { 
+                action: "performSmoothing",
+                seriesName: seriesName,
+                smoothingType: smoothingType,
+                window: document.getElementById("Smooth_Window").value
+        };
         postActionToPython(postData)   // Go to send data to python  
     }
 
+    //Alex, sorry that I am overwriting your method
     function buttonInterpolationClick(){
         //true for HardLimit and false for standart deviation
         //true for linear and false for quadratic interpolation
@@ -691,7 +683,7 @@
     }
 
     async function postActionToPython(postdata){
-        const posturl = 'http://127.0.0.1:5000/dataReset';
+        const posturl = 'http://127.0.0.1:5000/dataManipulation';
         try {
                 const response = await fetch(posturl, {
                     method: 'POST', 
