@@ -117,7 +117,7 @@
                           </div>
                           
                             <div class="text-center">
-                                <button type="submit" class="btn btn-outline-secondary" onclick="buttonInterpolationClick()">Calculate</button>
+                                <button type="submit" class="btn btn-outline-secondary" onclick="performInterpolation()">Calculate</button>
                            
                             </div>
                     </li >
@@ -185,7 +185,7 @@
                             <input type="number" class="form-control" id='Smooth_Window' aria-label="window" value="2" min="2" onKeyUp="this.reportValidity()">
                           </div>
                           <div class="text-center">
-                            <button type="submit" class="btn btn-outline-secondary">Calculate</button>
+                            <button type="submit" class="btn btn-outline-secondary" onclick="performSmoothing()">Calculate</button>
                         </div>
                     </li >
                 </ul>
@@ -561,6 +561,65 @@
 
             } 
 
+    }
+
+    function valueWithinLimits(elementName){
+        if (document.getElementById(elementName).reportValidity())
+            return true;
+        else return false;
+    }
+
+    function performInterpolation(){
+        if(document.getElementById("HardLimitRadios").checked && valueWithinLimits("Intrp_Min") && valueWithinLimits("Intrp_Max") &&  (document.getElementById("linear_radio").checked || document.getElementById("quadratic_radio").checked)){
+                postData = { 
+                action: "performInterpolation_Limit",
+                selectedMin: document.getElementById("Intrp_Min").value,
+                selectedMax: document.getElementById("Intrp_Max").value
+            };
+        } else if (document.getElementById("StdRadios").checked && valueWithinLimits("Std_factor")){
+            postData = { 
+                action: "performInterpolation_StandardDev",
+                stdFactor: document.getElementById("Std_factor").value
+            };
+        } else {
+            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            //TO DO: ERROR MESSAGE THAT THEY SHOULD SELECT THINGS BEFORE PRESSING CALCULATE
+        }
+        postActionToPython(postData)   // Go to send data to python  
+    }
+    // performing smoothing - we check if there is a type selected and also data and inform the customer 
+    function performSmoothing(){
+        if (!valueWithinLimits("Smooth_Window")) {
+            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            return
+        }
+        seriesName = document.getElementById("selectDataSet").value
+        if(document.getElementById("backward_radio").checked){
+                postData = { 
+                action: "performSmoothing",
+                seriesName: seriesName,
+                smoothingType: document.getElementById("backward_radio").value,
+                window: document.getElementById("Smooth_Window").value
+            };
+        } else if (document.getElementById("forward_radio").checked) {
+                postData = { 
+                action: "performSmoothing",
+                seriesName: seriesName,
+                smoothingType: document.getElementById("forward_radio").value,
+                window: document.getElementById("Smooth_Window").value
+                };
+        } else if (document.getElementById("fixed_radio").checked){
+                postData = { 
+                    action: "performSmoothing",
+                    seriesName: seriesName,
+                    smoothingType: document.getElementById("fixed_radio").value,
+                    window: document.getElementById("Smooth_Window").value
+                };
+        } else {
+            window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            return;
+        }
+        postActionToPython(postData)   // Go to send data to python  
     }
 
     function buttonInterpolationClick(){

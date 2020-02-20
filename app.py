@@ -54,6 +54,8 @@ def resetGlobalDataObject():
         globalDataObject.deleteSeries(request.get_json()['seriesName'])
     elif action == "resetToOriginalData":
         globalDataObject.resetToOriginalData()
+    elif action == "performSmoothing":
+        globalDataObject(request.get_json()['seriesName']).smoothing(request.get_json()['smoothingType'], request.get_json()['window'])
  #   return jsonify(globalDataObject.toJSON()) 
     return jsonify("Success") 
 
