@@ -22,7 +22,6 @@ wAccuracy                = "Selected data is not appropriate to predict data"
 #Flags
 error   = "error"
 success = "success"
-warning = "Warning"
 
 #Constants
 mintest_size          = 0.1

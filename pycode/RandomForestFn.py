@@ -14,13 +14,9 @@ eUnexpected              = "Internal Error"
 #Warning code
 wAccuracy                = "Selected data is not appropriate to predict data"
 
-          
-
 #Flags
 error   = "error"
 success = "success"
-warning = "Warning"
-
 
 #Constants
 maxTrees              = 1000

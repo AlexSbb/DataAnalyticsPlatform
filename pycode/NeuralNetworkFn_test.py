@@ -17,7 +17,6 @@ X2 = [  [4.5,6.7],
 # output dataset            
 y1 = [8.55055,5.53195,9.1547,11.91745]
 y2 = [8.55055,5.53195,9.1547]
-y3 = [8.55055,5.53195,0,11.91745]
 
 actv1 = ("identity", "logistic", "tanh", "relu")
 slvr1 = ("lbfgs", "sgd", "adam")
@@ -114,7 +113,6 @@ if NN_outputs1.flag == NN.warning and NN_outputs1.message == NN.wAccuracy:
 else:
     print('Case5 Run1: Fail \n')
     
-
 
 
 
