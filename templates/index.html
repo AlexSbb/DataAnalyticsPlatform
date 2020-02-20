@@ -319,7 +319,7 @@
                         <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary mb-5" onclick="calculateRelationshipModel()">Calculate</button>    
                             <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertRelationshipModel" role="alert">
-                                <label id="alertRelationshipModelLbl"><</label> 
+                                <label id="alertRelationshipModelLbl"></label> 
                                 <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                                   <span aria-hidden="true">&times;</span>
                                 </button>
@@ -594,44 +594,76 @@
             } 
 
     }
-
-
+    
     function valueWithinLimits(elementName){
+        if (document.getElementById(elementName).value == "")
+            return false;
         if (document.getElementById(elementName).reportValidity())
             return true;
         else return false;
     }
     function clearAlerts(){
-        document.getElementById("alertInterpolation").style.display = "none";
-        document.getElementById("alertSmoothing").style.display = "none";
-        document.getElementById("alertRelationshipModel").style.display = "none";
+    //    document.getElementById("alertInterpolation").style.display = "none";
+    //    document.getElementById("alertSmoothing").style.display = "none";
+    //    document.getElementById("alertRelationshipModel").style.display = "none";
     }
     function performInterpolation(){
         clearAlerts();
-        seriesName = document.getElementById("selectDataSet").value;
+        var seriesName = document.getElementById("selectDataSet").value;
+        var interpolationType; 
+        var interpolationOutlierType; 
+
+        console.log(seriesName);
         if (seriesName == "Choose dataset:"){
             document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please select the data series to apply this function to.";
             document.getElementById("alertInterpolation").style.display = "";
             //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
             return
         }
-        if(document.getElementById("HardLimitRadios").checked && valueWithinLimits("Intrp_Min") && valueWithinLimits("Intrp_Max") &&  (document.getElementById("linear_radio").checked || document.getElementById("quadratic_radio").checked)){
-            postData = { 
-                action: "performInterpolation_Limit",
-                seriesName: seriesName,
-                selectedMin: document.getElementById("Intrp_Min").value,
-                selectedMax: document.getElementById("Intrp_Max").value
-            };
-        } else if (document.getElementById("StdRadios").checked && valueWithinLimits("Std_factor")){
-            postData = { 
-                action: "performInterpolation_StandardDev",
-                seriesName: seriesName,
-                stdFactor: document.getElementById("Std_factor").value
-            };
+        if (document.getElementById("quadratic_radio").checked){
+            interpolationType = 'quadratic';
         } else {
-            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Incomplete data. Please fill in all relevant information and try again.";
+            interpolationType = 'linear';
+        }
+        if (document.getElementById("HardLimitRadios").checked){
+            interpolationOutlierType = 'hardLimit'
+        } else {
+            interpolationOutlierType = 'std_dev'
+        }
+        if (!valueWithinLimits("Intrp_Min") && interpolationOutlierType == 'hardLimit'){
+            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Please select a valid minimum.";
             document.getElementById("alertInterpolation").style.display = "";
-          //  window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
+            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            return
+        }
+        if (!valueWithinLimits("Intrp_Max") && interpolationOutlierType == 'hardLimit'){
+            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Please select a valid maximum.";
+            document.getElementById("alertInterpolation").style.display = "";
+            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            return
+        }
+        if ( !valueWithinLimits("Std_factor") && interpolationOutlierType == 'std_dev'){
+            document.getElementById("alertInterpolationLbl").textContent = "ALERT: Please select a valid standard deviation factor.";
+            document.getElementById("alertInterpolation").style.display = "";
+            //window.alert("The data provided is incomplete. Please select the data series to apply this function to.");
+            return
+        }
+        if (interpolationOutlierType == 'hardLimit'){
+            postData = { 
+                action: "performInterpolationHardLimits",
+                seriesName: seriesName,
+                interpolationType: interpolationType, //linear or quadratic
+                selectedMin: document.getElementById("Intrp_Min").value,
+                selectedMin: document.getElementById("Intrp_Max").value
+            }; 
+        } else {
+            postData = { 
+                action: "performInterpolationStdDev",
+                seriesName: seriesName,
+                interpolationType: interpolationType, //linear or quadratic
+                interpolationOutlierType: interpolationOutlierType,
+                standardDevFactor: document.getElementById("Std_factor").value
+            };
         }
         postActionToPython(postData)   // Go to send data to python  
     }
