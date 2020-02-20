@@ -139,8 +139,8 @@ class DataSeries:
             print('Error:')
             print(msg)
         else:
-            self.currentData = newarr[0]
-            self.originalData = revisedInputarr[0]
+            self.currentData = list(newarr[0])
+            self.originalData = list(revisedInputarr[0])
             # Amrita use an array of arrays like the output also, so I use only the first array
             # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
             # self.afterSmoothingArray = list(afterSmoothingArray[0])

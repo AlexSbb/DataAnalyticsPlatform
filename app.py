@@ -55,7 +55,10 @@ def resetGlobalDataObject():
     elif action == "resetToOriginalData":
         globalDataObject.resetToOriginalData()
     elif action == "performSmoothing":
-        globalDataObject(request.get_json()['seriesName']).smoothing(request.get_json()['smoothingType'], request.get_json()['window'])
+        window=int(request.get_json()['window'])
+        seriesName= request.get_json()['seriesName']
+        smoothingType = request.get_json()['smoothingType']
+        globalDataObject.dataSeriesDict[seriesName].smoothing(smoothingType,window)
     elif action == "performInterpolation_Limit":
         globalDataObject(request.get_json()['seriesName']).interpolation(request.get_json()['Intrp_Max'], request.get_json()['Intrp_Min'])
     elif action == "performInterpolation_StandardDev":
@@ -68,8 +71,13 @@ def resetGlobalDataObject():
     elif action == "performRFCalculations":
         print()
       #  globalDataObject(request.get_json()['seriesName']).standardDeviation(request.get_json()['Std_factor'])
-    return jsonify(globalDataObject.toJSON()) 
- #   return jsonify("Success") 
+    
+    if (globalDataObject.dataSeriesDict[seriesName].error == ''):
+        return  jsonify(globalDataObject.toJSON()) 
+    else:
+        errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+        globalDataObject.dataSeriesDict[seriesName].resetError()
+        return jsonify(message = errorMsg) 
 
 @app.route('/interpolation', methods=['POST'] )
 def interpolation():
