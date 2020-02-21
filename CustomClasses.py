@@ -172,8 +172,6 @@ class DataSeries:
             self.smoothingType = smoothingType
         if (window is not None):
             self.window = window
-            
-        print(self.smoothingType)
         flag, revisedInputarr, newarr, msg = filterObj.movingAvg(smoothInput,self.window,self.smoothingType)
         if flag == 'error':
             print('Error:')
