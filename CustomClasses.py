@@ -36,8 +36,7 @@ class DataSeries:
 
         self.selectedMin = 0.0
         self.selectedMax = 1.0
-        self.maxMinMatrix = []
-        self.stdDevMaxMinMatrix = [] # what is this???
+
         self.stdDevFactor =  1.0
         self.interpolationType = linear 
         # 0 - Linear Interpolation
@@ -45,8 +44,6 @@ class DataSeries:
         self.interpolationArray = []
         self.replaceArray = []
         self.valPercent = 0
-        self.beforeSmoothingArray = []
-        self.afterSmoothingArray = []
 
         self.PredictedOutput = []
         self.ExpectedOutput = []
@@ -55,10 +52,10 @@ class DataSeries:
         self.MeanSquareError =0
         self.Accuracy=0
 
-
         self.error = ''
 
-        self.neuralNetworkResults = []
+        self.maxMinMatrix = []
+        self.stdDevMaxMinMatrix = [] 
 
     def resetToOriginalData(self):
         self.currentData = self.originalData
@@ -67,16 +64,14 @@ class DataSeries:
         self.selectedMin = 0.0
         self.selectedMax = 1.0
         self.maxMinMatrix = []
-        self.stdDevMaxMinMatrix = [] # what is this???
+        self.stdDevMaxMinMatrix = [] 
         self.stdDevFactor =  1.0
-        self.interpolationType = linear #true for linear and false for quadratic interpolation
+        self.interpolationType = linear 
         self.interpolationArray = []
         self.replaceArray = []
         self.valPercent = 0
-        self.beforeSmoothingArray = []
-        self.afterSmoothingArray = []
         self.error = ''
-        self.neuralNetworkResults = []
+
         self.PredictedOutput = []
         self.ExpectedOutput = []
         self.TestInput = []
@@ -166,9 +161,7 @@ class DataSeries:
         else:
             self.currentData = list(newarr[0])
             self.originalData = list(revisedInputarr[0])
-            # Amrita use an array of arrays like the output also, so I use only the first array
-            # self.beforeSmoothingArray = list(beforeSmoothingArray[0])
-            # self.afterSmoothingArray = list(afterSmoothingArray[0])
+
     
     def randonForest(self, inputSeriesData,trees,testSize,historyOnOff):
         print('Hi, Im random forest')
@@ -196,15 +189,6 @@ class DataSeries:
         print('Hi, Im neuralNetwork')
 
         NnInput = NN.NN_inputs(changeDataSeriesForm(inputSeriesData), self.currentData, testSize/100, activeFunction.lower(), hiddenLayers, solverFunction.lower(), iterations, scalingOnOff)
-      
-        # print("inputSeriesData",NnInput.X)
-        # print("NnInput.y",NnInput.y)
-        # print("NnInput.test_size)",NnInput.test_size)
-        # print("activation_fun)",NnInput.activation_fun)
-        # print("hidden_layers)",NnInput.hidden_layers)
-        # print("solver_fun)",NnInput.solver_fun)
-        # print("iterations)",NnInput.iterations)
-        # print("scaling",NnInput.scaling)
         NN_outputs = NN.NeuralNet(NnInput)
         if (NN_outputs.flag=="success"): 
             self.ExpectedOutput     = NN_outputs.y_actual
@@ -280,124 +264,5 @@ def changeDataSeriesForm(dataSeriesArray):
     return convertedArray
 
 
-
-
-
-
-
-# testDataSeries = DataSeries('myTestData',list(np.random.rand(100)))
-# inputSeries1 = DataSeries('input1',list(np.random.rand(100)))
-# inputSeries2 = DataSeries('input2',list(np.random.rand(100)))
-# outputSeries = DataSeries('output',list(np.random.rand(100)))
-
-# print ('realMax=',testDataSeries.realMax)
-# print ('realMin=',testDataSeries.realMin)
-# print ('median=',testDataSeries.median)
-# print ('_'*80)
-# Test maxMin Function
-# testDataSeries.selectedMax = 0.9
-# testDataSeries.selectedMin = 0.1
-# testDataSeries.maxMin()
-
-
-# Test stdDev Function
-# testDataSeries.standardDeviation()
-# print ('replaceArray=',testDataSeries.replaceArray)
-# print ('_'*80)
-
-# print(testDataSeries.currentData)
-# print ('replaceArray=',testDataSeries.replaceArray)
-# print(testDataSeries.selectedMax)
-# print(testDataSeries.selectedMin)
-
-
-# testDataSeries.interpolation()
-
-# Test smoothing Function
-# testDataSeries.smoothing("backward", 2)
-#print (testDataSeries.error)
-#print ('beforeSmoothingArray')
-#print (testDataSeries.beforeSmoothingArray)
-#print ('afterSmoothingArray')
-#print (testDataSeries.afterSmoothingArray)
-
-#print (testDataSeries.toJSON())
-
-# inputSeries1 = DataSeries('input1',list(np.random.rand(20)))
-# inputSeries2 = DataSeries('input2',list(np.random.rand(20)))
-# outputSeries = DataSeries('output',list(np.random.rand(20)))
-
-# testDataObject = DataObject([inputSeries1.originalData ,inputSeries2.originalData], 'input')
-# testDataObject.addSeries([list(np.random.rand(10)), list(np.random.rand(10))], 'output')
-# print (testDataObject.getDataSeriesDict())
-
-#NN_inputs1 = NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],200,False)     # Activation=relu, solver=sgd
-# actv1 = ("identity", "logistic", "tanh", "relu")
-# slvr1 = ("lbfgs", "sgd", "adam")
-#Tuple of hidden layers in Neural Networks
-# hid_lyrs1 = (8,4,4)
-
-# inputSeries1.selectedMax = 0.9
-# inputSeries1.selectedMin = 0.1
-# inputSeries1.maxMin()
-# inputSeries1.stdDev()
-# inputSeries1.smoothing()
-
-# print('original data \n', inputSeries1.originalData)
-# print('afterSmoothingArray \n', inputSeries1.afterSmoothingArray)
-
-# Input array (In final implementation there should be a choice to select between processed input and raw input)
-# X1 = [   [4.5,6.7],
-#          [8.9,3.8],
-#          [9,6.8],
-#          [12.3,8.8] ]
-
-# output dataset (raw or processed selection)           
-# y1 = [8.55055,5.53195,9.1547,11.91745]
-# print(outputSeries.originalData)
-# print('above is the output array')
-# NN_outputs1 = NN.NeuralNet(NN.NN_inputs([inputSeries1, inputSeries2], outputSeries, 0.2, actv1[3], hid_lyrs1, slvr1[1], 200, False))
-
-# # #Printing outputs
-# print('Predicted Output:       ', NN_outputs1.y_test)
-# print('test input:             ', NN_outputs1.X_test)
-# print('expected output:        ', NN_outputs1.y_actual)
-# print('length of output array: ', NN_outputs1.length)
-# print('Mean Square error:      ', NN_outputs1.tst_mse)
-# print('Accuracy:               ', NN_outputs1.tst_accrc)
-
-#TESTING THE NEURAL NETWORKS
-# NN_outputs1 = NN.NeuralNet(NN.NN_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]), outputSeries.originalData, 0.5, actv1[3], hid_lyrs1, slvr1[1], 200, False))
-
-# #Printing outputs
-# print('Predicted Output:       ', NN_outputs1.y_test)
-# print('test input:             ', NN_outputs1.X_test)
-# print('expected output:        ', NN_outputs1.y_actual)
-# print('length of output array: ', NN_outputs1.length)
-# print('Mean Square error:      ', NN_outputs1.tst_mse)
-# print('Accuracy:               ', NN_outputs1.tst_accrc)
-
-# # Input structure for Neural Network
-# class RF_inputs(NamedTuple):
-#     X: float
-#     y: float
-#     trees: int
-#     tst_siz: float
-
-# # Output structure for Neural Network
-# class RF_outputs(NamedTuple):
-#     flag:       str
-#     y_test:     float
-#     X_test:     float 
-#     y_actual:   float
-#     length:     int
-#     tst_mse:    float
-#     tst_accrc:  float
-#     msg:        str
-# # Function call
-
-#TESTING THE RANDOM FOREST
-
-# RF_outputs1 = RF.RFreg(RF.RF_inputs(changeDataSeriesForm([inputSeries1.originalData, inputSeries2.originalData]),outputSeries.originalData,1000,0.2))
 
 
