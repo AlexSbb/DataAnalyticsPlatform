@@ -1,80 +1,77 @@
 # -*- coding: utf-8 -*-
 """
-Created on Mon Feb 17 14:13:13 2020
-
-@author: Amrita Sen 
 """
 import numpy as np
-import matplotlib.pyplot as plt
-import pandas as pd
-import csv
-import statistics as st
-import scipy
-from scipy.interpolate import griddata
 from scipy import interpolate
-from scipy.interpolate import interp1d
 
 np.nan
 
 
 """
     *****************************************************************************************************************************
-    Filter class is comprising methods for  data filtering and smooting functionality
+    Filter class is comprising methods for  data filtering and smoothing functionality
     
     constants:: used in methods as a fix value
     
     Flags used in methods to identify whether the method is successfull or failure.   
-    Error       : 'error'
-    success     : 'success'
+    error      : 'error'
+    success    : 'success'
     
     Error messages used in different methods.
-    Error_msg1  : 'File can not be processed'
-    Error_msg2  : 'For fixed moving average provide odd numbers of window '
-    Error_msg3  : 'Window is bigger than the input length.'
-    Error_msg4  : 'Number of input values less than 3'
-    Error_msg5  : 'Provide a proper moving average type'
-    Error_msg6  : 'Provide a Integer value '
-    Error_msg7  : 'There is no outlier values to interpolate'
+    eMsg1  : 'Internal Error'
+    eMsg2  : 'For fixed moving average provide odd numbers of window '
+    eMsg3  : 'Window is bigger than the input length.'
+    eMsg4  : 'Number of input values less than 3'
+    eMsg5  : 'Provide a proper moving average type'
+    eMsg6  : 'Provide a Integer value '
+    eMsg7  : 'There is no outlier values to interpolate'
+    eMsg8  : 'Outlier percentage is 100 %. Put proper Max and min values'
+    eMsg9  : 'Provide a valid interpolation type'
     
-    inputNo         : lower limit for number of data in input array i.e 3
+    arrayLenLimit   : lower limit for number of data in input array i.e 3
     stdDevFactorMax : standard deviation factor upper limit i.e 6
     stdDevFactorMin : standard deviation factor lower limit i.e 1
         
     methods::
-    maxMin(inputArray, maxValue, minValue) : Finding outlier indexes of input array or input data based on max and min limit provided by user
-    stdDev(inputArray, stdDevFactor)       : This method measure of the amount of variation or dispersion in input array or input data 
-                                                   depending on standard deviation factor.
-    movingAvg(inputArray, window, avgType) : This calculate the moving average for the data to move forward,backward or fixed by the number of windows
+    maxMin(inDataArray, inMaxLim, inMinLim) : Finding outlier indexes of input array or input data based on max and min limit provided by the user.
+    stdDev(inDataArray, inStdDevFact)       : This measures the amount of variation or dispersion in the input array or input data depending on the standard deviation factor.
+    movingAvg(inDataArray, inWindow, inMavgType) : This calculates the moving average for the data to move forward,backward or fixed by the number of windows.
+    countConsec(indexVal, inOutlierArray)  : This methods calculates the 1st consecutive dataset in a given array staring from a given index
+    count(inOutlierArray):  This methods calculates number of consecutive data sets
+    interpolation(inDataArray, inOutlierArray, inIntpTyp, inMaxLim, inMinLim): method to construct new data points within the range of a discrete set of known data points
+    
                                                    
     *****************************************************************************************************************************"""
 
 
 class Filter():
     
-    
+    # creates constructor with the instance self to access the attributes and methods of the class
     def __init__(self):
-        pass
+        pass  #null operator
         
         
-    Error           = 'error'
-    success         = 'success'
-    Error_msg1      = 'File can not be processed'
-    Error_msg2      = 'For fixed moving average provide odd numbers of window '
-    Error_msg3      = 'Window is bigger than the input length.'
-    Error_msg4      = 'Number of input values less than 3'
-    Error_msg5      = 'Provide a proper moving average type'
-    Error_msg6      = 'Provide a Integer value '
-    Error_msg7      = 'There is no outlier values to interpolate'
-    inputNo         = 3
-    stdDevFactorMax = 6
-    stdDevFactorMin = 1
+    error      = 'error'
+    success    = 'success'
+    eMsg1      = 'Internal Error'
+    eMsg2      = 'For fixed moving average provide odd numbers of window '
+    eMsg3      = 'Window is bigger than the input length.'
+    eMsg4      = 'Number of input values less than 3'
+    eMsg5      = 'Provide an proper moving average type'
+    eMsg6      = 'Provide an Integer value '
+    eMsg7      = 'There is no outlier values to interpolate'
+    eMsg8      = 'Outlier percentage is 100 %. Put proper Max and min values'
+    eMsg9      = 'Provide a valid interpolation type'
+    cArrayLenLimit = 3
+    cStdDevFactMax = 6
+    cStdDevFactMin = 1
 
     """
     ******************************************************************************************************************************************
     method maxMin          : Finding outlier indexes based on max and min limit provided by user
-        inputArray         : input array provided to find outlier
-        maxValue           : Max limit provided by user
-        minValue           : Min limit provided by user
+        inDataArray        : input array provided to find outlier
+        inMaxLim           : Max limit provided by user
+        inMinLim           : Min limit provided by user
 
     variables:
  
@@ -82,19 +79,17 @@ class Filter():
         arrayMinval        : Min value in input array
             
      return:
-        valPercent         : Calculates de amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
-        replaceMatrixIndex : Array with identyfied rows that are detected as Outliers.
-        flag               : success or error
-        msg                : success or error massage reason
-        maxValue           : Calculates the Maximum Value limit 
-        minValue           : Calculates the Minimum Value limit 
+        flag               : success or error         
+        outOPercent        : Calculates de amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
+        outOutlierArray    : Array with identyfied rows that are detected as Outliers.
+        msg                : success or error massage reason 
     *******************************************************************************************************************************************"""
 
-    def maxMin(self, inputArray, maxValue, minValue):
+    def maxMin(self, inDataArray, inMaxLim, inMinLim):
 
         #initializing
-        replaceMatrixIndex = []
-        valPercent = 0
+        outOutlierArray = []
+        outOPercent = 0
         
         flag = Filter.success
         msg = ''
@@ -102,117 +97,129 @@ class Filter():
         # providing try block to handle exceptions
         try:
             # checking valid length of array
-            if (len(inputArray) < Filter.inputNo):
-                msg = Filter.Error_msg4  # 'Number of input values less than 3'
-                flag = Filter.Error  # 'error'
-                return flag, valPercent, replaceMatrixIndex, msg
+            if (len(inDataArray) < Filter.cArrayLenLimit):
+                msg = Filter.eMsg4  # 'Number of input values less than 3'
+                flag = Filter.error  
+                return flag, outOPercent, outOutlierArray, msg
             
             # checking if max value provided is less than min value 
-            if (maxValue < minValue):
-                flag = Filter.Error
+            if (inMaxLim < inMinLim):
+                flag = Filter.error
                 msg = 'Max value is lower than Min value'
                 
             # checking if max value provided is equal to min value
-            elif (maxValue == minValue):
-                flag = Filter.Error
+            elif (inMaxLim == inMinLim):
+                flag = Filter.error
                 msg = 'Max value equal to than Min value'
             else:
-                arrayMaxval = max(inputArray) #getting max input data
-                arrayMinval = min(inputArray) #getting min input data
+                arrayMaxVal = max(inDataArray) #getting max input data
+                arrayMinVal = min(inDataArray) #getting min input data
                 
                 #checking if there is any outlier values
-                if(maxValue >= arrayMaxval  and minValue <= arrayMinval ):
-                    flag = Filter.Error      #error
-                    msg  = Filter.Error_msg7 # 'There is no outlier values to interpolate'
-                    return flag, valPercent, replaceMatrixIndex,msg
+                if(inMaxLim >= arrayMaxVal  and inMinLim <= arrayMinVal):
+                    flag = Filter.error      
+                    msg  = Filter.eMsg7      # meassage 'There is no outlier values to interpolate'
+                    return flag, outOPercent, outOutlierArray, msg
 
                 #fininding outlier index of original array
-                for index in range(len(inputArray)):
-                    if inputArray[index] > maxValue or inputArray[index] < minValue:
-                        replaceMatrixIndex.append(index)
-                        valPercent = len(replaceMatrixIndex) * 100 / len(inputArray) #percentage of outlier
+                for index in range(len(inDataArray)):
+                    
+                    if inDataArray[index] > inMaxLim or inDataArray[index] < inMinLim:
+                        outOutlierArray.append(index)
+                        outOPercent = len(outOutlierArray) * 100 / len(inDataArray) #percentage of outlier
+                        
+                #checking if 100 percent of data is outliers
+                if (outOPercent == 100):
+                    flag = Filter.error 
+                    msg  = Filter.eMsg8
                         
         # handling exceptions in except block                        
         except:
-            flag = Filter.Error #error
-            msg  = Filter.Error_msg1  # unexpected error 'File can not be processed'
+            flag = Filter.error 
+            msg  = Filter.eMsg1  # unexpected error
 
-        return flag, valPercent, replaceMatrixIndex, msg # returing flag(sucess or error),outlier percentage,outlier index, message
+        return flag, outOPercent, outOutlierArray, msg # returing flag(sucess or error),outlier percentage,outlier index, message
 
     """
     *****************************************************************************************************************************
     method stdDev          : This method provide measure of the amount of variation or dispersion in input data using standard deviation factor.
-        inputArray         : input array provided to find outlier
-        stdDevFactor       : Factor that multiply the Standard Deviation and is used to calculate the MaxValue and MinValue for the limits.
+        inDataArray        : input array provided to find outlier
+        inStdDevFact       : Factor that multiply the Standard Deviation and is used to calculate the MaxValue and MinValue for the limits.
                              currenty using standard deviation factor only for values 1 to 6
 
     variables:
-        stdDevNum          : Calculates the Standard Deviation of the Data
-        stdMeanNum         : Calculates the Mean of the Data
+        stdDev             : Calculates the Standard Deviation of the Data
+        stdMean            : Calculates the Mean of the Data
             
      return:
         flag               : success or error         
-        valPercent         : Calculates the amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
-        replaceMatrixIndex : Array with identyfied rows that are detected as Outliers.
-        maxValue           : Calculates the Maximum Value limit 
-        minValue           : Calculates the Minimum Value limit
+        outOPercent        : Calculates the amount of data that is identyfied as an Outlier with respect to the total data.  Calculated in [%]
+        outOutlierArray    : Array with identyfied rows that are detected as Outliers.
+        outMaxLim          : Calculates the Maximum Value limit 
+        outMinLim          : Calculates the Minimum Value limit
         msg                : success or error massage reason        
     *****************************************************************************************************************************"""
 
-    def stdDev(self, inputArray, stdDevFactor):
+    def stdDev(self, inDataArray, inStdDevFact):
 
-        replaceMatrixIndex = []  # initializing array
+        outOutlierArray = []  # initializing array
         flag = Filter.success
         msg = ''
 
         # providing try block to handle exceptions
         try:
             # initializing variables
-            valPercent = 0
-            maxValue = 0
-            minValue = 0
+            outOPercent = 0
+            outMaxLim = 0
+            outMinLim = 0
 
-            if type(stdDevFactor) != int:
-                msg = Filter.Error_msg6  # 'Provide a Integer value '
-                flag = Filter.Error  # 'error'
-                return flag, valPercent, replaceMatrixIndex, maxValue, minValue, msg
+            #catch error that the StdDevFact should be an integer value
+            if type(inStdDevFact) != int:
+                msg = Filter.eMsg6   # 'Provide a Integer value '
+                flag = Filter.error
+                return flag, outOPercent, outOutlierArray, outMaxLim, outMinLim, msg
+
+
             # check the range of standard deviation factor
-            if stdDevFactor > Filter.stdDevFactorMax or stdDevFactor < Filter.stdDevFactorMin:
-                msg = 'standard deviation factor should be between ' + str(Filter.stdDevFactorMin) + ' and ' + str(
-                    Filter.stdDevFactorMax)
-                flag = Filter.Error  # 'error'
-                return flag, valPercent, replaceMatrixIndex, maxValue, minValue, msg  # returing flag(error),0,[],0,0, message
+            if inStdDevFact > Filter.cStdDevFactMax or inStdDevFact < Filter.cStdDevFactMin:
+                msg = 'standard deviation factor should be between ' + str(Filter.cStdDevFactMin) + ' and ' + str(
+                    Filter.cStdDevFactMax)
+                flag = Filter.error  
+                return flag, outOPercent, outOutlierArray, outMaxLim, outMinLim, msg  # returing flag(error),0,[],0,0, message
 
             # checking valid length of array
-            if (len(inputArray) < Filter.inputNo):
-                msg = Filter.Error_msg4  # 'Number of input values less than 3'
-                flag = Filter.Error  # 'error'
-                return flag, valPercent, replaceMatrixIndex, maxValue, minValue, msg  # returing flag(error),0,[],0,0, message
+            if len(inDataArray) < Filter.cArrayLenLimit:
+                msg = Filter.eMsg4  # 'Number of input values less than 3'
+                flag = Filter.error 
+                return flag, outOPercent, outOutlierArray, outMaxLim, outMinLim, msg  # returing flag(error),0,[],0,0, message
 
             # calculation with valid length of array
             else:
                 
-                stdDevNum = np.std(inputArray, axis=0) #calculated standard deviation
-                stdMeanNum = np.mean(inputArray, axis=0) #calculated min
-                maxValue = stdMeanNum + (stdDevNum * stdDevFactor) # calculated max limit
-                minValue = stdMeanNum - (stdDevNum * stdDevFactor) #calculated min limit
-                flag, valPercent, replaceMatrixIndex, msg = Filter.maxMin(self, inputArray, maxValue, minValue)
+                stdDev = np.std(inDataArray, axis=0)          #calculated standard deviation
+                stdMean = np.mean(inDataArray, axis=0)        #calculated min
+                outMaxLim = stdMean + (stdDev * inStdDevFact) # calculated max limit
+                outMinLim = stdMean - (stdDev * inStdDevFact) #calculated min limit
+
+                # calls the maxMin to detect the outliers based on calculated MaxLim and MinLim
+                flag, outOPercent, outOutlierArray, msg = Filter.maxMin(self, inDataArray, outMaxLim, outMinLim)
                 
         # handling exceptions in except block
         except:
-            flag = Filter.Error # 'error'
-            msg  = Filter.Error_msg1  # unexpected error 'File can not be processed'
+            flag = Filter.error 
+            msg  = Filter.eMsg1  # unexpected error
+            
 
-        return flag, valPercent, replaceMatrixIndex, maxValue, minValue, msg  # returing flag(success or error),outlier percentage,outlier index,max limit,min limit, message
+        return flag, outOPercent, outOutlierArray, outMaxLim, outMinLim, msg  # returing flag(success or error),outlier percentage,outlier index,max limit,min limit, message
 
     """
     *****************************************************************************************************************************    
     method movingAvg    : This calculate the moving average for the data to move forward,backward or fixed by the number of windows 
                           determined by the trader or the user
     parameters:
-        inputArray      : input array provided to smooth data
-        window          : window to calculate moving average
-        avgType         : type of moving average.default avgType = bakward 
+        inDataArray     : input array provided to smooth data
+        inWindow        : window to calculate moving average
+        inMavgType      : type of moving average.default avgType = bakward 
                           the values can be either of these three values according to user.
                           1.forward
                           2.bakward
@@ -221,18 +228,18 @@ class Filter():
         values           : array to capture intermediate values after convolution
         weights          : array calulated with numpy Repeat method anf geting output of size window and  value 1.0/window
                           
-        revisedInputarr1 : intermediate array to calcuate final array
+        revArray         : intermediate array to calcuate final array
         inputArrayLen    : number of input
-        i,j              : used for looping
+        i,j,k            : used for looping
             
      return:
-        newarr           : array containing smoothed data
-        revisedInputarr  : revised input data according to type of moving average and window
-        flag             : success or error
+        flag             : success or error         
+        outSmArray           : array containing smoothed data
+        outRevArray      : revised input data according to type of moving average and window
         msg              : success or error massage reason
     *****************************************************************************************************************************"""
 
-    def movingAvg(self, inputArray, window, avgType):
+    def movingAvg(self, inDataArray, inWindow, inMavgType):
 
         flag = Filter.success
         msg = ''
@@ -240,113 +247,112 @@ class Filter():
         # providing try block to handle exceptions
         try:
 
-            if avgType is None:
-                avgType = 'backward'  # checking if moving average type is null and setting default value
+            if inMavgType is None:
+                inMavgType = 'backward'  # checking if moving average type is null and setting default value
 
             # initializing  array
             values = []
-            newarr = []
-            revisedInputarr1 = []
-            revisedInputarr = []
+            outSmArray = []
+            revArray = []
+            outRevArray = []
 
             # checking wondow is integer
-            if type(window) != int:
-                msg = Filter.Error_msg6  # 'Provide a Integer value '
-                flag = Filter.Error  # 'error'
-                return flag, revisedInputarr, newarr, msg
+            if type(inWindow) != int:
+                msg = Filter.eMsg6   #message 'Provide a Integer value '
+                flag = Filter.error 
+                return flag, outRevArray, outSmArray, msg
 
-            weights = np.repeat(1.0, window) / window  # array of window size with value 1.0/window
-            inputArrayLen = len(inputArray)  # calculating number of input
+            weights = np.repeat(1.0, inWindow) / inWindow  # array of window size with value 1.0/window
+            inputArrayLen = len(inDataArray)               # calculating number of input
 
             # checking valid length of array
-            if (len(inputArray[0]) < Filter.inputNo):
-                msg = Filter.Error_msg4  # 'Number of input values less than 3'
-                flag = Filter.Error  # 'error'
-                return flag, revisedInputarr, newarr, msg
+            if (len(inDataArray[0]) < Filter.cArrayLenLimit):
+                msg = Filter.eMsg4   #message 'Number of input values less than 3'
+                flag = Filter.error 
+                return flag, outRevArray, outSmArray, msg
 
-                # checking the window not crossing 1 and length of input data
-            if (window == 1 or window > len(inputArray[0])):
-                flag = Filter.Error  # 'error'
-                if (window == 1):
+            # checking the window not crossing 1 and length of input data
+            if (inWindow == 1 or inWindow > len(inDataArray[0])):
+                flag = Filter.error  
+                if (inWindow == 1):
                     msg = 'window should not be 1'
                 else:
-                    msg = Filter.Error_msg3  # 'Window is bigger than the input length.'
-                return flag, revisedInputarr, newarr, msg
+                    msg = Filter.eMsg3  # 'Window is bigger than the input length.'
+                return flag, outRevArray, outSmArray, msg
 
                 # if window is in range
             else:
-                for i in range(inputArrayLen):  # loop for 1 or more data input
-                    values = np.convolve(inputArray[i], weights, 'valid')  # calculating moving average
-                    newarr.append(values)  # appending smoothed data
-                    if avgType == 'forward':
-                        for i in range(inputArrayLen):
-                            revisedInputarr.append(np.flip(np.delete(np.flip(inputArray[i]), np.s_[0: int(
-                                window - 1):])))  # deleting extra data from backside of input array
+                for i in range(inputArrayLen):       # loop for 1 or more data input
+                    values = np.convolve(inDataArray[i], weights, 'valid')  # calculating moving average
+                    outSmArray.append(values)        # appending smoothed data
+                    if inMavgType == 'forward':
+                        for j in range(inputArrayLen):
+                            outRevArray.append(np.flip(np.delete(np.flip(inDataArray[j]), np.s_[0: int(
+                                inWindow - 1):])))   # deleting extra data from backside of input array
 
-                    elif avgType == 'backward':
-                        for i in range(inputArrayLen):
-                            revisedInputarr.append(np.delete(inputArray[i], np.s_[
-                                                                            0: window - 1:]))  # deleting extra data from front of input array
+                    elif inMavgType == 'backward':
+                        for j in range(inputArrayLen):
+                            outRevArray.append(np.delete(inDataArray[j],
+                                                         np.s_[0: inWindow - 1:]))  # deleting extra data from front of input array
 
-                    elif avgType == 'fixed':
-                        if (window % 2 != 0):
-                            for i in range(inputArrayLen):
-                                revisedInputarr1.append(np.flip(np.delete(np.flip(inputArray[i]), np.s_[0: int(
-                                    (window - 1) / 2):])))  # deleting extra data from backside of input array
+                    elif inMavgType == 'fixed':
+                        if (inWindow % 2 != 0):
                             for j in range(inputArrayLen):
-                                revisedInputarr.append(np.delete(revisedInputarr1[i], np.s_[0: int(
-                                    (window - 1) / 2):]))  # deleting extra data from front of input array
+                                revArray.append(np.flip(np.delete(np.flip(inDataArray[j]), np.s_[0: int(
+                                    (inWindow - 1) / 2):])))  # deleting extra data from backside of input array
+                            for k in range(inputArrayLen):
+                                outRevArray.append(np.delete(revArray[k], np.s_[0: int(
+                                    (inWindow - 1) / 2):]))   # deleting extra data from front of input array
                         else:
-                            flag = Filter.Error  # 'error'
-                            msg = Filter.Error_msg2  # 'For fixed moving average provide odd numbers of window '
+                            flag = Filter.error  
+                            msg = Filter.eMsg2   # message 'For fixed moving average provide odd numbers of window '
                     else:
-                        flag = Filter.Error  # 'error'
-                        msg = Filter.Error_msg5  # 'Provide a proper moving average type'
+                        flag = Filter.error  
+                        msg = Filter.eMsg5  # message 'Provide a proper moving average type'
 
         # handling exceptions in except block
         except:
-            flag = Filter.Error  # 'error'
-            msg = Filter.Error_msg1  # unexpected error 'File can not be processed'
-        return flag, revisedInputarr, newarr, msg  # returing flag(success or error),reviced input array,smoothed array, messsage
+            flag = Filter.error  
+            msg = Filter.eMsg1  # unexpected error
+        return flag, outRevArray, outSmArray, msg  # returing flag(success or error),reviced input array,smoothed array, messsage
 
     """
     *****************************************************************************************************************************    
     method countConsec  : This methods calculates the 1st consecutive dataset in a given array staring from a given index
     parameters:
-        val             : starting index for the search of consecutive dataset
-        outlierMatrix   : Array containg all outlier data index of original data set 
+        indexVal        : starting index for the search of consecutive dataset
+        inOutlierArray  : Array containg all outlier data index of original data set 
 
     variables:
         count           : used for intermediate counting 
-        index           : used to loop through index of input outlierMatrix
                           
      return:
-        indexBegin      : begining of consecutive data
-        indexEnd        : end of consecutive data
-        index           : outlierMatrix array index where the current dataset seaching stoppep 
+        outIndexBegin   : begining of consecutive data
+        outIndexEnd     : end of consecutive data
+        i               : outlierMatrix array index where the current dataset seaching stoppep 
     *****************************************************************************************************************************"""
 
-    def countConsec(self, val, outlierMatrix):
+    def countConsec(self, indexVal, inOutlierArray):
         
         #initializing
         count = 0
-        indexEnd = 0
-        indexBegin = outlierMatrix[val]
+        outIndexEnd = 0
+        outIndexBegin = inOutlierArray[indexVal]
 
         #looping through all data in outlierMatrix to find consecutive data set
-        for index in range(val, len(outlierMatrix) - 1):
+        for i in range(indexVal, len(inOutlierArray) - 1):
             #searching if there is any data set equals to its next data set
-            if outlierMatrix[index + 1] == outlierMatrix[index] + 1:
+            if inOutlierArray[i + 1] == inOutlierArray[i] + 1:
                 count += 1 # counting a value how many times the loop is executing for a specific consecutive sequence
                 if count == 1:
-                    indexBegin = outlierMatrix[index] # assigning the begining index of consecutive sequence
-                indexEnd = outlierMatrix[index + 1] # assighing the last index of consecuitive sequence
+                    outIndexBegin = inOutlierArray[i] # assigning the begining index of consecutive sequence
+                outIndexEnd = inOutlierArray[i + 1] # assighing the last index of consecuitive sequence
                 
             else:
                 if (count != 0):
                     break #breacking out the loop if we have already found a consecutive sequence
 
-        return indexBegin, indexEnd, index #returning begining ,ending of consecuive sequence,stopping index where the search stopped
+        return outIndexBegin, outIndexEnd, i #returning begining ,ending of consecuive sequence,stopping index where the search stopped
     """
     *****************************************************************************************************************************    
     method count         : This methods calculates number of consecutive data sets
@@ -361,186 +367,354 @@ class Filter():
         count1         : nuber of consecuitive data set
     *****************************************************************************************************************************"""
 
-    def count(self, OutlierMatrix):
+    def count(self, inOutlierArray):
+
+        # initializing
         count = 0
         count1 = 0
-        for index in range(len(OutlierMatrix) - 1):
-            if OutlierMatrix[index + 1] == OutlierMatrix[index] + 1:
+
+        # looping through for count how many consecutives values are in the inOutlierArray
+        for i in range(len(inOutlierArray) - 1):
+            if inOutlierArray[i + 1] == inOutlierArray[i] + 1:
                 count += 1
             else:
                 if count != 0:
                     count1 = count1 + 1
                     count = 0
-
         if count != 0:
             count1 += 1
 
         return count1
+    
+    """
+    *****************************************************************************************************************************    
+    method::
+        interpolation   :  method to construct new data points within the range of a discrete set of known data points
+    parameters::
+        inDataArray     : input array provided to find interpolated data set
+        inOutlierArray  : Array containg all outlier data index of original data set
+        inIntpTyp       : Type of Interpolation 
+                          0 = Linear
+                          1 = Quadratic
+                          
+        inMaxLim        : Max limit provided by user or calculated using standard deviation
+        inMinLim        : Min limit provided by user or calculated using standard deviation
 
-    def interpolation(self, OriginalMatrix, OutlierMatrix, Kind, maxVal, minVal):
+    variables::
+        intpArrayIndex1 : intermediate array to calculate linear interpolation
+        indexVal        : index value for consecutive values
+        indexBegin      : index Begin for consecutive values
+        indexEnd        : index End for consecutive values
+        counter         : counter for number of different consecutives outliers to replace 
+     return::
+        flag            : success or error         
+        outSmArray      : array containing smoothed data
+        outRevArray     : revised input data according to type of moving average and window
+        msg             : success or error massage reason
+        count1          : number of consecutive data set
+    *****************************************************************************************************************************"""
+
+
+    def interpolation(self, inDataArray, inOutlierArray, inIntpTyp, inMaxLim, inMinLim):
+        
+        #initializing with default values
         flag = Filter.success
         msg = ''
+        outIntpArray = []
+
+        #convert 0 to False and 1 to True
+        if inIntpTyp == 0 or inIntpTyp == 'Linear':
+            inIntpTyp = False
+        elif inIntpTyp == 1 or inIntpTyp == 'Quadratic':
+            inIntpTyp = True
+        
+        # providing try block to handle exceptions        
         try:
-            InterpolatedMatrix = OriginalMatrix.copy()
-            if Kind == 0:
-                InterpolatedMatrixIndex = np.zeros([len(OutlierMatrix), 3])
-                for index in range(len(OutlierMatrix)):
-                    if OutlierMatrix[index] == 0:
-                        if (abs(OriginalMatrix[OutlierMatrix[index]] - maxVal) >
-                                abs(OriginalMatrix[OutlierMatrix[index]] - minVal)):
-                            InterpolatedMatrixIndex[index][0] = minVal
-                        else:
-                            InterpolatedMatrixIndex[index][0] = maxVal
-                    else:
-                        InterpolatedMatrixIndex[index][0] = OriginalMatrix[OutlierMatrix[index] - 1]
+            # checking valid length of array
+            if len(inDataArray) < Filter.cArrayLenLimit:
+                msg = Filter.eMsg4  # 'Number of input values less than 3'
+                flag = Filter.error  # activates flag
+                return flag, outIntpArray, msg
 
-                    InterpolatedMatrixIndex[index][1] = OriginalMatrix[OutlierMatrix[index]]
+            # checking if max value provided is less than min value
+            if (inMaxLim < inMinLim):
+                flag = Filter.error
+                msg = 'Max value is lower than Min value'
 
-                    if (OutlierMatrix[index] + 1) >= len(OriginalMatrix):
-                        if abs(OriginalMatrix[OutlierMatrix[index]] - maxVal) > \
-                                abs(OriginalMatrix[OutlierMatrix[index]] - minVal):
-                            InterpolatedMatrixIndex[index][2] = minVal
-                        else:
-                            InterpolatedMatrixIndex[index][2] = maxVal
-                    else:
-                        InterpolatedMatrixIndex[index][2] = OriginalMatrix[OutlierMatrix[index] + 1]
+            # checking if max value provided is equal to min value
+            elif (inMaxLim == inMinLim):
+                flag = Filter.error
+                msg = 'Max value equal to than Min value'
 
-                    f = interpolate.interp1d([OutlierMatrix[index] - 1, OutlierMatrix[index] + 1],
-                                             [InterpolatedMatrixIndex[index][0], InterpolatedMatrixIndex[index][2]],
-                                             kind='linear')
-                    InterpolatedMatrix[OutlierMatrix[index]] = round(float(f(OutlierMatrix[index])), 4)
+            # cheching the inIntpTyp is a true or false value
+            elif type(inIntpTyp) != bool:
+                msg = Filter.eMsg9   # 'Provide a Boolean value '
+                flag = Filter.error
+                return flag, outIntpArray, msg
 
-                counter = Filter.count(self, OutlierMatrix)
-                val = 0
+            else:
 
-                while counter != 0:
-                    counter = counter - 1
-                    index_prev, index_end, val = Filter.countConsec(self, val, OutlierMatrix)
-                    val += 1
-                    for index in range(index_end - index_prev + 1):
-                        InterpolatedMatrixIndex2 = np.zeros([index_end - index_prev + 1, 3])
-                        val2 = index_prev + index
-                        if index_prev == 0:
-                            if abs(OriginalMatrix[index_prev] - maxVal) > abs(OriginalMatrix[index_prev] - minVal):
-                                InterpolatedMatrixIndex2[index][0] = minVal
+                outIntpArray = inDataArray.copy()                        # coping original data
+                # Linear interpolation
+                if inIntpTyp == False:
+                    intpArrayIndex1 = np.zeros([len(inOutlierArray), 3]) # creating intermediate array to calculate linear interpolation
+                    for i in range(len(inOutlierArray)):                 # looping through range of number of outlier data
+
+                        # handing case for 1st data as it is in boundary
+                        if inOutlierArray[i] == 0:
+
+                            #checking data is near to max limit or min limit
+                            if (abs(inDataArray[inOutlierArray[i]] - inMaxLim) >
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim)):
+                                intpArrayIndex1[i][0] = inMinLim         # taking min limit to interpolate
                             else:
-                                InterpolatedMatrixIndex2[index][0] = maxVal
+                                intpArrayIndex1[i][0] = inMaxLim         # taking max limit to interpolate
+
                         else:
-                            InterpolatedMatrixIndex2[index][0] = OriginalMatrix[index_prev - 1]
+                            intpArrayIndex1[i][0] = inDataArray[inOutlierArray[i] - 1] # taking previous value to interpolate
 
-                        InterpolatedMatrixIndex2[index][1] = OriginalMatrix[val2]
+                        intpArrayIndex1[i][1] = inDataArray[inOutlierArray[i]] # taking current value to interpolate
 
-                        if (index_end + 1) >= len(OriginalMatrix):
-                            if abs(OriginalMatrix[index_end] - maxVal) > abs(OriginalMatrix[index_end] - minVal):
-                                InterpolatedMatrixIndex2[index][2] = minVal
+                        # handing case for last data as it is in boundary
+                        if (inOutlierArray[i] + 1) >= len(inDataArray):
+
+                            #checking data is near to max limit or min limit
+                            if abs(inDataArray[inOutlierArray[i]] - inMaxLim) > \
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim):
+                                intpArrayIndex1[i][2] = inMinLim        # taking min limit to interpolate
                             else:
-                                InterpolatedMatrixIndex2[index][2] = maxVal
+                                intpArrayIndex1[i][2] = inMaxLim        # taking max limit to interpolate
                         else:
-                            InterpolatedMatrixIndex2[index][2] = OriginalMatrix[index_end + 1]
+                            intpArrayIndex1[i][2] = inDataArray[inOutlierArray[i] + 1] # taking next value to interpolate
 
-                        f = interpolate.interp1d([index_prev - 1, index_end + 1],
-                                                 [InterpolatedMatrixIndex2[index][0],
-                                                  InterpolatedMatrixIndex2[index][2]],
+                        #load the values for the interpolation.
+                        f = interpolate.interp1d([inOutlierArray[i] - 1, inOutlierArray[i] + 1],
+                                                 [intpArrayIndex1[i][0], intpArrayIndex1[i][2]],
                                                  kind='linear')
-                        InterpolatedMatrix[val2] = round(float(f(val2)), 4)
+                        #Replace Outlier value with the interpolation at the outlier position
+                        outIntpArray[inOutlierArray[i]] = round(float(f(inOutlierArray[i])), 4)
 
+                    counter = Filter.count(self, inOutlierArray) #number of consecutive iteration
 
-            elif Kind == 1:
-                InterpolatedMatrixIndex = np.zeros([len(OutlierMatrix), 5])
-                for index in range(len(OutlierMatrix)):
-                    if OutlierMatrix[index] == 0:
-                        if abs(OriginalMatrix[OutlierMatrix[index]] - maxVal) > \
-                                abs(OriginalMatrix[OutlierMatrix[index]] - minVal):
-                            InterpolatedMatrixIndex[index][0] = minVal
-                            InterpolatedMatrixIndex[index][1] = minVal
-                        else:
-                            InterpolatedMatrixIndex[index][0] = maxVal
-                            InterpolatedMatrixIndex[index][1] = maxVal
-                    else:
-                        InterpolatedMatrixIndex[index][0] = OriginalMatrix[OutlierMatrix[index] - 2]
-                        InterpolatedMatrixIndex[index][1] = OriginalMatrix[OutlierMatrix[index] - 1]
+                    #initializing
+                    indexVal = 0
 
-                    InterpolatedMatrixIndex[index][2] = OriginalMatrix[OutlierMatrix[index]]
+                    #while there is consecutive data set below code will execute
+                    while counter != 0:
+                        counter = counter - 1
+                        indexBegin, indexEnd, indexVal = Filter.countConsec(self, indexVal, inOutlierArray) #getting begin and end data of one cosecutive data set
+                        indexVal += 1
 
-                    if (OutlierMatrix[index] + 1) >= len(OriginalMatrix):
-                        if abs(OriginalMatrix[OutlierMatrix[index]] - maxVal) > \
-                                abs(OriginalMatrix[OutlierMatrix[index]] - minVal):
-                            InterpolatedMatrixIndex[index][3] = minVal
-                            InterpolatedMatrixIndex[index][4] = minVal
-                        else:
-                            InterpolatedMatrixIndex[index][3] = maxVal
-                            InterpolatedMatrixIndex[index][4] = maxVal
-                    elif (OutlierMatrix[index] + 2) >= len(OriginalMatrix):
-                        if abs(OriginalMatrix[OutlierMatrix[index]] - maxVal) > \
-                                abs(OriginalMatrix[OutlierMatrix[index]] - minVal):
-                            InterpolatedMatrixIndex[index][3] = OriginalMatrix[index + 1]
-                            InterpolatedMatrixIndex[index][4] = minVal
-                        else:
-                            InterpolatedMatrixIndex[index][3] = OriginalMatrix[index + 1]
-                            InterpolatedMatrixIndex[index][4] = maxVal
-                    else:
-                        InterpolatedMatrixIndex[index][3] = OriginalMatrix[OutlierMatrix[index] + 1]
-                        InterpolatedMatrixIndex[index][4] = OriginalMatrix[OutlierMatrix[index] + 2]
+                        # looping through range of number of consecutive outlier data
+                        for i in range(indexEnd - indexBegin + 1):
+                            intpArrayIndex2 = np.zeros([indexEnd - indexBegin + 1, 3])  # creating intermediate array to calculate linear interpolation
+                            intpVal = indexBegin + i  # increase initial intpVal for consecutive loops
 
-                    f = interpolate.interp1d([OutlierMatrix[index] - 2, OutlierMatrix[index] - 1,
-                                              OutlierMatrix[index] + 1, OutlierMatrix[index] + 2],
-                                             [InterpolatedMatrixIndex[index][0], InterpolatedMatrixIndex[index][1],
-                                              InterpolatedMatrixIndex[index][3], InterpolatedMatrixIndex[index][4]],
-                                             kind='quadratic')
-                    InterpolatedMatrix[OutlierMatrix[index]] = round(float(f(OutlierMatrix[index])), 4)
+                            # handling case for first data as the consecutive value
+                            if indexBegin == 0:
 
-                counter = Filter.count(self, OutlierMatrix)
-                val = 0
-
-                while counter != 0:
-                    counter = counter - 1
-                    index_prev, index_end, val = Filter.countConsec(self, val, OutlierMatrix)
-                    val += 1
-                    for index in range(0, index_end - index_prev + 1):
-                        InterpolatedMatrixIndex2 = np.zeros([index_end - index_prev + 1, 5])
-                        val2 = index_prev + index
-                        if index_prev == 0:
-                            if abs(OriginalMatrix[index_prev] - maxVal) > abs(OriginalMatrix[index_prev] - minVal):
-                                InterpolatedMatrixIndex2[index][0] = minVal
-                                InterpolatedMatrixIndex2[index][1] = minVal
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexBegin] - inMaxLim) > abs(inDataArray[indexBegin] - inMinLim):
+                                    intpArrayIndex2[i][0] = inMinLim  # taking min limit to interpolate
+                                else:
+                                    intpArrayIndex2[i][0] = inMaxLim  # taking max limit to interpolate
                             else:
-                                InterpolatedMatrixIndex2[index][0] = maxVal
-                                InterpolatedMatrixIndex2[index][1] = maxVal
-                        else:
-                            InterpolatedMatrixIndex2[index][0] = OriginalMatrix[index_prev - 2]
-                            InterpolatedMatrixIndex2[index][1] = OriginalMatrix[index_prev - 1]
+                                intpArrayIndex2[i][0] = inDataArray[indexBegin - 1] # taking previous data to interpolate
 
-                        InterpolatedMatrixIndex2[index][2] = OriginalMatrix[val2]
+                            intpArrayIndex2[i][1] = inDataArray[intpVal]  # taking current value to interpolate
 
-                        if (index_end + 1) >= len(OriginalMatrix):
-                            if abs(OriginalMatrix[index_end] - maxVal) > abs(OriginalMatrix[index_end] - minVal):
-                                InterpolatedMatrixIndex2[index][3] = minVal
-                                InterpolatedMatrixIndex2[index][4] = minVal
+                            # handling case for last data as a consecutive value
+                            if (indexEnd + 1) >= len(inDataArray):
+
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexEnd] - inMaxLim) > abs(inDataArray[indexEnd] - inMinLim):
+                                    intpArrayIndex2[i][2] = inMinLim  # taking min limit to interpolate
+                                else:
+                                    intpArrayIndex2[i][2] = inMaxLim  # taking max limit to interpolate
                             else:
-                                InterpolatedMatrixIndex2[index][3] = maxVal
-                                InterpolatedMatrixIndex2[index][4] = maxVal
-                        elif (index_end + 2) >= len(OriginalMatrix):
-                            if abs(OriginalMatrix[index_end] - maxVal) > abs(OriginalMatrix[index_end] - minVal):
-                                InterpolatedMatrixIndex2[index][3] = OriginalMatrix[index_end + 1]
-                                InterpolatedMatrixIndex2[index][4] = minVal
+                                intpArrayIndex2[i][2] = inDataArray[indexEnd + 1] # taking next data to interpolate
+
+                            # load the values for the interpolation.
+                            f = interpolate.interp1d([indexBegin - 1, indexEnd + 1],
+                                                     [intpArrayIndex2[i][0],
+                                                      intpArrayIndex2[i][2]],
+                                                     kind='linear')
+                            # Replace Outlier value with the interpolation at the outlier position
+                            outIntpArray[intpVal] = round(float(f(intpVal)), 4)
+
+
+                # Quadratic interpolation
+                elif inIntpTyp == True:
+                    intpArrayIndex1 = np.zeros([len(inOutlierArray), 5]) # creating intermediate array to calculate linear interpolation
+                    for i in range(len(inOutlierArray)):                 # looping through range of number of outlier data
+
+                        # handling case for first data as it is in boundary
+                        if inOutlierArray[i] == 0:
+
+                            #checking data is near to max limit or min limit
+                            if abs(inDataArray[inOutlierArray[i]] - inMaxLim) > \
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim):
+                                intpArrayIndex1[i][0] = inMinLim   # taking min limit to interpolate
+                                intpArrayIndex1[i][1] = inMinLim  # taking min limit to interpolate
                             else:
-                                InterpolatedMatrixIndex2[index][3] = OriginalMatrix[index_end + 1]
-                                InterpolatedMatrixIndex2[index][4] = maxVal
+                                intpArrayIndex1[i][0] = inMaxLim  # taking max limit to interpolate
+                                intpArrayIndex1[i][1] = inMaxLim  # taking max limit to interpolate
+
+                        # handing case for second data as it use one value out of boundary
+                        elif inOutlierArray[i] == 1:
+                            #checking data is near to max limit or min limit
+                            if abs(inDataArray[inOutlierArray[i]] - inMaxLim) > \
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim):
+                                intpArrayIndex1[i][0] = inMinLim   # taking min limit to interpolate
+                                intpArrayIndex1[i][1] = inDataArray[inOutlierArray[i] - 1] # taking previos value to interpolate
+                            else:
+                                intpArrayIndex1[i][0] = inMaxLim   # taking max limit to interpolate
+                                intpArrayIndex1[i][1] = inDataArray[inOutlierArray[i] - 1] # taking previos value to interpolate
 
                         else:
-                            InterpolatedMatrixIndex2[index][3] = OriginalMatrix[index_end + 1]
-                            InterpolatedMatrixIndex2[index][4] = OriginalMatrix[index_end + 2]
+                            intpArrayIndex1[i][0] = inDataArray[inOutlierArray[i] - 2]  # taking previous to previos value to interpolate
+                            intpArrayIndex1[i][1] = inDataArray[inOutlierArray[i] - 1]  # taking previos value to interpolate
 
-                        f = interpolate.interp1d([index_prev - 2, index_prev - 1, index_end + 1, index_end + 2],
-                                                 [InterpolatedMatrixIndex2[index][0],
-                                                  InterpolatedMatrixIndex2[index][1],
-                                                  InterpolatedMatrixIndex2[index][3],
-                                                  InterpolatedMatrixIndex2[index][4]],
+                        intpArrayIndex1[i][2] = inDataArray[inOutlierArray[i]] # taking current value to interpolate
+
+                        # handling case for last data as a consecutive value
+                        if (inOutlierArray[i] + 1) >= len(inDataArray):
+
+                            #checking data is near to max limit or min limit
+                            if abs(inDataArray[inOutlierArray[i]] - inMaxLim) > \
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim):
+                                intpArrayIndex1[i][3] = inMinLim # taking min limit to interpolate
+                                intpArrayIndex1[i][4] = inMinLim # taking min limit to interpolate
+                            else:
+                                intpArrayIndex1[i][3] = inMaxLim # taking max limit to interpolate
+                                intpArrayIndex1[i][4] = inMaxLim # taking max limit to interpolate
+
+                        # handling case for previous to last data as a consecutive value
+                        elif (inOutlierArray[i] + 2) >= len(inDataArray):
+
+                            #checking data is near to max limit or min limit
+                            if abs(inDataArray[inOutlierArray[i]] - inMaxLim) > \
+                                    abs(inDataArray[inOutlierArray[i]] - inMinLim):
+                                intpArrayIndex1[i][3] = inDataArray[inOutlierArray[i] + 1] # taking next value to interpolate
+                                intpArrayIndex1[i][4] = inMinLim # taking min limit to interpolate
+                            else:
+                                intpArrayIndex1[i][3] = inDataArray[inOutlierArray[i] + 1] # taking next value to interpolate
+                                intpArrayIndex1[i][4] = inMaxLim # taking max limit to interpolate
+                        else:
+                            intpArrayIndex1[i][3] = inDataArray[inOutlierArray[i] + 1] # taking next value to interpolate
+                            intpArrayIndex1[i][4] = inDataArray[inOutlierArray[i] + 2] # taking next to next value to interpolate
+
+                        # load the values for the interpolation.
+                        f = interpolate.interp1d([inOutlierArray[i] - 2, inOutlierArray[i] - 1,
+                                                  inOutlierArray[i] + 1, inOutlierArray[i] + 2],
+                                                 [intpArrayIndex1[i][0], intpArrayIndex1[i][1],
+                                                  intpArrayIndex1[i][3], intpArrayIndex1[i][4]],
                                                  kind='quadratic')
-                        InterpolatedMatrix[val2] = round(float(val2), 4)
+                        # Replace Outlier value with the interpolation at the outlier position
+                        outIntpArray[inOutlierArray[i]] = round(float(f(inOutlierArray[i])), 4)
 
+                    counter = Filter.count(self, inOutlierArray) # number of consecutive iteration
+
+                    # initializing
+                    indexVal = 0
+
+                    # while there is consecutive data set below code will execute
+                    while counter != 0:
+                        counter = counter - 1
+                        indexBegin, indexEnd, indexVal = Filter.countConsec(self, indexVal, inOutlierArray) # getting begin and end data of one cosecutive data set
+                        indexVal += 1
+
+                        # looping through range of number of consecutive outlier data
+                        for i in range(0, indexEnd - indexBegin + 1):
+                            intpArrayIndex2 = np.zeros([indexEnd - indexBegin + 1, 5]) # creating intermediate array to calculate linear interpolation
+                            intpVal = indexBegin + i # increase initial intpVal for consecutive loops
+
+                            # handling case for first data as it is in boundary
+                            if indexBegin == 0:
+
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexBegin] - inMaxLim) > abs(inDataArray[indexBegin] - inMinLim):
+                                    intpArrayIndex2[i][0] = inMinLim # taking min limit to interpolate
+                                    intpArrayIndex2[i][1] = inMinLim # taking min limit to interpolate
+                                else:
+                                    intpArrayIndex2[i][0] = inMaxLim # taking max limit to interpolate
+                                    intpArrayIndex2[i][1] = inMaxLim # taking max limit to interpolate
+
+                            # handing case for consecutive value in second data as it uses one value out of boundary
+                            elif indexBegin == 1:
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexBegin] - inMaxLim) > abs(inDataArray[indexBegin] - inMinLim):
+                                    intpArrayIndex2[i][0] = inMinLim # taking min limit to interpolate
+                                    intpArrayIndex2[i][1] = inDataArray[indexBegin - 1] # taking previous value to interpolate
+                                else:
+                                    intpArrayIndex2[i][0] = inMaxLim # taking max limit to interpolate
+                                    intpArrayIndex2[i][1] = inDataArray[indexBegin - 1] # taking previous value to interpolate
+                            else:
+                                intpArrayIndex2[i][0] = inDataArray[indexBegin - 2] # taking previous to previos value to interpolate
+                                intpArrayIndex2[i][1] = inDataArray[indexBegin - 1] # taking previous value to interpolate
+
+                            intpArrayIndex2[i][2] = inDataArray[intpVal] # taking current value to interpolate
+
+                            # handling case for last data as a consecutive value
+                            if (indexEnd + 1) >= len(inDataArray):
+
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexEnd] - inMaxLim) > abs(inDataArray[indexEnd] - inMinLim):
+                                    intpArrayIndex2[i][3] = inMinLim # taking min limit to interpolate
+                                    intpArrayIndex2[i][4] = inMinLim # taking min limit to interpolate
+                                else:
+                                    intpArrayIndex2[i][3] = inMaxLim # taking max limit to interpolate
+                                    intpArrayIndex2[i][4] = inMaxLim # taking max limit to interpolate
+
+                            # handling case for previous to last data as a consecutive value
+                            elif (indexEnd + 2) >= len(inDataArray):
+
+                                #checking data is near to max limit or min limit
+                                if abs(inDataArray[indexEnd] - inMaxLim) > abs(inDataArray[indexEnd] - inMinLim):
+                                    intpArrayIndex2[i][3] = inDataArray[indexEnd + 1] # taking next value to interpolate
+                                    intpArrayIndex2[i][4] = inMinLim # taking min limit to interpolate
+                                else:
+                                    intpArrayIndex2[i][3] = inDataArray[indexEnd + 1] # taking next value to interpolate
+                                    intpArrayIndex2[i][4] = inMaxLim # taking max limit to interpolate
+
+                            else:
+                                intpArrayIndex2[i][3] = inDataArray[indexEnd + 1] # taking next value to interpolate
+                                intpArrayIndex2[i][4] = inDataArray[indexEnd + 2] # taking next to next value to interpolate
+
+                            # load the values for the interpolation.
+                            f = interpolate.interp1d([indexBegin - 2, indexBegin - 1, indexEnd + 1, indexEnd + 2],
+                                                     [intpArrayIndex2[i][0],
+                                                      intpArrayIndex2[i][1],
+                                                      intpArrayIndex2[i][3],
+                                                      intpArrayIndex2[i][4]],
+                                                     kind='quadratic')
+                            # Replace Outlier value with the interpolation at the outlier position
+                            outIntpArray[intpVal] = round(float(f(intpVal)), 4)
+                    """
+                    ***********************************************************************************
+                    # # Special condition for Quadratic Interpolation # #
+                    #If there are still Outliers values after running quadratic interpolation,
+                    # the values are replaced by Max or Min limit values using the maxMin method again.
+                    ***********************************************************************************"""
+
+                    newOutlierArray = Filter.maxMin(self, outIntpArray, inMaxLim, inMinLim)[2]
+
+                    for i in range(len(newOutlierArray)):
+                        # checking data is near to max limit or min limit
+                        if abs(outIntpArray[newOutlierArray[i]] - inMaxLim) > abs(
+                                outIntpArray[newOutlierArray[i]] - inMinLim):
+                            outIntpArray[newOutlierArray[i]] = inMinLim # taking min limit to interpolate
+                        else:
+                            outIntpArray[newOutlierArray[i]] = inMaxLim # taking max limit to interpolate
+                    """"*********************************************************************************"""
+                # handling inIntpTyp error
+                else:
+                    flag = Filter.error
+                    msg = Filter.eMsg1 # unexpected error
+
+        # handling exceptions in except block
         except:
-            flag = Filter.Error
-            msg = Filter.Error_msg1
+            flag = Filter.error
+            msg = Filter.eMsg1 # unexpected error
 
-        return flag, InterpolatedMatrix, msg
+        return flag, outIntpArray, msg  # returning flag(sucess or error), outIntpArray(Interpolated Array), message

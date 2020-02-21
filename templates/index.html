@@ -697,15 +697,6 @@
 
 
 
-
-
-
-
-
-
-
-
-
                 
             }
         };        
@@ -1053,12 +1044,24 @@
                 }
                 else {
 
-                    dataSeriesDict = JSON.parse(json).dataSeriesDict;
-                    const keys = Object.keys(dataSeriesDict);
-                    console.log(keys);
-                    //prepares the information for the dropdown menu of the data series
-                    addOptionsToSelectDataset(keys);
-                    location.reload();
+                    
+                    
+                    if (postdata.action == "deleteSeries" || postdata.action =="resetToOriginalData" || postdata.action == "deleteAll"){
+                        location.reload();
+                    }
+                    else{
+
+                        dataSeriesDict = JSON.parse(json).dataSeriesDict;
+                        const keys = Object.keys(dataSeriesDict);
+                        console.log(keys);
+                        //prepares the information for the dropdown menu of the data series
+                        addOptionsToSelectDataset(keys);
+                        document.getElementById("selectDataSet").value=postdata.seriesName
+                        onChangeselectDataSet()   
+
+                        
+                    }                   
+
                 }
                 
 

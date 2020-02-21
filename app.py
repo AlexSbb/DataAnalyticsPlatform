@@ -87,6 +87,7 @@ def resetGlobalDataObject():
         globalDataObject.dataSeriesDict[seriesName].stdDevFactor=Std_factor
         globalDataObject.dataSeriesDict[seriesName].interpolationType=interpolationType
         globalDataObject.dataSeriesDict[seriesName].standardDeviation()
+        
         if (globalDataObject.dataSeriesDict[seriesName].error == ''):
             # if StDev is OK, than calculate interpolation
             globalDataObject.dataSeriesDict[seriesName].interpolation()
@@ -133,13 +134,17 @@ def resetGlobalDataObject():
             inputSeriesData.append(globalDataObject.dataSeriesDict[name].currentData)
         globalDataObject.dataSeriesDict[seriesName].randonForest(inputSeriesData,trees,testSize,historyOnOff)  
     
-    if (globalDataObject.dataSeriesDict[seriesName].error == ''):
-        return  jsonify(globalDataObject.toJSON()) 
+    if 'seriesName' in locals():
+        if (globalDataObject.dataSeriesDict[seriesName].error == ''):
+            return  jsonify(globalDataObject.toJSON()) 
+        else:
+            errorMsg=globalDataObject.dataSeriesDict[seriesName].error
+            globalDataObject.dataSeriesDict[seriesName].resetError()
+            return jsonify(message = errorMsg)  
     else:
-        errorMsg=globalDataObject.dataSeriesDict[seriesName].error
-        globalDataObject.dataSeriesDict[seriesName].resetError()
-        return jsonify(message = errorMsg) 
+        return  jsonify(globalDataObject.toJSON())
 
+    
 # @app.route('/interpolation', methods=['POST'] )
 # def interpolation():
 #     seriesName= request.get_json()['seriesName']      
