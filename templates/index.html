@@ -61,7 +61,7 @@
                     <div class="input-group input-group-prepend">
                         
                             <label class="btn btn-secondary btn-file mb-3">
-                                Import File<input type="file"  id="ImportFile" style="display: none;"  onchange='onFilePicked(event)'>
+                                Import File<input type="file"  accept=".csv" id="ImportFile" style="display: none;"  onchange='onFilePicked(event)'>
                                 <!-- <span class="glyphicon glyphicon-plus"></span> -->
                                 <!-- <i class="glyphicon glyphicon-plus"></i> -->
                                 <!-- <span aria-hidden="true">&plus;</span> -->
@@ -485,7 +485,10 @@
                 // console.log('Success:', JSON.stringify(json));
             } 
         catch (error) {
-                console.error('Ошибка:', error);
+
+                console.error('Error:', error);
+                $("#myModal").modal()
+                document.getElementById("ModalBody").innerText = "Failure to upload file. Please make sure that you are uploading a valid csv file with values, separated by semi-colon."; 
             } 
 
     }   
@@ -512,9 +515,6 @@
 
         };
 
-
-
-
     //removes all options from any dropdown menu
     function removeOptions(selectbox) {
         var i;
@@ -523,8 +523,6 @@
             selectbox.remove(i);
         }
     }
-
-
     //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
         
@@ -551,6 +549,7 @@
         console.log(dataSeriesDict[currKey].name);
         fillAllElements(currKey);
         plotData(currKey);
+        emptyInfoDiv();
         updateSeriesInformation(currKey);
     };
     //make sure that there is no other info in the Info Box
@@ -566,12 +565,17 @@
     };  
     //upon choosing a dataset, the side information block is updated
     function updateSeriesInformation(key){  
-        emptyInfoDiv();
         var lbl1 = document.createElement("label");                 // Create a <label> element
         var lbl2 = document.createElement("label");                 // Create a <label> element
         var lbl3 = document.createElement("label");                 // Create a <label> element
         var lbl4 = document.createElement("label");                 // Create a <label> element
         var lbl5 = document.createElement("label");                 // Create a <label> element
+        var lbl6 = document.createElement("label");                 // Create a <label> element
+        var lbl7 = document.createElement("label");                 // Create a <label> element
+        var lbl8 = document.createElement("label");                 // Create a <label> element
+
+        var keysArray = ["name", "length", "realMin", "realMax", "size", "median", "meanSquareError", "accuracy"]
+
         lbl1.innerHTML = "Data series name: " + dataSeriesDict[key].name;                // Insert text
         document.getElementById("jumboContainer").appendChild(lbl1);     // Append <p> to <div> with id="myDIV" 
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
@@ -584,13 +588,15 @@
         lbl4.innerHTML = "Maximum value: " + dataSeriesDict[key].realMax;                // Insert text
         document.getElementById("jumboContainer").appendChild(lbl4);     // Append <p> to <div> with id="myDIV" 
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
-        
+        lbl5.innerHTML = "Median value: " + dataSeriesDict[key].median;                // Insert text
+        document.getElementById("jumboContainer").appendChild(lbl5);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
+       
         if(dataSeriesDict[key].valPercent != ''){
             var lbl20 = document.createElement("label");
             lbl20.innerHTML = "Percentage of replaced: " + dataSeriesDict[key].valPercent;                // Insert text
             document.getElementById("jumboContainer").appendChild(lbl20);     // Append <p> to <div> with id="myDIV" 
             document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
-
         }
         
         if(dataSeriesDict[key].MeanSquareError != ''){
@@ -607,16 +613,6 @@
             document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
 
         }
-
-        
-        
-
-
-//         document.getElementById("seriesName").innerHTML = "Data series name: " + dataSeriesDict[key].name; // set a new value;
-//         document.getElementById("seriesLength").innerHTML = "Original length: " + dataSeriesDict[key].originalData.length; // set a new value;
-//         document.getElementById("seriesRealMin").innerHTML = "Minimum value: " + dataSeriesDict[key].realMin; // set a new value;
-//         document.getElementById("seriesRealMax").innerHTML = "Maximum value: " + dataSeriesDict[key].realMax; // set a new value;
-//  //       document.getElementById("seriesRealMedian").innerHTML = "Median value: " + dataSeriesDict[key].data.Median; // set a new value;
     };
     function fillAllElements(key){
 
@@ -722,22 +718,6 @@
             config.data.datasets.push(addDataSet_2)
 
         }
-
-
-
-
-
-        // var plotData = {
-        //         labels: [...Array(dataForPlot.length).keys()],
-        //         datasets: [{
-        //             label: 'currentData',
-        //             backgroundColor: newColor,
-        //             data: dataForPlot,
-        //             borderColor: newColor,
-        //             fill: false
-
-        //         }]
-        //     };
  
         if (typeof myChart != "undefined") { 
                 myChart.destroy();
@@ -1039,8 +1019,7 @@
                     console.log(json.message);
                     // alert(json.message);
                     $("#myModal").modal()
-                    document.getElementById("ModalBody").innerText =message.message 
-                    
+                    document.getElementById("ModalBody").innerText =message.message;
                 }
                 else {
 
