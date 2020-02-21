@@ -8,7 +8,6 @@ import json
 import pycode.Team2Functions as T2F
 from CustomClasses import DataObject, DataSeries
 
-
 app = Flask(__name__)
 CORS(app, resources=r'/*')
 
@@ -18,6 +17,8 @@ globalDataObject = None
 def hello_world():  
     return render_template('index.html')
 
+# Importing the data from the front end (receiving a json message 
+# and reading it into a globalDataObject of type DataObject)
 @app.route('/importDataFromFile', methods=['POST', 'GET'] )
 def importDataFromFile():
     if request.method == 'GET':
@@ -34,18 +35,25 @@ def importDataFromFile():
             globalDataObject.addSeries(dataArray, fileName)       
         return jsonify(globalDataObject.toJSON()) 
 
+# Sending the data object from the backend to the frontend
+# Check if there is no data uploaded yet and returning a notification based on it
 @app.route('/getGlobalDataObject', methods=['GET'] )
 def getGlobalDataObject():
     if (globalDataObject is None):
-        return jsonify(message = "Empty globalDataObject") 
+        return jsonify(message = "Please upload a file with data series to start.") 
     else:
         return jsonify(globalDataObject.toJSON()) 
 
+# Receiving input from the frontend to perform a specific function
+# Depending on the action specified in the json, we can for example delete all data or
+# send the parameters to perform the desired procedures as specified by the user in the GUI
+# The return value is either an error message, which is then to be displayed to the user
+# in the GUI, or the data object itself when the procedure was successful.
 @app.route('/dataManipulation', methods=['POST'] )
 def resetGlobalDataObject():
     action = request.get_json()['action']
     if (globalDataObject is None):
-        return jsonify(message = "Empty globalDataObject") 
+        return jsonify(message = "Please upload a file with data series to start.") 
     elif action == "deleteAll":
         globalDataObject.clearSeries()
     elif action == "deleteSeries":
@@ -58,7 +66,7 @@ def resetGlobalDataObject():
         smoothingType = request.get_json()['smoothingType']
         globalDataObject.dataSeriesDict[seriesName].smoothing(smoothingType,window)    
     elif action == "performInterpolationHardLimits":
-        # Interpolation with hard limits, done!
+        # Interpolation with hard limits
         seriesName=request.get_json()['seriesName']
         selectedMin=float(request.get_json()['selectedMin'])
         selectedMax=float(request.get_json()['selectedMax'])

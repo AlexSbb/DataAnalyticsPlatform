@@ -4,6 +4,7 @@ import pycode.Filter as Filter
 import pycode.NeuralNetworkFn as NN
 import pycode.RandomForestFn as RF
 
+# Defining the global variables
 global inputData
 global outputData
 global modifiedInputData
@@ -18,8 +19,13 @@ forward = 'forward'
 inputData = ['none']
 outputData = ['none']
 
+# Defining the global variable containing all 
+# the data series and their respective attributes
 global dataObject
 
+# Defining the DataSeries class
+# This class contains each data series and its attributes.
+# The class has a number of functions to import, change and delete its attributes.
 class DataSeries:
     def __init__(self, name, dataSeries):
 
@@ -57,6 +63,8 @@ class DataSeries:
         self.maxMinMatrix = []
         self.stdDevMaxMinMatrix = [] 
 
+    # resets all attributes to their original values and deletes any information about
+    # manipulation of the data series
     def resetToOriginalData(self):
         self.currentData = self.originalData
         self.window = 2
@@ -79,17 +87,20 @@ class DataSeries:
         self.MeanSquareError =0
         self.Accuracy=0
 
-
+    # resets error to ''
     def resetError(self):
         self.error = ''
 
+    # sets the error text
     def setError(self, errorText):
         self.error = errorText
     
+    # converts the object to json to enable data transfer to the frontend
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
+    # calls the maxMin method from the Filter.py file and stores the result in the data series object
     def maxMin (self):
         print("I am in maxMin in maxMin")
         filterObj = Filter.Filter()
@@ -102,6 +113,8 @@ class DataSeries:
             self.replaceArray = replaceArray
             self.valPercent = valPercent
 
+    # calls the standardDeviation method from the Filter.py file and stores the result in the data series object
+    # Performs data verifications before calling it
     def standardDeviation(self, stdDevFactor=None):
         if stdDevFactor is None:
             if self.stdDevFactor is None:
@@ -123,6 +136,8 @@ class DataSeries:
             self.selectedMax = selectedMax
             self.selectedMin = selectedMin
     
+    # calls the interpolation method from the Filter.py file and stores the result in the data series object
+    # Performs data verifications before calling it
     def interpolation(self, max=None, min=None, interpolationType=None):
         if max is None:
             if self.selectedMax is None:
@@ -148,7 +163,7 @@ class DataSeries:
         else:
             self.currentData = InterpolatedMatrix
 
-   
+    # calls the smoothing method from the Filter.py file and stores the result in the data series object
     def smoothing(self, smoothingType=None, window=None):
         print("Hi, I'm smoothing")
         filterObj = Filter.Filter()    
@@ -162,7 +177,7 @@ class DataSeries:
             self.currentData = list(newarr[0])
             self.originalData = list(revisedInputarr[0])
 
-    
+    # Calls the randonForest method from the Filter.py file and stores the result in the data series object
     def randonForest(self, inputSeriesData,trees,testSize,historyOnOff):
         print('Hi, Im random forest')
         rfInput = RF.RF_inputs(changeDataSeriesForm(inputSeriesData), self.currentData,trees,testSize/100,historyOnOff)
@@ -185,6 +200,8 @@ class DataSeries:
         # print('Mean Square error:      ', RF_outputs.tst_mse)
         # print('Accuracy:               ', RF_outputs.tst_accrc)
         # print('flag:                   ', RF_outputs.flag)
+    
+    # Calls the neuralNetwork method from the Filter.py file and stores the result in the data series object
     def neuralNetwork(self,inputSeriesData, testSize,activeFunction,hiddenLayers,solverFunction,iterations,scalingOnOff ):
         print('Hi, Im neuralNetwork')
 
@@ -209,7 +226,9 @@ class DataSeries:
         # print('Accuracy:               ', NN_outputs.test_accuracy)
 
 
-
+# Defining the DataObject class
+# This class contains all of the data series objects (i.e. the actual data series and all of their attributes).
+# The class has a number of functions to import, change and delete its attributes.
 class DataObject:
     def __init__(self, dataSeries, fileName):
          self.dataSeriesDict = {} #stores the dataseries in a dictionary
@@ -217,7 +236,8 @@ class DataObject:
              fileName = 'series_'
          for i in range(len(dataSeries)):
              self.dataSeriesDict[fileName + '_' + str(i+1)] = DataSeries(fileName + '_' + str(i+1), dataSeries[i])
-             
+    
+    # Method adds a set of data series (1 to 100+ data series) 
     def addSeries(self, dataSeries, fileName):
          if fileName == '':
              fileName = 'series_'
@@ -227,28 +247,37 @@ class DataObject:
                  seriesNameTemp = seriesNameTemp + '_' + str(i+1)
              self.dataSeriesDict[seriesNameTemp] = DataSeries(seriesNameTemp, dataSeries[i])
 
-    #checks if a series with that name is in the dictionary and deletes it if it is.
+    # Method checks if a series with that name is in the dictionary and deletes it if it is.
     def deleteSeries(self, seriesName):
         if seriesName in self.dataSeriesDict:
             self.dataSeriesDict.pop(seriesName)
 
+    # Method deletes all data series from the DataObject.
     def clearSeries(self):
          self.dataSeriesDict.clear()
 
+    # Method iterates through the data series objects in it and resets the values in each of them
+    # to the original data uploaded and the original attributes at the initialization.
     def resetToOriginalData(self):
         for i in range(len(self.dataSeriesDict)):
             self.dataSeriesDict[i].resetToOriginalData()
 
+    # Method returns the dictionary with all the data series.
     def getDataSeriesDict(self):
          return self.dataSeriesDict
     
+    # Method converts to json format to enable communication with the frontend.
     def toJSON(self):
         return json.dumps(self, default=lambda o: o.__dict__,
             sort_keys=True, indent=4)
 
 
 
- 
+# Method converts to an array of selected data series into a format 
+# that the Neural Network modeling method requires.
+# The format is the following:
+# Initial format [[1,2,3],[5,6,7],[9,10,11]]
+# Format of final output [[1,5,9],[2,6,10],[3,7,11]].
 def changeDataSeriesForm(dataSeriesArray):
     convertedArray = []
     if len(dataSeriesArray) == 0:

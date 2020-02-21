@@ -1,18 +1,15 @@
 <!doctype html>
+<!-- Welcome to the Data Analytics Platfrom (February 2020) -->
 <html lang="en">
   <head>
     <!-- Required meta tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-
-     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
 <title>MAIT 2019</title>
   </head>
   <body>
-
 <header class="navbar fixed-top navbar-dark bg-dark"> 
     <a class="navbar-brand" href="#">
         <img src="../img/logo.svg"  width="90" height="60" alt="">
@@ -21,7 +18,6 @@
        <h1 class="h1">Data Analytics Platform</h1> 
     </span>
 </header>
-
 <div class="modal fade" id="myModal">
     <div class="modal-dialog">
       <div class="modal-content">
@@ -46,10 +42,6 @@
     </div>
 </div>
 
-
-
-
-
 <div class="container-fluid">
     
     <div class="row">
@@ -66,11 +58,11 @@
                                 <!-- <i class="glyphicon glyphicon-plus"></i> -->
                                 <!-- <span aria-hidden="true">&plus;</span> -->
                             </label> 
-
                             <div class="dropdown mb-3 ml-1">
                                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                   Data Reset / Deletion
                                 </button>
+                                <!-- Dropdown menu of options to delete all, delete just one or reset all data series -->
                                 <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
                                   <a class="dropdown-item" onclick="resetAll()">Reset All</a>
                                   <a class="dropdown-item" onclick="resetToOriginalData()">Reset to Original Data</a>
@@ -81,7 +73,9 @@
                     </div>
 
                 <h5 class="border-bottom">Select dataset</h5>
-
+                        <!-- Dropdown menu of all the data series uploaded by the user -->
+                        <!-- Selecting one will display its data points in the chart and  -->
+                        <!-- will fill in its information in the INFO BOX and the real max and min values hard limit input fields  -->
                         <div class="input-group">
                             <select class="custom-select" id="selectDataSet" onchange="onChangeselectDataSet()">
                                 <option selected>Choose dataset:</option>
@@ -89,8 +83,7 @@
                               </select>
                         </div><br>
 
-
-
+                <!-- OUTLIER RECOGNITION  -->
                 <h5 class="border-bottom">Outlier Recognition</h5>
 
                 <ul class="nav flex-column">
@@ -101,7 +94,8 @@
                                 Hard limit values
                             </label>
                           </div>
-                          <!-- MinMax -->
+                          <!-- Input of Min and Max Values (prefilled values are real min and max of the data series) -->
+                          <!-- Input values are checked for compliance with the set limits in javascript -->
                           <div class="input-group input-group-sm mb-3 ml-1">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Min</span>
@@ -118,15 +112,16 @@
                           <!--  -->
 
 
-
+                          <!-- STANDARD DEVIATION -->
                           <div class="form-check">
                             <input class="form-check-input" type="radio" name="HardLimit_deviation" id="StdRadios" value="option2">
                             <label class="form-check-label" for="StdRadios">
-                                Standart deviation
+                                Standard deviation
                             </label>
                           </div>
 
-                         <!-- Standart deviation factor -->
+                         <!-- Standard deviation factor -->
+                         <!-- Input of std factor is checked for compliance with the set limits in javascript -->
                           <div class="input-group input-group-sm mb-3 ml-1">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Std factor</span>
@@ -134,6 +129,7 @@
                             <input type="number" class="form-control" id='Std_factor' aria-label="Std factor" value="1" min="1" max="6" onKeyUp="this.reportValidity()">
                           </div>
                           <h5 class="border-bottom">Interpolation</h5>
+                          <!-- Selection radio buttons for Linear or Quadratic Interpolation -->
                           <div class="form-check">
                             <input class="form-check-input mb-2" type="radio" name="Linear_quadratic" id="linear_radio" value="linear" checked>
                             <label class="form-check-label" for="linear_radio">
@@ -157,42 +153,8 @@
                                 </div>
                             </div>
                     </li >
-                    <!-- <li class="nav-item">
-                        <button  type="button" class="btn btn-light" data-toggle="modal" data-target="#MeanStandartdeviation"> Mean & Standart deviation </button>
-                    </li > -->
                 </ul>
-
-                <!-- <h5 class="border-bottom"> Interpolation:</h5>
-                <ul class="nav flex-column">
-                    <li class="nav-item">
-                        <button  type="button" class="btn btn-light" data-toggle="collapse" data-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample" aria-pressed="true"> Linear Interpolation </button>
-
-                        <div class="collapse ml-3 border-left" id="collapseExample">
-                            <div class="input-group input-group-sm mb-3 ml-1">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text">Min</span>
-                                </div>
-                                <input type="text" class="form-control" id='Intrp_Min' aria-label="Min Value">
-                              </div>
-
-                              <div class="input-group input-group-sm mb-3 ml-1">
-                                <div class="input-group-prepend">
-                                  <span class="input-group-text">Max</span>
-                                </div>
-                                <input type="text" class="form-control" id='Intrp_Max' aria-label="Max Value">
-                              </div>
-                              
-                              <div class="input-group input-group-sm mb-3 ml-1">
-                                <div class="input-group-prepend">
-                                    <button type="button" class="btn btn-secondary" onclick="buttonInterpolationClick()">Submit</button>
-                                </div>
-                              </div>
-                        </div>
-                    </li >
-                    <li class="nav-item">
-                        <button  type="button" class="btn btn-light"> Quadratic interpolation </button>
-                    </li >
-                </ul> -->
+                <!-- Smoothing -->
                 <h5 class="border-bottom"> Smoothing</h5>
                 <ul class="nav flex-column">
                     <li class="nav-item">
@@ -232,12 +194,14 @@
                         </div>
                     </li >
                 </ul>
+                
+                <!-- I/O Relationship models -->
                 <h5 class="border-bottom"> I/O Relationship models:</h5>
                 <ul class="nav flex-column">
                     <label>Select input:   </label>
                     <select class="custom-select mb-2" multiple size="4" id="selectDataSetNNInput" onchange="onChangeselectDataSet()">
                         <option selected>Choose one or more datasets:</option>
-                        <!-- <option value="1">One</option> -->
+                    <!-- <option value="1">One</option> -->
                     </select>
                     <label>Select output:   </label>
                     <select class="custom-select mb-2" id="selectDataSetNNOutput" onchange="onChangeselectDataSet()">
@@ -253,14 +217,14 @@
                                 Neural Network
                             </label>
                         </div>
-                        <!--Test Size  -->
+                        <!-- Test Size  -->
                         <div class="input-group input-group-sm mb-3 ml-1">
                             <div class="input-group-prepend">
                               <span class="input-group-text">Test Size</span>
                             </div>
                             <input type="number" class="form-control" id='NN_testSize' aria-label="window" value="20.0" min="10" max="90" step="0.01" onKeyUp="this.reportValidity()">
                         </div>
-
+                        <!-- Choose Active Function  -->
                         <div class="input-group input-group-sm mb-3 ml-1">
                             <select class="custom-select " id="NN_activFunction" onchange="onChangeNN_activFunction()">
                                 <option selected>Choose Active Function</option>
@@ -270,7 +234,7 @@
                                 <option >Relu</option>
                               </select>
                         </div>
-
+                        <!-- Choose Solver Function  -->
                         <div class="input-group input-group-sm mb-3 ml-1">
                             <select class="custom-select " id="NN_solverFunction" onchange="onChangeNN_solverFunction()">
                                 <option selected>Choose Solver Function</option>
@@ -279,8 +243,6 @@
                                 <option >Adam</option>
                               </select>
                         </div>
-
-
 
                         <!--Hidden layers  -->
                         <div class="input-group input-group-sm mb-3 ml-1">
@@ -310,7 +272,7 @@
                             <input type="number" class="form-control" id='NN_iterations' aria-label="window" value="200" min="1" max="2000" onKeyUp="this.reportValidity();">
                         </div>
 
-
+                        <!-- Scaling  -->
                         <div class="form-check ml-1">
                             <input class="form-check-input" type="checkbox" value="" id="NN_Scaling">
                             <label class="form-check-label" for="NN_Scaling">
@@ -346,6 +308,7 @@
                             </label>
                         </div>
                         <br>
+                        <!-- Calculate action -->
                         <div class="text-center">
                             <button type="submit" class="btn btn-outline-secondary mb-5" onclick="calculateRelationshipModel()">Calculate</button>    
                             <div class="alert alert-danger alert-dismissible fade show  mt-2" style="display:none;" id="alertRelationshipModel" role="alert">
@@ -359,7 +322,7 @@
                 </ul>
             </div>
         </nav>
-
+        <!-- Chart / Right-side of page -->
         <main role="main" class="col-md-8 ml-sm-auto col-lg-9 px-4" style="padding-top: 90px;">
 
             <div class="chartjs-size-monitor" style="position: absolute; left: 0px; top: 0px; right: 0px; bottom: 0px; overflow: hidden; pointer-events: none; visibility: hidden; z-index: -1;">
@@ -379,19 +342,9 @@
             <!-- Adding information below the chart -->
             <div class="jumbotron jumbotron-fluid mt-3 padding=0px">
                 <div class="container" id="jumboContainer">
-                    <!-- <h4 class="h4" id="titleInfoBox">Information about latest transaction</h4>  -->
-                    <!-- adding a splitting line between information blocks -->
-                    <!--<hr class="my-4"> -->
-                    <!-- adding a subtitle -->
-                    <!--<p class="lead">Outlier Recognition and Interpolation Information</p> -->
-                    <!--<p class="lead">I/O Relationship Models</p> -->
-                    <!--<label id="inputSeriesChosen">Input series chosen: n/a</label><br> -->
                 </div>
             </div>
-
-
         </main>
-    
     </div>
 </div>
 
@@ -408,8 +361,13 @@
 
 <script>
 
-    // Global var!!!!!!!!!!!!!!
+    // Defining the global variables
+
+    // Defining the global object dictionary which 
+    // stores all relevant information about the data series in 
+    // the front end (equivalent of the data object in Python)
     var dataSeriesDict ={}
+
     var ctx = document.getElementById('myChart').getContext('2d');
     var myChart
     var selectDataMenusArray = ["selectDataSet", "selectDataSetNNInput", "selectDataSetNNOutput"];
@@ -437,9 +395,6 @@
             complete: function(results) {
                 console.log("Finished:", results.data);
                 console.log("Arr:", results.data[0].length);
-                
-                //TO DO: ERROR CHECKING FOR FILE 
-
                 // Rows to colums :( I  hate .csv
                 correctResult =[]    //Array of vectors
                 for (var index=0; index < results.data[0].length; ++index){
@@ -457,7 +412,6 @@
                     };
                 postDataToPython(postData)   // Go to send data to python
             }  
-      
         });
     }
     //sending data to Python
@@ -476,7 +430,7 @@
                 // console.log(json)
                 dataSeriesDict = JSON.parse(json).dataSeriesDict;
                 // console.log(dataSeriesDict)
-                
+                // storing the keys from the object (= the names of the data series)
                 const keys = Object.keys(dataSeriesDict);
                 console.log(keys);
                 //prepares the information for the dropdown menu of the data series
@@ -485,7 +439,7 @@
                 // console.log('Success:', JSON.stringify(json));
             } 
         catch (error) {
-
+                // displaying the error message if there was an import error
                 console.error('Error:', error);
                 $("#myModal").modal()
                 document.getElementById("ModalBody").innerText = "Failure to upload file. Please make sure that you are uploading a valid csv file with values, separated by semi-colon."; 
@@ -502,11 +456,15 @@
                 if (message.hasOwnProperty("message")){
                     console.log(json.message);
                     // alert(json.message);
+                    // displaying the error message if there was an error passed
+                    // on from the data operations in Python
                     $("#myModal").modal()
                     document.getElementById("ModalBody").innerText =message.message 
                     
                 }
                 else {
+                    // There has been no error detected, so that data 
+                    // is passed on from Python successfully
                     dataSeriesDict = JSON.parse(json).dataSeriesDict;
                     const keys = Object.keys(dataSeriesDict);
                     console.log(keys);
@@ -518,14 +476,12 @@
     //removes all options from any dropdown menu
     function removeOptions(selectbox) {
         var i;
-        for(i = selectbox.options.length - 1 ; i >= 0 ; i--)
-        {
+        for(i = selectbox.options.length - 1 ; i >= 0 ; i--) {
             selectbox.remove(i);
         }
     }
     //add options to a dropdown menu
     function addOptionsToSelectDataset(dataSetsNames) {
-        
         for (i = 0; i < selectDataMenusArray.length; i++) {
             var selectDataSet = document.getElementById(selectDataMenusArray[i]);   
             removeOptions(selectDataSet)
@@ -549,10 +505,11 @@
         console.log(dataSeriesDict[currKey].seriesName);
         fillAllElements(currKey);
         plotData(currKey);
-        emptyInfoDiv();
+        emptyInfoDiv(); 
         updateSeriesInformation(currKey);
     };
-    //make sure that there is no other info in the Info Box
+    // Deletes all elements from the Info Box under the chart
+    // and only adds back the heading
     function emptyInfoDiv(){
         var div = document.getElementById("jumboContainer");
         while(div.firstChild){
@@ -563,7 +520,7 @@
         document.getElementById("jumboContainer").appendChild(heading4);     // Append <p> to <div> with id="myDIV"
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create a <p> element
     };  
-    //upon choosing a dataset, the side information block is updated
+    // Upon choosing a dataset, the side information block is updated
     function updateSeriesInformation(key){  
         var lbl1 = document.createElement("label");                 // Create a <label> element
         var lbl2 = document.createElement("label");                 // Create a <label> element
@@ -576,36 +533,38 @@
 
         var keysArray = ["name", "length", "realMin", "realMax", "size", "median", "meanSquareError", "accuracy"]
 
+        // Adding the new information based on the newly selected data series
         lbl1.innerHTML = "Data series name: " + dataSeriesDict[key].name;                // Insert text
-        document.getElementById("jumboContainer").appendChild(lbl1);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(lbl1);     // Appending the label to the container 
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         lbl2.innerHTML = "Original length: " + dataSeriesDict[key].originalData.length;                // Insert text
-        document.getElementById("jumboContainer").appendChild(lbl2);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(lbl2);     
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         lbl3.innerHTML = "Minimum value: " + dataSeriesDict[key].realMin;                // Insert text
-        document.getElementById("jumboContainer").appendChild(lbl3);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(lbl3);     
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         lbl4.innerHTML = "Maximum value: " + dataSeriesDict[key].realMax;                // Insert text
-        document.getElementById("jumboContainer").appendChild(lbl4);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(lbl4);     
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         lbl5.innerHTML = "Median value: " + dataSeriesDict[key].median;                // Insert text
-        document.getElementById("jumboContainer").appendChild(lbl5);     // Append <p> to <div> with id="myDIV" 
+        document.getElementById("jumboContainer").appendChild(lbl5);     
         document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
-       
+               
+        //adding the information on the percentage replaced data points if available
         if(dataSeriesDict[key].valPercent != ''){
             var lbl20 = document.createElement("label");
-            lbl20.innerHTML = "Percentage of replaced: " + dataSeriesDict[key].valPercent;                // Insert text
-            document.getElementById("jumboContainer").appendChild(lbl20);     // Append <p> to <div> with id="myDIV" 
+            lbl20.innerHTML = "Percentage of replaced: " + dataSeriesDict[key].valPercent;               
+            document.getElementById("jumboContainer").appendChild(lbl20);     
             document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
         }
-        
+        //adding the information on Mean Square Error if available
         if(dataSeriesDict[key].MeanSquareError != ''){
             var lbl21 = document.createElement("label");
             lbl21.innerHTML = "Mean Square Error: " + dataSeriesDict[key].MeanSquareError;                // Insert text
-            document.getElementById("jumboContainer").appendChild(lbl21);     // Append <p> to <div> with id="myDIV" 
+            document.getElementById("jumboContainer").appendChild(lbl21);     
             document.getElementById("jumboContainer").appendChild(document.createElement("br"));     // Create an empty line
-
-        }
+        }        
+        //adding the information on Accuracy if available
         if(dataSeriesDict[key].Accuracy != ''){
             var lbl22 = document.createElement("label");
             lbl22.innerHTML = "Accuracy: " + dataSeriesDict[key].Accuracy;                // Insert text
@@ -614,8 +573,10 @@
 
         }
     };
-    function fillAllElements(key){
 
+    // Filling in the input fields of the hard limit values with the real min and max as an
+    // initial suggestion. Also, setting the min and max values for the validation of those fields.
+    function fillAllElements(key){
         var HardLimitValuesMin = document.getElementById("Intrp_Min");
         var HardLimitValuesMax = document.getElementById("Intrp_Max");
         document.getElementById("Intrp_Min").setAttribute("min",dataSeriesDict[currKey].realMin); // set a new value;
@@ -624,13 +585,14 @@
         document.getElementById("Intrp_Max").setAttribute("max",dataSeriesDict[currKey].realMax); // set a new value;
         HardLimitValuesMin.value = dataSeriesDict[currKey].realMin;
         HardLimitValuesMax.value = dataSeriesDict[currKey].realMax;
-        
+        // Setting the max value for the validation of smoothing.
         document.getElementById("Smooth_Window").setAttribute("max",dataSeriesDict[currKey].currentData.length); // set a new value;
     };
 
+    // Plotting the chart
     function plotData(key){
 
-
+        // Predefined colors
         var chartColors = {
             red:    'rgb(255, 99, 132)',
             orange: 'rgb(255, 159, 64)',
@@ -647,6 +609,7 @@
 
 
         // var colorName = colorNames[config.data.datasets.length % colorNames.length];
+        //Configuring the chart
         var colorName = colorNames[4];
         var newColor = chartColors[colorName];
         var config = {
@@ -686,17 +649,9 @@
 
                     }]
                 }
-		
-
-
-
-
-
-
-                
             }
         };        
-        
+       // Fetching the predicted and expected output if available. If available, they are plotted as well. 
         var PredictedOutput=dataSeriesDict[key].PredictedOutput;
         var ExpectedOutput=dataSeriesDict[key].ExpectedOutput;
         if (PredictedOutput.length != []){
@@ -718,7 +673,7 @@
             config.data.datasets.push(addDataSet_2)
 
         }
- 
+        // Resetting the chart and loading it anew
         if (typeof myChart != "undefined") { 
                 myChart.destroy();
                 myChart = new Chart(ctx,config);
@@ -726,12 +681,20 @@
             } else { 
 
                 myChart = new Chart(ctx,config);
-
             } 
     }
+    // Check if value is within limits and displaying an error message if out of range or empty
     function valueWithinLimits(elementName){
         if (document.getElementById(elementName).value == "")
             return false;
+        if (elementName == "Smooth_Window"){
+            var fixedSelected = document.getElementById("fixed_radio").checked;
+            if (fixedSelected == true){
+                if (document.getElementById(elementName).value % 2 === 0){
+                   return false; 
+                } 
+            }
+        }
         if (document.getElementById(elementName).reportValidity())
             return true;
         else return false;
@@ -741,6 +704,8 @@
     //    document.getElementById("alertSmoothing").style.display = "none";
     //    document.getElementById("alertRelationshipModel").style.display = "none";
     }
+    // Prepare the inputs to be sent to Python to perform interpolation
+    // Input validation is performed before the data is sent to Python
     function performInterpolation(){
         clearAlerts();
         var seriesName = document.getElementById("selectDataSet").value;
@@ -802,11 +767,12 @@
         }
         postActionToPython(postData)   // Go to send data to python  
     }
-    // performing smoothing - we check if there is a type selected and also data and inform the customer 
+    // Performing smoothing - we check if there is a type selected and also data and inform the customer 
+    // Prepare the inputs to be sent to Python to perform smoothing if data is available and valid
     function performSmoothing(){
         clearAlerts();
         if (!valueWithinLimits("Smooth_Window")) {
-            document.getElementById("alertSmoothingLbl").textContent = "ALERT: The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.";
+            document.getElementById("alertSmoothingLbl").textContent = "ALERT: The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series. Also, please note that for smoothing of type FIXED, the window size has to be an odd number.";
             document.getElementById("alertSmoothing").style.display = "";
             // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
             return
@@ -831,6 +797,7 @@
             // window.alert("The data provided is incomplete. Please fill in all relevant information and try again.");
             return;
         }
+        // Data to be sent to Python
         postData = { 
                 action: "performSmoothing",
                 seriesName: seriesName,
@@ -840,6 +807,8 @@
         postActionToPython(postData)   // Go to send data to python  
     }
 
+    // Prepare the inputs to be sent to Python to perform data modeling
+    // Input validation is performed before the data is sent to Python
     function calculateRelationshipModel(){
         clearAlerts();
         var inputSeriesNameArray = Array.from(document.getElementById("selectDataSetNNInput").options).filter(option => option.selected).map(option => option.value);
@@ -860,6 +829,7 @@
         } else {
             modelType = "Random Forest";
         }
+        // Prepare for Neural Network modeling
         if (modelType == "Neural Network"){
             if (!valueWithinLimits("NN_testSize")) {
                 document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number provided for the test size.";
@@ -909,6 +879,7 @@
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
+            // Data to be sent to Python
             postData = { 
                 action: "performNNCalculations",
                 inputSeries: inputSeriesNameArray,
@@ -921,7 +892,9 @@
                 scalingOnOff: document.getElementById("NN_Scaling").value
             };
            postActionToPython(postData)   // Go to send data to python  
-        } else if (modelType == "Random Forest"){
+        } 
+        // Prepare for Random Forest modeling
+        else if (modelType == "Random Forest"){
             if (!valueWithinLimits("RF_Trees")) {
                 document.getElementById("alertRelationshipModelLbl").textContent = "ALERT: Invalid number of trees provided.";
                 document.getElementById("alertRelationshipModel").style.display = "";
@@ -934,6 +907,7 @@
                 // window.alert("The number provided for window size is inaccurate. Please fill enter a value greater or equal to 2 and less than the size of the data series.");
                 return
             }  
+            // Data to be sent to Python
             postData = { 
                 action: "performRFCalculations",
                 inputSeries: inputSeriesNameArray,
@@ -945,10 +919,9 @@
             postActionToPython(postData)   // Go to send data to python  
         } 
     }
-
-    //Alex, sorry that I am overwriting your method
+    // Alternative method (maybe useful for later)
     function buttonInterpolationClick(){
-        //true for HardLimit and false for standart deviation
+        //true for HardLimit and false for standard deviation
         //true for linear and false for quadratic interpolation
         
         seriesName = document.getElementById("selectDataSet").value
@@ -967,28 +940,22 @@
             console.log(postData)  
             postCaclulateInterpolation(postData)   
         }
-
-
-
-
-        
-
-
     };
-
+    // Delete all data series
     function resetAll(){
         postData = { 
             action: "deleteAll"
         };
         postActionToPython(postData)   // Go to send data to python
     }
+    // Restore all data series to inital values after upload (original data)
     function resetToOriginalData(){
         postData = { 
             action: "resetToOriginalData"
         };
         postActionToPython(postData)   // Go to send data to python
     }
-
+    // Delete selected data series (selected in the dropdown menu)
     function deleteSeries(){
         seriesName = document.getElementById("selectDataSet").value
         if (seriesName == "Choose dataset:"){
@@ -1001,6 +968,10 @@
         postActionToPython(postData)   // Go to send data to python
     }
 
+    // Send data to Python
+    // We check if the answer from Python contains a message, 
+    // we display the message. Otherwise, the data manipulation
+    // in Python was successful and we simply take the data over to the frontend object.
     async function postActionToPython(postdata){
         const posturl = 'http://127.0.0.1:5000/dataManipulation';
         try {
@@ -1017,19 +988,15 @@
                 var message = JSON.parse(JSON.stringify(json));                          
                 if (message.hasOwnProperty("message")){
                     console.log(json.message);
-                    // alert(json.message);
+                    // Error message displayed if there was a problem with data manipulation in Python
                     $("#myModal").modal()
                     document.getElementById("ModalBody").innerText =message.message;
                 }
                 else {
-
-                    
-                    
                     if (postdata.action == "deleteSeries" || postdata.action =="resetToOriginalData" || postdata.action == "deleteAll"){
                         location.reload();
                     }
                     else{
-
                         dataSeriesDict = JSON.parse(json).dataSeriesDict;
                         const keys = Object.keys(dataSeriesDict);
                         console.log(keys);
@@ -1037,43 +1004,14 @@
                         addOptionsToSelectDataset(keys);
                         document.getElementById("selectDataSet").value=postdata.seriesName
                         onChangeselectDataSet()   
-
-                        
                     }                   
-
                 }
-                
-
-
-
             } 
         catch (error) {
                 console.error('Error:', error);
             } 
     }
-
-    // async function postCaclulateInterpolation(postdata){
-    //     const posturl = 'http://127.0.0.1:5000/interpolation';
-    //     try {
-    //             const response = await fetch(posturl, {
-    //                 method: 'POST', 
-    //                 body: JSON.stringify(postdata), 
-    //                 headers: {
-    //                     'Content-Type': 'application/json'
-    //                 }
-    //             });
-    //             //waiting for the response from Python
-    //             const json = await response.json();
-    //             console.log(json)
-    //             //dataSeriesDict = JSON.parse(json).dataSeriesDict;
-    //             // console.log(dataSeriesDict)
-  
-    //         } 
-    //     catch (error) {
-    //             console.error('Error:', error);
-    //         } 
-    // }      
-
+    
 </script>
 
   </body>
