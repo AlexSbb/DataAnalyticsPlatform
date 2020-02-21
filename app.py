@@ -101,7 +101,7 @@ def resetGlobalDataObject():
         print("Neural Network")  
         try:      
             inputSeriesNameArray = list(request.get_json()['inputSeries'])
-            seriesName          = request.get_json()['outputSeries']
+            seriesName          = request.get_json()['seriesName']
             testSize            = float(request.get_json()['testSize'])
             activeFunction      = request.get_json()['activeFunction']
             solverFunction      = request.get_json()['solverFunction']
@@ -122,7 +122,7 @@ def resetGlobalDataObject():
         # Random Forest      
         print("performRFCalculations")
         try:
-            seriesName              = request.get_json()['outputSeries'] 
+            seriesName              = request.get_json()['seriesName'] 
             inputSeriesNameArray    = list(request.get_json()['inputSeries'])
             trees                   = int(request.get_json()['trees'])
             testSize                = float(request.get_json()['testSize'])

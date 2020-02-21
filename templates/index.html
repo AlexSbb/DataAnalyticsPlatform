@@ -546,7 +546,7 @@
         var selectDataSet = document.getElementById("selectDataSet");
         currKey=selectDataSet.value
         console.log(currKey);
-        console.log(dataSeriesDict[currKey].name);
+        console.log(dataSeriesDict[currKey].seriesName);
         fillAllElements(currKey);
         plotData(currKey);
         emptyInfoDiv();
@@ -912,7 +912,7 @@
             postData = { 
                 action: "performNNCalculations",
                 inputSeries: inputSeriesNameArray,
-                outputSeries: outputSeriesName,
+                seriesName: outputSeriesName,
                 testSize: document.getElementById("NN_testSize").value,
                 activeFunction: activeFunction,
                 solverFunction: solverFunction,
@@ -937,7 +937,7 @@
             postData = { 
                 action: "performRFCalculations",
                 inputSeries: inputSeriesNameArray,
-                outputSeries: outputSeriesName,
+                seriesName: outputSeriesName,
                 trees: document.getElementById("RF_Trees").value,
                 testSize: document.getElementById("RF_TestSize").value,
                 historyOnOff: document.getElementById("RF_useHistory").value
