@@ -15,6 +15,8 @@ eIterationCount          = "Number of Iteration should be in range 1 to 2000"
 eTestSize                = "Test size should be in range 0.1 to 0.9"
 eNoOfTrees               = "Number of trees should be within 1000"
 eUnexpected              = "Internal Error"
+eInvalidActivation       = "Invalid Activation function selection"
+eInvalidSolver           = "Invalid Solver function selection"
 #Waring code
 wAccuracy                = "Selected data is not appropriate to predict data"
 
@@ -94,7 +96,26 @@ def NeuralNet(NN_inputs):
                    NN_outputs.message = eNeuronCount
                    return NN_outputs
                 else:
-                    pass
+                    # Check if Activation function entry is valid
+                    for i in range(len(activation_fun1)): 
+                        if NN_inputs.activation_fun == activation_fun1[i]:
+                            break
+                        elif i == len(activation_fun1)-1:
+                            NN_outputs.flag = error
+                            NN_outputs.message = eInvalidActivation
+                            return NN_outputs
+                        else:
+                            # Check if Activation function entry is valid
+                            for i in range(len(solver_fun1)): 
+                                if NN_inputs.solver_fun == solver_fun1[i]:
+                                    break
+                                elif i == len(solver_fun1)-1:
+                                    NN_outputs.flag = error
+                                    NN_outputs.message = eInvalidSolver
+                                    return NN_outputs
+                                else:
+                                    pass
+                                
             # check for number of iterations
             if  NN_inputs.iterations > maxIteration or NN_inputs.iterations < minIteration:                   
                 NN_outputs.flag = error

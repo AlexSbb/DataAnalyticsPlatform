@@ -40,6 +40,10 @@ NN_inputs7 = NN.NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs1,slvr1[1],2006,True)
 NN_inputs8 = NN.NN_inputs(X1,y1,0.2,actv1[3],hid_lyrs3,slvr1[1],200,True)
 # Test minimum accuracy check
 NN_inputs9 = NN.NN_inputs(X1,y3,0.2,actv1[3],hid_lyrs1,slvr1[1],500,True)
+# Test invalid activation selection
+NN_inputs10 = NN.NN_inputs(X1,y3,0.2,"Tanh",hid_lyrs1,slvr1[1],500,True)
+# Test invalid solver selection
+NN_inputs11 = NN.NN_inputs(X1,y3,0.2,actv1[3],hid_lyrs1,"SGD",500,True)
 
 #Positive cases---------------------------------------------------------------------------------------------
 
@@ -110,6 +114,22 @@ else:
 print('Selected data is not appropriate to train the model')
 NN_outputs1 = NN.NeuralNet(NN_inputs9)
 if NN_outputs1.flag == NN.warning and NN_outputs1.message == NN.wAccuracy:
+    print('Case5 Run1: Pass \n')
+else:
+    print('Case5 Run1: Fail \n')
+
+#Test invalid activation selection
+print('Test invalid activation selection')
+NN_outputs1 = NN.NeuralNet(NN_inputs10)
+if NN_outputs1.flag == NN.error and NN_outputs1.message == NN.eInvalidActivation:
+    print('Case5 Run1: Pass \n')
+else:
+    print('Case5 Run1: Fail \n')
+
+#Test invalid solver selection
+print('Test invalid solver selection')
+NN_outputs1 = NN.NeuralNet(NN_inputs11)
+if NN_outputs1.flag == NN.error and NN_outputs1.message == NN.eInvalidSolver:
     print('Case5 Run1: Pass \n')
 else:
     print('Case5 Run1: Fail \n')
