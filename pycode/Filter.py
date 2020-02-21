@@ -306,6 +306,7 @@ class Filter():
                         else:
                             flag = Filter.error  
                             msg = Filter.eMsg2   # message 'For fixed moving average provide odd numbers of window '
+                            return flag, outRevArray, outSmArray, msg 
                     else:
                         flag = Filter.error  
                         msg = Filter.eMsg5  # message 'Provide a proper moving average type'
