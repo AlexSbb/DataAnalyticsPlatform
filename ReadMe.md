@@ -2,13 +2,14 @@
 
 ![GUI](/Documentation/Screen_1.png)
 
-#File stucture:
-app.py 		- Main python script
+# File stucture:
 
-templates	- Folder for HTML pages
-index.html	- Main HTML page
+* app.py 		- Main python script
 
-pycode		- Folder for python's scripts
-jscode		- Folder for javascript's scripts
-temp_test	- Folder for temp filesjbjh
+* templates	- Folder for HTML pages
+* index.html	- Main HTML page
+
+* pycode		- Folder for python's scripts
+* jscode		- Folder for javascript's scripts
+* temp_test	- Folder for temp filesjbjh
 
